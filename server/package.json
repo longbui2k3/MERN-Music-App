@@ -1,0 +1,18 @@
+{
+  "name": "projectmusicapp",
+  "version": "1.0.0",
+  "description": "ProjectMusicApp",
+  "main": "index.js",
+  "author": "Duc Long, Binh Minh, Trieu Vi, Huu Cuong",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.1",
+    "nodemon": "^3.0.1"
+  }
+}
