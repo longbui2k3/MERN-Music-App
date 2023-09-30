@@ -28,4 +28,39 @@ const createGenre = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { getGenres, createGenre };
+const getGenresById = asyncHandler(async (req, res) => {
+  const genre = await Genre.findById(req.params.id);
+
+  res.status(200).json({
+    status: "success",
+    genre,
+  });
+});
+
+const updateGenre = asyncHandler(async (req, res) => {
+  const updateGenre = await Genre.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: "success",
+    genre: updateGenre,
+  });
+});
+
+const deleteGenre = asyncHandler(async (req, res) => {
+  await Genre.findByIdAndDelete(req.params.id);
+
+  res.status(200).json({
+    status: "success",
+  });
+});
+
+module.exports = {
+  getGenres,
+  createGenre,
+  getGenresById,
+  updateGenre,
+  deleteGenre,
+};
