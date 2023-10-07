@@ -1,12 +1,16 @@
 const express = require("express");
 const authorRouter = require("./routers/authorRouter");
 const genreRoutes = require("./routers/genreRoutes");
-const songRouter = require('./routers/songRouter');
+const songRouter = require("./routers/songRouter");
+const userRouter = require("./routers/userRouter");
+
 const app = express();
 app.use(express.json()); //middleware
 app.use("/api/v1/authors", authorRouter);
 app.use("/api/v1/genre", genreRoutes);
-app.use('/api/v1/songs', songRouter);
+app.use("/api/v1/songs", songRouter);
+app.use("/api/v1/user", userRouter);
+
 app.use("/", (err, req, res, next) => {
   res.status(404).json({
     status: "error",
@@ -14,13 +18,10 @@ app.use("/", (err, req, res, next) => {
   });
 });
 
-
 // app.use(express.json());
 
 // app.use("/", (req, res) => {
 //   return res.json("Project Music App");
 // });
-
-
 
 module.exports = app;
