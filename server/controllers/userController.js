@@ -41,4 +41,18 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser };
+const getUserById = async (req, res) => {
+  const id = req.params.id;
+  await User.findById(id)
+    .then((result) => {
+      res.status(200).json({
+        status: "success",
+        data: result,
+      });
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
+
+module.exports = { registerUser, getUserById };
