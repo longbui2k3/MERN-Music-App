@@ -113,4 +113,34 @@ const sendResetEmail = (user, redirectUrl, res) => {
     });
 };
 
-module.exports = { forgotPassword, sendResetEmail };
+const resetPassword = async (req, res, next) => {
+  const token = req.params.token;
+  const users = await User.find();
+
+  let resetedUser = null;
+  for (let user of users) {
+    if (user.resetToken) {
+      const confirm = await bcrypt.compare(token, user.resetToken);
+      if (confirm) {
+        resetedUser = user;
+        break;
+      }
+    }
+  }
+  if (!resetedUser) {
+    return res.status(400).json({
+      status: "fail",
+    });
+  }
+  resetedUser.password = req.body.password;
+  resetedUser.resetToken = undefined;
+  resetedUser.createAt = undefined;
+  resetedUser.expireAt = undefined;
+  resetedUser.save();
+  resetedUser.password = null;
+  res.status(200).json({
+    status: "success",
+    message: "Reset password successfully",
+  });
+};
+module.exports = { forgotPassword, sendResetEmail, resetPassword };
