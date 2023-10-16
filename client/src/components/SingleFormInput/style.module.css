@@ -1,0 +1,25 @@
+.formInput {
+  position: relative;
+}
+.input {
+  width: 100%;
+  margin-top: 5px;
+  background-color: rgb(20, 20, 20);
+  /* padding: 5px 10px; */
+  color: white;
+  border: 1px solid #aaaaaa;
+  font-weight: 500;
+}
+.formLabel {
+  color: white;
+  margin-top: 10px;
+  font-weight: 500;
+}
+.eye {
+  font-size: 25px;
+  color: #dddddd;
+  z-index: 999;
+  position: absolute;
+  right: 15px;
+  top: 50px;
+}
