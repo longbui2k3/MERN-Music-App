@@ -1,6 +1,5 @@
 import { FormLabel, Input } from "@chakra-ui/react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import s from "./style.module.css";
 import { useState } from "react";
 export function SingleFormInput({
   formLabel,
@@ -13,8 +12,10 @@ export function SingleFormInput({
     setIsShowPassword(!isShowPassword);
   };
   return (
-    <div className={s.formInput}>
-      <FormLabel className={s.formLabel}>{formLabel}</FormLabel>
+    <div className={"relative"}>
+      <FormLabel className={"text-white mt-[10px] font-[500]"}>
+        {formLabel}
+      </FormLabel>
       <Input
         type={
           formLabel.includes("Password")
@@ -23,16 +24,28 @@ export function SingleFormInput({
               : "password"
             : type
         }
-        className={s.input}
+        className={
+          "w-full mt-[5px] bg-[rgb(20, 20, 20)] text-white border-[#aaaaaa]"
+        }
         placeholder={placeholder}
         onChange={handleInputChange}
         h="50px"
       />
       {formLabel.includes("Password") &&
         (isShowPassword ? (
-          <AiFillEye className={s.eye} onClick={togglePassword} />
+          <AiFillEye
+            className={
+              "absolute text-[25px] text-[#dddddd] right-[15px] top-[50px] z-[999]"
+            }
+            onClick={togglePassword}
+          />
         ) : (
-          <AiFillEyeInvisible className={s.eye} onClick={togglePassword} />
+          <AiFillEyeInvisible
+            className={
+              "absolute text-[25px] text-[#dddddd] right-[15px] top-[50px] z-[999]"
+            }
+            onClick={togglePassword}
+          />
         ))}
     </div>
   );

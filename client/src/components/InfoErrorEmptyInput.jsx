@@ -1,10 +1,11 @@
 import { FormErrorMessage } from "@chakra-ui/react";
-import s from "./style.module.css";
 import { PiWarningCircleFill } from "react-icons/pi";
 export function InfoErrorEmptyInput({ message }) {
   return (
-    <FormErrorMessage className={s.formErrorMessage}>
-      <PiWarningCircleFill className={s.piWarningCircleFill} />
+    <FormErrorMessage
+      className={"text-[rgb(229, 89, 77)] mt-[5px] text-[14px] font-[500]"}
+    >
+      <PiWarningCircleFill className={"text-[20px] me-[4px]"} />
       {message}
     </FormErrorMessage>
   );

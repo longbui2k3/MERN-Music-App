@@ -1,11 +1,10 @@
 import { FormControl } from "@chakra-ui/react";
-import { SingleFormInput } from "../SingleFormInput/SingleFormInput";
-import s from "./style.module.css";
+import { SingleFormInput } from "./SingleFormInput";
 import { useState } from "react";
-import { Checkbox } from "../Checkbox/Checkbox";
-import { SingleButton } from "../SingleButton/SingleButton";
-import { Logo } from "../Logo/Logo";
-import { InfoErrorEmptyInput } from "../InfoErrorEmptyInput/InfoErrorEmptyInput";
+import { Checkbox } from "./Checkbox";
+import { SingleButton } from "./SingleButton";
+import { Logo } from "./Logo";
+import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
 export default function PageResetPassword() {
   const [inputRepeatPassword, setInputRepeatPassword] = useState(" ");
   const [inputPassword, setInputPassword] = useState(" ");
@@ -21,12 +20,14 @@ export default function PageResetPassword() {
   return (
     <>
       <Logo />
-      <div className={s.form}>
+      <div className={"w-[500px] m-auto mt-[-40px]"}>
         <FormControl
           isInvalid={isEmptyRepeatPassword || isEmptyPassword}
-          className={s.formControl}
+          className={"h-[600px] bg-black p-[70px]"}
         >
-          <h1>Password Reset</h1>
+          <h1 className="text-white font-[600] text-[40px] text-center mb-[40px]">
+            Password Reset
+          </h1>
           <SingleFormInput
             type="password"
             formLabel="New Password"
@@ -46,7 +47,7 @@ export default function PageResetPassword() {
             <InfoErrorEmptyInput message="Please repeat your new password." />
           )}
           <Checkbox formLabel="Remember me" />
-          <SingleButton name="Send" width="100%" />
+          <SingleButton name="Send" width="full" />
         </FormControl>
       </div>
     </>

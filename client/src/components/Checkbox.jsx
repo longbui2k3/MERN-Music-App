@@ -1,9 +1,8 @@
-import s from "./style.module.css";
 import { FormLabel, Switch } from "@chakra-ui/react";
 export function Checkbox({ formLabel }) {
   return (
     // <ChakraProvider>
-    <div className={s.checkbox}>
+    <div className={"flex flex-row my-[20px] "}>
       <Switch
         sx={{
           "span.chakra-switch__track:not([data-checked])": {
@@ -15,9 +14,10 @@ export function Checkbox({ formLabel }) {
         }}
         defaultChecked="true"
         size="md"
-        className={s.switch}
       />
-      <FormLabel className={s.formLabel}>{formLabel}</FormLabel>
+      <FormLabel className={"text-white mt-[-2px] ms-[7px] font-[200]"}>
+        {formLabel}
+      </FormLabel>
     </div>
     // </ChakraProvider>
   );
