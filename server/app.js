@@ -3,13 +3,19 @@ const authorRouter = require("./routers/authorRouter");
 const genreRoutes = require("./routers/genreRoutes");
 const songRouter = require("./routers/songRouter");
 const userRouter = require("./routers/userRouter");
+const singerRouter = require("./routers/singerRouter");
+const router = express.Router();
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
+
 app.use(express.json()); //middleware
 app.use("/api/v1/authors", authorRouter);
 app.use("/api/v1/genre", genreRoutes);
 app.use("/api/v1/songs", songRouter);
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/singer", singerRouter);
 
 app.use("/", (err, req, res, next) => {
   res.status(404).json({
