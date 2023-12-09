@@ -3,8 +3,9 @@ const authorRouter = require("./routers/authorRouter");
 const genreRoutes = require("./routers/genreRoutes");
 const songRouter = require("./routers/songRouter");
 const userRouter = require("./routers/userRouter");
-
+const cookieParser = require("cookie-parser");
 const app = express();
+app.use(cookieParser());
 app.use(express.json()); //middleware
 app.use("/api/v1/authors", authorRouter);
 app.use("/api/v1/genre", genreRoutes);

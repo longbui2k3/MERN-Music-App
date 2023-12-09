@@ -5,14 +5,19 @@ const userSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    resetToken: { type: String, required: false },
+    password: { type: String, required: true, select: false },
+    resetToken: { type: String, required: false, select: false },
     createAt: { type: Date, required: false },
     expireAt: { type: Date, required: false },
     pic: {
       type: String,
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+    },
+    role: {
+      type: String,
+      enum: ["admin", "user"],
+      default: "user",
     },
   },
   { timestamp: true }

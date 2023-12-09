@@ -3,11 +3,13 @@ const userController = require("../controllers/userController");
 const authenController = require("../controllers/authenController");
 const router = express.Router();
 
-router.route("/").post(userController.registerUser);
+router.route("/signup").post(authenController.registerUser);
+router.route("/logout").get(authenController.logout);
 router.route("/:id").get(userController.getUserById);
-router.route("/requestPaswordReset").post(authenController.forgotPassword);
+router.route("/forgotPassword").post(authenController.forgotPassword);
 router
   .route("/resetPassword/:userId/:token")
-  .post(authenController.resetPassword);
+  .patch(authenController.resetPassword);
+router.route("/login").post(authenController.login);
 
 module.exports = router;
