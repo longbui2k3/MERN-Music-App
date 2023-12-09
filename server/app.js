@@ -10,6 +10,8 @@ const cors = require("cors");
 const app = express();
 app.use(cors());
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 app.use(express.json()); //middleware
 app.use("/api/v1/authors", authorRouter);
 app.use("/api/v1/genre", genreRoutes);
