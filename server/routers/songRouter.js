@@ -6,6 +6,7 @@ const router = express.Router();
 router
   .route("/")
   .get(songController.getAllSongs)
+
   .post(
     authenController.protect,
     authenController.restrictTo("admin"),
