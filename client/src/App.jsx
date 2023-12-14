@@ -1,8 +1,5 @@
-import { PageResetPassword } from "./components";
-import { ChakraProvider } from "@chakra-ui/react";
-import SignUp from "./pages/SignUp";
-import PageForgotPassword from "./components/PageForgotPassword";
 import PageHome from "./components/PageHome";
+import { ChakraProvider } from "@chakra-ui/react";
 export function App() {
   return (
     <ChakraProvider>

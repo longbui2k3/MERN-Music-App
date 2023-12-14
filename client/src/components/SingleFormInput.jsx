@@ -29,6 +29,7 @@ export function SingleFormInput({
         }
         placeholder={placeholder}
         onChange={handleInputChange}
+        autoComplete="none"
         h="50px"
       />
       {formLabel.includes("Password") &&
