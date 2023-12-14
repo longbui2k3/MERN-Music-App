@@ -1,29 +1,19 @@
-import { Box, Grid, GridItem, Image, Text, Tooltip } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Grid, GridItem } from "@chakra-ui/react";
 import {
-  faCircleChevronRight,
+  faBackwardStep,
   faCirclePlay,
-  faHouse,
-  faLayerGroup,
-  faMagnifyingGlass,
-  faUser,
+  faForwardStep,
+  faRepeat,
+  faShuffle,
 } from "@fortawesome/free-solid-svg-icons";
-import { Col, Container, Row } from "react-bootstrap";
-import SongAPI from "../api/SongAPI";
-import axios from "axios";
-import SingerAPI from "../api/SingerAPI";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
+import Library from "./Library";
+import TopMenu from "./TopMenu";
+import Body from "./Body";
+import MusicPlayer from "./MusicPlayer";
 
 const PageHome = () => {
-  const [songs, setSongs] = useState([]);
-
-  useEffect(() => {
-    const getAllSongs = async () => {
-      const songsData = await SongAPI.getAllSong();
-      setSongs(songsData.data.data);
-    };
-    getAllSongs();
-  }, []);
   return (
     <div className={"bg-black h-[860px] p-[8px]"}>
       <Grid
@@ -45,7 +35,7 @@ const PageHome = () => {
           color="#b3b3b3"
           padding="8px 12px"
         >
-          <Box
+          {/* <Box
             marginTop={2}
             padding="4px 12px"
             className={"hover:text-white cursor-pointer"}
@@ -60,7 +50,8 @@ const PageHome = () => {
           >
             <FontAwesomeIcon icon={faMagnifyingGlass} />{" "}
             <span className={"ml-[12px] text-[14px]"}>Search</span>
-          </Box>
+          </Box> */}
+          <TopMenu />
         </GridItem>
         <GridItem
           pl="2"
@@ -71,10 +62,11 @@ const PageHome = () => {
           color="#b3b3b3"
           padding="8px 8px"
         >
-          <Box marginTop={2} padding="4px 12px">
+          {/* <Box marginTop={2} padding="4px 12px">
             <FontAwesomeIcon icon={faLayerGroup} />
             <span className={"ml-[12px] text-[14px]"}>Library</span>
-          </Box>
+          </Box> */}
+          <Library />
         </GridItem>
         <GridItem
           pl="2"
@@ -84,181 +76,14 @@ const PageHome = () => {
           backgroundColor="#121212"
           color="#b3b3b3"
         >
-          <header className={"h-[64px]"}>
-            <Box
-              display="inline-block"
-              style={{ lineHeight: "64px", padding: "0 20px " }}
-            >
-              <Tooltip label="Go back">
-                <FontAwesomeIcon
-                  icon={faCircleChevronRight}
-                  rotation={180}
-                  size="xl"
-                  className={"hover:text-white cursor-pointer"}
-                />
-              </Tooltip>
-
-              <Tooltip label="Go forward">
-                <FontAwesomeIcon
-                  icon={faCircleChevronRight}
-                  size="xl"
-                  style={{ marginLeft: "16px" }}
-                  className={"hover:text-white cursor-pointer"}
-                />
-              </Tooltip>
-            </Box>
-
-            <Tooltip label="View profile">
-              <FontAwesomeIcon
-                icon={faUser}
-                style={{
-                  float: "right",
-                  lineHeight: "64px",
-                  padding: "23px 30px ",
-                }}
-                className={"hover:text-white cursor-pointer"}
-              />
-            </Tooltip>
-          </header>
-          {/* Body */}
-          <div
-            style={{
-              lineHeight: "64px",
-              padding: "0 20px",
-              maxHeight: "750px",
-              overflow: "auto",
-            }}
-          >
-            {/* Recently played section */}
-            <div>
-              <p className={"text-[22px] text-white"}>Recently played</p>
-
-              {/* <div
-              className={
-                "grid gap-4 lg:grid-cols-7 md:grid-cols-4 sm:grid-cols-2"
-              }
-              > */}
-
-              <div>
-                {songs.map((song, index) => (
-                  <SongListItem key={index} song={song} />
-                ))}
-              </div>
-            </div>
-          </div>
-          {/* </div> */}
+          <Body />
         </GridItem>
       </Grid>
-      <div className="bg-black h-[72px] p-[5px]" width="100%"></div>
+      <MusicPlayer/>
     </div>
   );
 };
 
 //========================================================
-
-const SongListItem = ({ song }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [artist, setArtist] = useState("");
-  useEffect(() => {
-    const getArtist = async () => {
-      const artistData = await SingerAPI.getSingerById(song.artist);
-      setArtist(artistData.data.singer);
-    };
-    getArtist();
-  }, []);
-  return (
-    <div
-      className={
-        "h-[270px] rounded-md w-[190px] inline-block cursor-pointer mr-[24px] mb-[24px]"
-      }
-      style={{ backgroundColor: "#181818" }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div
-        style={{
-          height: "100%",
-          padding: "16px",
-          position: "relative",
-        }}
-        className={"hover:bg-neutral-800 rounded-md"}
-      >
-        <div
-          style={{
-            position: "relative",
-            height: "160px",
-            width: "160px",
-            transform: "translateY(0)",
-            transition: "transform 0.3s ease",
-          }}
-        >
-          <Image
-            boxSize="160px"
-            objectFit="cover"
-            src={song.imageURL}
-            alt={song.name}
-            className={"rounded-md"}
-            style={{
-              position: "absolute",
-              boxShadow:
-                "rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px",
-            }}
-          />
-          <FontAwesomeIcon
-            icon={faCirclePlay}
-            style={{
-              color: "#3ae723",
-              zIndex: "2",
-              position: "absolute",
-              bottom: "8px",
-              right: "8px",
-              boxShadow: "rgba(0, 0, 0, 0.56) 0px 22px 70px 4px",
-              transform: `translateY(${isHovered ? "0" : "100%"})`,
-              transition: "transform 0.3s ease, opacity 0.3s ease",
-              opacity: isHovered ? 1 : 0,
-            }}
-            className={"text-[48px] hover:text-[50px] "}
-          />
-        </div>
-
-        <div style={{ height: "70px", maxWidth: "158px" }}>
-          <div
-            style={{
-              position: "relative",
-              height: "100%",
-            }}
-          >
-            <span
-              className={"text-[15px] font-bold text-white "}
-              style={{
-                maxWidth: "158px",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                position: "absolute",
-              }}
-            >
-              {song.name}
-            </span>
-            <br />
-            <span
-              className={"text-[14px] font-medium "}
-              style={{
-                maxWidth: "158px",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                position: "absolute",
-                margin: "-36px 0",
-              }}
-            >
-              {artist.name}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default PageHome;
