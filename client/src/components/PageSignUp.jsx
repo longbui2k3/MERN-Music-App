@@ -8,8 +8,8 @@ import {
   Input,
   Text,
 } from "@chakra-ui/react";
-import { SingleButton } from "../components/SingleButton";
-import { Logo } from "../components/Logo";
+import { SingleButton } from "./SingleButton";
+import { Logo } from "./Logo";
 
 const SignUp = () => {
   return (
