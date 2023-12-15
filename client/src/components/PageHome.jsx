@@ -1,86 +1,80 @@
-import { Grid, GridItem } from "@chakra-ui/react";
-import {
-  faBackwardStep,
-  faCirclePlay,
-  faForwardStep,
-  faRepeat,
-  faShuffle,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import Library from "./Library";
 import TopMenu from "./TopMenu";
 import Body from "./Body";
 import MusicPlayer from "./MusicPlayer";
+import { styled } from "styled-components";
+
+const Container = styled.div`
+  max-height: 100vh;
+  max-width: 100vw;
+  display: grid;
+  grid-template-rows: 89vh 11vh;
+  overflow: hidden;
+  .body {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    column-gap: 8px;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(0 0 0);
+    padding: 8px 15px 0 8px;
+  }
+  .side-bar {
+    background-color: black;
+    color: #b3b3b3;
+    border-radius: 5px;
+    display: grid;
+    grid-template-rows: 15% 83.7%;
+    row-gap: 8px;
+  }
+
+  .top-menu {
+    border-radius: 5px;
+    background-color: #121212;
+    color: #b3b3b3;
+    padding: 8px 8px;
+  }
+
+  .library {
+    border-radius: 5px;
+    background-color: #121212;
+    color: #b3b3b3;
+    padding: 8px 8px;
+  }
+
+  .body-content {
+    border-radius: 5px;
+    background-color: #121212;
+    color: #b3b3b3;
+  }
+
+  .footer {
+    z-index: 100;
+  }
+`;
 
 const PageHome = () => {
   return (
-    <div className={"bg-black h-[860px] p-[8px]"}>
-      <Grid
-        templateAreas={`
-                  "nav main"
-                  "history main"`}
-        gridTemplateRows={"112px 660px "}
-        gridTemplateColumns={"380px 1fr"}
-        gap="2"
-        color="blackAlpha.700"
-        fontWeight="bold"
-      >
-        <GridItem
-          pl="2"
-          bg="pink.300"
-          area={"nav"}
-          borderRadius="5px"
-          backgroundColor="#121212"
-          color="#b3b3b3"
-          padding="8px 12px"
-        >
-          {/* <Box
-            marginTop={2}
-            padding="4px 12px"
-            className={"hover:text-white cursor-pointer"}
-          >
-            <FontAwesomeIcon icon={faHouse} />{" "}
-            <span className={"ml-[12px] text-[14px]"}>Home</span>
-          </Box>
-          <Box
-            marginTop={2}
-            padding="4px 12px"
-            className={"hover:text-white cursor-pointer"}
-          >
-            <FontAwesomeIcon icon={faMagnifyingGlass} />{" "}
-            <span className={"ml-[12px] text-[14px]"}>Search</span>
-          </Box> */}
-          <TopMenu />
-        </GridItem>
-        <GridItem
-          pl="2"
-          bg="green.300"
-          area={"history"}
-          borderRadius="5px"
-          backgroundColor="#121212"
-          color="#b3b3b3"
-          padding="8px 8px"
-        >
-          {/* <Box marginTop={2} padding="4px 12px">
-            <FontAwesomeIcon icon={faLayerGroup} />
-            <span className={"ml-[12px] text-[14px]"}>Library</span>
-          </Box> */}
-          <Library />
-        </GridItem>
-        <GridItem
-          pl="2"
-          bg="blue.300"
-          area={"main"}
-          borderRadius="5px"
-          backgroundColor="#121212"
-          color="#b3b3b3"
-        >
+    <Container>
+      <div className="body">
+        <div className="side-bar">
+          <div className="top-menu">
+            <TopMenu />
+          </div>
+
+          <div className="library">
+            <Library />
+          </div>
+        </div>
+        <div className="body-content">
           <Body />
-        </GridItem>
-      </Grid>
-      <MusicPlayer/>
-    </div>
+        </div>
+      </div>
+      <div className="footer">
+        <MusicPlayer />
+      </div>
+    </Container>
   );
 };
 

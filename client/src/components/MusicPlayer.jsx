@@ -16,11 +16,11 @@ const MusicPlayer = () => {
   const progressBarRef = useRef();
 
   return (
-    <div className="bg-black h-[84px] p-[10px] flex" width="100%">
+    <div className="bg-black p-[10px] flex w-full h-full">
       <div className="w-1/3">
         <ShortInfo currentTrack={currentTrack} audioRef={audioRef} />
       </div>
-      <div className="w-1/3 ">
+      <div className="w-1/3 grid gap-y-0 grid-cols-1 p-[2px]">
         <Controls
           currentTrack={currentTrack}
           audioRef={audioRef}
@@ -33,6 +33,7 @@ const MusicPlayer = () => {
           setTrackIndex={setTrackIndex}
           setCurrentTrack={setCurrentTrack}
         />
+
         <ProgressBar
           timeProgress={timeProgress}
           duration={duration}
@@ -41,9 +42,8 @@ const MusicPlayer = () => {
           setDuration={setDuration}
         />
       </div>
-      <div className="w-1/3 flex justify-center	justify-center items-center	">
+      <div className="w-1/3 flex justify-center items-center">
         <OtherControls />
-
       </div>
     </div>
   );

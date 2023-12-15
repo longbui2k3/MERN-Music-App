@@ -61,7 +61,7 @@ const Body = () => {
         style={{
           lineHeight: "64px",
           padding: "0 20px",
-          maxHeight: "750px",
+          maxHeight: "80%",
           overflow: "auto",
         }}
       >
