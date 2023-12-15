@@ -1,10 +1,19 @@
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { Logo } from "./Logo";
-import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
 import { Select } from "@chakra-ui/react";
+import { Radio, RadioGroup } from "@chakra-ui/react";
+import SignUpStep3 from "./PageSignUpStep3";
 export default function SignUpStep2() {
   const {
     handleSubmit,
@@ -15,6 +24,8 @@ export default function SignUpStep2() {
   const [inputDay, setInputDay] = useState("");
   const [inputMonth, setInputMonth] = useState("");
   const [inputYear, setInputYear] = useState("");
+  const [gender, setGender] = useState("");
+  const [isContinue, setIsContinue] = useState(false);
   const handleInputName = async (e) => {
     setInputName(e.target.value);
     await register("name").onChange(e);
@@ -40,7 +51,9 @@ export default function SignUpStep2() {
     console.log(values.day);
     console.log(values.month);
     console.log(values.year);
+    setIsContinue(true);
   }
+  if (isContinue) return <SignUpStep3 />;
   return (
     <>
       <Logo />
@@ -181,6 +194,33 @@ export default function SignUpStep2() {
               <FormLabel className={"text-white mt-[10px] font-[500]"}>
                 Gender
               </FormLabel>
+              <Text className="mb-2 text-[#a7a7a7] fold-bold" fontSize={"15px"}>
+                We use your gender to help personalize our content
+                recommendations and ads for you.
+              </Text>
+              <RadioGroup
+                onChange={setGender}
+                value={gender}
+                className="text-white"
+              >
+                <div className="mb-2">
+                  <Radio value="Man" className="">
+                    Man
+                  </Radio>
+                  <Radio value="Woman" className="ms-10">
+                    Woman
+                  </Radio>
+                  <Radio value="Non-binary" className="ms-10">
+                    Non-binary
+                  </Radio>
+                </div>
+                <div>
+                  <Radio value="Something else">Something else</Radio>
+                  <Radio value="Prefer not to say" className="ms-11">
+                    Prefer not to say
+                  </Radio>
+                </div>
+              </RadioGroup>
             </div>
             <Button
               type="submit"
