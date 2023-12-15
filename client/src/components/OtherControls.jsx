@@ -7,7 +7,7 @@ const OtherControls = () => {
   const [volume, setVolume] = useState(60);
   return (
     <>
-         <div className="volume w-[120px] flex flex-row gap-[8px] justify-center	" >
+         <div className="volume w-[120px] flex flex-row gap-[8px] justify-center items-center" >
           <div onClick={() => setMuteVolume((prev) => !prev)}>
             {muteVolume || volume < 5 ? (
               <FontAwesomeIcon icon={faVolumeOff} className="text-white text-opacity-50 hover:text-opacity-100 w-[22px]"/>
