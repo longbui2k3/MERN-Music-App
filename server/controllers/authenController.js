@@ -6,7 +6,7 @@ const generateToken = require("../config/generateToken");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (type, user, statusCode, res) => {
   const token = generateToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -19,6 +19,7 @@ const createSendToken = (user, statusCode, res) => {
   user.password = undefined;
   res.status(statusCode).json({
     status: "success",
+    message: `${type} successfully!`,
     token,
     data: {
       user,
@@ -136,7 +137,7 @@ const forgotPassword = async (req, res) => {
         //proceed with email to reset password
         sendResetEmail(data, res);
       } else {
-        res.json({
+        res.status(400).json({
           status: "Failed",
           message: "No account with the supplied email exists!",
         });
@@ -144,7 +145,7 @@ const forgotPassword = async (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.json({
+      res.status(400).json({
         status: "Failed",
         message: "An error occurred while checking for existing user",
       });
@@ -164,7 +165,7 @@ const sendResetEmail = (user, res) => {
             <p>Don't worry, use the link below to reset it.</p>
             <p>This link <b>expires in 60 minutes</b>. Press
             <a href=${
-              "http://localhost:4000/api/v1/user/resetPassword" +
+              "http://localhost:3000/resetPassword" +
               "/" +
               user._id +
               "/" +
@@ -191,14 +192,14 @@ const sendResetEmail = (user, res) => {
             .sendMail(mailOptions)
             .then(() => {
               //reset email sent and password reset record saved
-              res.json({
+              res.status(200).json({
                 status: "PENDING",
                 message: "Password reset email sent",
               });
             })
             .catch((error) => {
               console.log(error);
-              res.json({
+              res.status(404).json({
                 status: "Failed",
                 message: "Password reset email failed",
               });
@@ -206,7 +207,7 @@ const sendResetEmail = (user, res) => {
         })
         .catch((error) => {
           console.log(error);
-          res.json({
+          res.status(404).json({
             status: "Failed",
             message: "Couldn't save password reset data",
           });
@@ -214,7 +215,7 @@ const sendResetEmail = (user, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.json({
+      res.status(404).json({
         status: "Failed",
         message: "An error occured while hashing the password reset data",
       });
@@ -222,6 +223,12 @@ const sendResetEmail = (user, res) => {
 };
 
 const resetPassword = async (req, res, next) => {
+  if (req.body.password !== req.body.passwordConfirm) {
+    return res.status(400).json({
+      status: "fail",
+      message: "The password and its password confirm does not match!",
+    });
+  }
   const token = req.params.token;
   const users = await User.find({}, { resetToken: 1 });
   let resetedUser = null;
@@ -237,6 +244,7 @@ const resetPassword = async (req, res, next) => {
   if (!resetedUser) {
     return res.status(400).json({
       status: "fail",
+      message: "Unable to reset password due to user is not found!",
     });
   }
   resetedUser.password = req.body.password;
@@ -246,7 +254,7 @@ const resetPassword = async (req, res, next) => {
   resetedUser.save();
   res.status(200).json({
     status: "success",
-    message: "Reset password successfully",
+    message: "Reset password successfully!",
   });
 };
 
@@ -269,7 +277,7 @@ const login = async (req, res, next) => {
       message: "Incorrect email or password!",
     });
   }
-  createSendToken(user, 200, res);
+  createSendToken("Log in", user, 200, res);
 };
 const logout = async (req, res, next) => {
   res.cookie("jwt", "", {

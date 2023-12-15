@@ -4,15 +4,19 @@ import { useState } from "react";
 export function SingleFormInput({
   formLabel,
   placeholder,
-  handleInputChange,
+  onChange,
   type,
+  name,
+  onBlur,
+  ref,
 }) {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const togglePassword = (e) => {
     setIsShowPassword(!isShowPassword);
   };
+
   return (
-    <div className={"relative"}>
+    <div className="relative">
       <FormLabel className={"text-white mt-[10px] font-[500]"}>
         {formLabel}
       </FormLabel>
@@ -20,7 +24,7 @@ export function SingleFormInput({
         type={
           formLabel.includes("Password")
             ? isShowPassword
-              ? "text"
+              ? type
               : "password"
             : type
         }
@@ -28,9 +32,11 @@ export function SingleFormInput({
           "w-full mt-[5px] bg-[rgb(20, 20, 20)] text-white border-[#aaaaaa]"
         }
         placeholder={placeholder}
-        onChange={handleInputChange}
-        autoComplete="none"
         h="50px"
+        name={name}
+        onBlur={onBlur}
+        ref={ref}
+        onChange={onChange}
       />
       {formLabel.includes("Password") &&
         (isShowPassword ? (

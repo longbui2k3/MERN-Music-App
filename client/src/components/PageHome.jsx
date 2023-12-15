@@ -10,9 +10,9 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { Col, Container, Row } from "react-bootstrap";
-import SongAPI from "../api/SongAPI";
+import { SongAPI } from "../api/";
 import axios from "axios";
-import SingerAPI from "../api/SingerAPI";
+import { SingerAPI } from "../api/";
 
 const PageHome = () => {
   const [songs, setSongs] = useState([]);
