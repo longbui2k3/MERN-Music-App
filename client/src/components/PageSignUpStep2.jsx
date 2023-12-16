@@ -14,7 +14,15 @@ import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
 import { Select } from "@chakra-ui/react";
 import { Radio, RadioGroup } from "@chakra-ui/react";
 import SignUpStep3 from "./PageSignUpStep3";
+import SignUpStep1 from "./PageSignUpStep1";
+import { useDispatch } from "react-redux";
+import {
+  setName,
+  setDateOfBirth,
+  setGender,
+} from "../features/signUp/signUpSlice";
 export default function SignUpStep2() {
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     register,
@@ -24,8 +32,9 @@ export default function SignUpStep2() {
   const [inputDay, setInputDay] = useState("");
   const [inputMonth, setInputMonth] = useState("");
   const [inputYear, setInputYear] = useState("");
-  const [gender, setGender] = useState("");
+  const [genderState, setGenderState] = useState("");
   const [isContinue, setIsContinue] = useState(false);
+  const [clickBack, setClickBack] = useState(false);
   const handleInputName = async (e) => {
     setInputName(e.target.value);
     await register("name").onChange(e);
@@ -46,12 +55,24 @@ export default function SignUpStep2() {
   const isEmptyInputDay = inputDay === "";
   const isEmptyInputMonth = inputMonth === "";
   const isEmptyInputYear = inputYear === "";
-  async function onSubmit(values) {
-    console.log(values.name);
-    console.log(values.day);
-    console.log(values.month);
-    console.log(values.year);
+  const store = (name, dateOfBirth, gender) => {
+    dispatch(setName(name));
+    dispatch(setGender(gender));
+    dispatch(setDateOfBirth(dateOfBirth));
+  };
+  function onSubmit(values) {
+    store(
+      values.name,
+      `${values.day}/${values.month}/${values.year}`,
+      genderState
+    );
     setIsContinue(true);
+  }
+  function clickBackFunc() {
+    setClickBack(true);
+  }
+  if (clickBack) {
+    return <SignUpStep1 />;
   }
   if (isContinue) return <SignUpStep3 />;
   return (
@@ -63,7 +84,12 @@ export default function SignUpStep2() {
           <div class="h-full bg-[#1ED760] absolute w-2/3"></div>
         </div>
         <div className="mt-6 mb-6 flex">
-          <ChevronLeftIcon boxSize={10} color="#a7a7a7" className="mt-2" />
+          <ChevronLeftIcon
+            boxSize={10}
+            color="#a7a7a7"
+            className="mt-2 hover:text-white cursor-pointer"
+            onClick={clickBackFunc}
+          />
           <div className="ms-3">
             <Text className="text-[#a7a7a7] font-bold">Step 2 of 3</Text>
             <Text className="text-white font-bold mt-1">
@@ -199,8 +225,8 @@ export default function SignUpStep2() {
                 recommendations and ads for you.
               </Text>
               <RadioGroup
-                onChange={setGender}
-                value={gender}
+                onChange={setGenderState}
+                value={genderState}
                 className="text-white"
               >
                 <div className="mb-2">

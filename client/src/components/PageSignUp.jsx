@@ -14,23 +14,50 @@ import { Logo } from "./Logo";
 import { useForm } from "react-hook-form";
 import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
 import SignUpStep1 from "./PageSignUpStep1";
+import { useDispatch } from "react-redux";
+import { setEmail } from "../features/signUp/signUpSlice";
+import { CheckExistEmail } from "../api";
+import { PiWarningCircleFill } from "react-icons/pi";
 
 export default function SignUp() {
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm();
   const [inputEmail, setInputEmail] = useState("");
+  const [isExistEmail, setIsExistEmail] = useState(false);
   const [isContinue, setIsContinue] = useState(false);
+  function isValidEmail(email) {
+    const emailRegex = new RegExp(
+      "([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=A-Z^-~-]+)*|[[\t -Z^-~]*])"
+    );
+    return emailRegex.test(email);
+  }
+  async function checkExsitEmail(email) {
+    try {
+      const res = await CheckExistEmail(email);
+      return false;
+    } catch (err) {
+      return true;
+    }
+  }
   const handleInputEmail = async (e) => {
     setInputEmail(e.target.value);
     await register("email").onChange(e);
+    setIsExistEmail(await checkExsitEmail(e.target.value));
   };
+  const store = (email) => dispatch(setEmail(email));
   function onSubmit(values) {
-    setIsContinue(true);
+    if (!isInvalidInputEmail && !isExistEmail) {
+      store(values.email);
+      setIsContinue(true);
+    }
   }
-  const isEmptyInputEmail = inputEmail === "";
+
+  const isInvalidInputEmail = !isValidEmail(inputEmail);
+
   if (isContinue) return <SignUpStep1 />;
   return (
     <>
@@ -45,7 +72,7 @@ export default function SignUp() {
           Sign up to start listening
         </Text>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={isEmptyInputEmail}>
+          <FormControl isInvalid={isInvalidInputEmail || isExistEmail}>
             <div className="relative">
               <FormLabel className={"text-white mt-[10px] font-[500]"}>
                 Email
@@ -63,8 +90,23 @@ export default function SignUp() {
                 ref={register("email").ref}
               />
             </div>
-            {isEmptyInputEmail && (
-              <InfoErrorEmptyInput message="Please enter your email" />
+            {isExistEmail && (
+              <div className="bg-[#ffa42b] flex rounded-md my-4">
+                <PiWarningCircleFill
+                  className={"text-[40px] mx-[5px] my-[10px]"}
+                />
+                <p className="my-[10px]">
+                  This address is already linked to an existing account. To
+                  continue,{" "}
+                  <a className="underline" href="/login">
+                    log in
+                  </a>
+                  .
+                </p>
+              </div>
+            )}
+            {isInvalidInputEmail && (
+              <InfoErrorEmptyInput message="This email is invalid. Make sure it's written like example@email.com" />
             )}
             <Button
               type="submit"

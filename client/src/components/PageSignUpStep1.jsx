@@ -6,7 +6,11 @@ import { useState } from "react";
 import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import SignUpStep2 from "./PageSignUpStep2";
+import SignUp from "./PageSignUp";
+import { useDispatch } from "react-redux";
+import { setPassword } from "../features/signUp/signUpSlice";
 export default function SignUpStep1() {
+  const dispatch = useDispatch();
   const {
     handleSubmit,
     register,
@@ -15,6 +19,7 @@ export default function SignUpStep1() {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [inputPassword, setInputPassword] = useState(" ");
   const [isContinue, setIsContinue] = useState(false);
+  const [clickBack, setClickBack] = useState(false);
   const isEmptyPassword = inputPassword === "";
   const togglePassword = (e) => {
     setIsShowPassword(!isShowPassword);
@@ -22,9 +27,16 @@ export default function SignUpStep1() {
   const handleInputPasswordChange = (e) => {
     setInputPassword(e.target.value);
   };
-  async function onSubmit(values) {
-    console.log(values.password);
+  const store = (password) => dispatch(setPassword(password));
+  function onSubmit(values) {
+    store(values.password);
     setIsContinue(true);
+  }
+  function clickBackFunc() {
+    setClickBack(true);
+  }
+  if (clickBack) {
+    return <SignUp />;
   }
   if (isContinue) return <SignUpStep2 />;
   return (
@@ -36,7 +48,12 @@ export default function SignUpStep1() {
           <div class="h-full bg-[#1ED760] absolute w-1/3"></div>
         </div>
         <div className="mt-6 mb-6 flex">
-          <ChevronLeftIcon boxSize={10} color="#a7a7a7" className="mt-2" />
+          <ChevronLeftIcon
+            boxSize={10}
+            color="#a7a7a7"
+            className="mt-2 hover:text-white cursor-pointer"
+            onClick={clickBackFunc}
+          />
           <div className="ms-3">
             <Text className="text-[#a7a7a7] font-bold">Step 1 of 3</Text>
             <Text className="text-white font-bold mt-1">Create a password</Text>

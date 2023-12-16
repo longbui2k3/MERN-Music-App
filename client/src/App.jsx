@@ -7,6 +7,7 @@ import {
 } from "./components";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 export function App() {
   return (
     <ChakraProvider>

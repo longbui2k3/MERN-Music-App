@@ -89,16 +89,16 @@ const restrictTo = (...roles) => {
 //@route           POST /api/user/
 //@access          Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, passwordConfirm, pic } = req.body;
+  const { name, email, password, gender, dateOfBirth } = req.body;
 
   if (!name || !email || !password) {
     res.status(400);
     throw new Error("Please Enter all the Feilds");
   }
-  if (password !== passwordConfirm) {
-    res.status(400);
-    throw new Error("The password confirmation did not match");
-  }
+  // if (password !== passwordConfirm) {
+  //   res.status(400);
+  //   throw new Error("The password confirmation did not match");
+  // }
   const userExists = await User.findOne({ email });
 
   if (userExists) {
@@ -110,7 +110,8 @@ const registerUser = asyncHandler(async (req, res) => {
     name,
     email,
     password,
-    pic,
+    gender,
+    dateOfBirth,
   });
 
   if (user) {
@@ -118,8 +119,10 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      pic: user.pic,
+      gender: user.gender,
+      dateOfBirth: user.dateOfBirth,
       token: generateToken(user._id),
+      message: "Sign up successfully!",
     });
   } else {
     res.status(400);
@@ -289,6 +292,20 @@ const logout = async (req, res, next) => {
     message: "Logged out successfully!",
   });
 };
+
+const checkExistEmail = async (req, res, next) => {
+  const { email } = req.body;
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    return res.status(400).json({
+      status: "fail",
+    });
+  }
+  res.status(200).json({
+    status: "ok",
+  });
+};
 module.exports = {
   registerUser,
   forgotPassword,
@@ -298,4 +315,5 @@ module.exports = {
   logout,
   protect,
   restrictTo,
+  checkExistEmail,
 };

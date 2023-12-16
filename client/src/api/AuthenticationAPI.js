@@ -28,3 +28,24 @@ export const ResetPassword = async (
   );
   return res;
 };
+
+export const SignUp = async (email, password, name, dateOfBirth, gender) => {
+  const res = await axios.post("http://localhost:4000/api/v1/user/signup", {
+    email,
+    password,
+    name,
+    dateOfBirth,
+    gender,
+  });
+  return res;
+};
+
+export const CheckExistEmail = async (email) => {
+  const res = await axios.post(
+    "http://localhost:4000/api/v1/user/checkExistEmail",
+    {
+      email,
+    }
+  );
+  return res;
+};
