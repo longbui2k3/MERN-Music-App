@@ -1,4 +1,14 @@
-import { Box, Image, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  IconButton,
+  Image,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Tooltip,
+} from "@chakra-ui/react";
 import {
   faCircleChevronRight,
   faCirclePlay,
@@ -44,17 +54,29 @@ const Body = () => {
           </Tooltip>
         </Box>
 
-        <Tooltip label="View profile">
-          <FontAwesomeIcon
-            icon={faUser}
-            style={{
-              float: "right",
-              lineHeight: "64px",
-              padding: "23px 30px ",
-            }}
-            className={"hover:text-white cursor-pointer"}
-          />
-        </Tooltip>
+        <div className="float-right mr-[20px]" style={{ lineHeight: "64px" }}>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              aria-label="Options"
+              icon={
+                <FontAwesomeIcon icon={faUser} className="text-[#b3b3b3]" />
+              }
+              variant="outline"
+            />
+            <MenuList style={{ backgroundColor: "#333", fontSize: "14px" }}>
+              <MenuItem style={{ backgroundColor: "#333", height: "32px" }}>
+                Profile
+              </MenuItem>
+
+              <MenuDivider />
+
+              <MenuItem style={{ backgroundColor: "#333", height: "32px" }}>
+                Log out
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </div>
       </header>
       {/* Body */}
       <div
