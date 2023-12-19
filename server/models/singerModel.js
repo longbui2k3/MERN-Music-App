@@ -16,7 +16,8 @@ const singerSchema = new Schema({
     type: String,
     required: true,
   },
-  songs: [{ title: String, releaseDate: Date }],
+  songs: [{ type: mongoose.Schema.ObjectId, ref: "Song" }],
+  albums: [{ type: mongoose.Schema.ObjectId, ref: "Album" }],
 });
 
 const Singer = mongoose.model("Singer", singerSchema);

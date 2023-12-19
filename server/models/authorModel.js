@@ -8,6 +8,7 @@ const authorSchema = mongoose.Schema({
   image: {
     type: String,
   },
+  songs: [{ type: mongoose.Schema.ObjectId, ref: "Song" }],
 });
 
 const author = mongoose.model("Author", authorSchema);

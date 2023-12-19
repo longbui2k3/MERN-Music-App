@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Logo } from "./Logo";
 import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
-import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
+import { InfoErrorInput } from "./InfoErrorInput";
 import { useForm } from "react-hook-form";
 import { ForgotPassword } from "../api";
 import { ShowNotify } from "./ShowNotify";
@@ -105,7 +105,7 @@ export default function PageForgotPassword() {
               />
             </div>
             {isEmptyInputEmail && (
-              <InfoErrorEmptyInput message="Please enter your email" />
+              <InfoErrorInput message="Please enter your email" />
             )}
             <Button
               type="submit"

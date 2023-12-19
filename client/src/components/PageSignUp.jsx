@@ -12,9 +12,9 @@ import {
 } from "@chakra-ui/react";
 import { Logo } from "./Logo";
 import { useForm } from "react-hook-form";
-import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
+import { InfoErrorInput } from "./InfoErrorInput";
 import SignUpStep1 from "./PageSignUpStep1";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setEmail } from "../features/signUp/signUpSlice";
 import { CheckExistEmail } from "../api";
 import { PiWarningCircleFill } from "react-icons/pi";
@@ -26,7 +26,8 @@ export default function SignUp() {
     register,
     formState: { errors, isSubmitting },
   } = useForm();
-  const [inputEmail, setInputEmail] = useState("");
+  const email = useSelector((state) => state.signUp.email);
+  const [inputEmail, setInputEmail] = useState(email);
   const [isExistEmail, setIsExistEmail] = useState(false);
   const [isContinue, setIsContinue] = useState(false);
   function isValidEmail(email) {
@@ -84,6 +85,7 @@ export default function SignUp() {
                 }
                 placeholder="name@domain.com"
                 h="50px"
+                value={inputEmail}
                 onChange={handleInputEmail}
                 name={register("email").name}
                 onBlur={register("email").onBlur}
@@ -106,7 +108,7 @@ export default function SignUp() {
               </div>
             )}
             {isInvalidInputEmail && (
-              <InfoErrorEmptyInput message="This email is invalid. Make sure it's written like example@email.com" />
+              <InfoErrorInput message="This email is invalid. Make sure it's written like example@email.com" />
             )}
             <Button
               type="submit"

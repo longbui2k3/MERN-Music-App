@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { SignUp } from "../api";
+import { Navigate } from "react-router-dom";
 export default function SignUpStep3() {
   const {
     handleSubmit,
@@ -14,6 +15,7 @@ export default function SignUpStep3() {
     formState: { errors, isSubmitting },
   } = useForm();
   const [clickBack, setClickBack] = useState(false);
+  const [isLoginSuccessfully, setIsLoginSuccessfully] = useState(false);
   function clickBackFunc() {
     setClickBack(true);
   }
@@ -25,12 +27,17 @@ export default function SignUpStep3() {
   async function onSubmit() {
     try {
       const res = await SignUp(email, password, name, dateOfBirth, gender);
+      setIsLoginSuccessfully(true);
       console.log(res);
       console.log(res.data.message);
     } catch (err) {
+      setIsLoginSuccessfully(false);
       console.log(err);
       console.log(err.response.data.error);
     }
+  }
+  if (isLoginSuccessfully) {
+    return <Navigate to="status" />;
   }
   if (clickBack) {
     return <SignUpStep2 />;
@@ -75,12 +82,19 @@ export default function SignUpStep3() {
             </Checkbox>
           </CheckboxGroup>
           <p className="w-[350px] mx-[50px] text-white mt-1">
-            By clicking on sign-up, you agree to Spotify's Terms and Conditions
-            of Use.
+            By clicking on sign-up, you agree to Spotify's{" "}
+            <a href="#" className="text-[rgb(30,215,96)] underline">
+              Terms and Conditions of Use
+            </a>
+            .
           </p>
           <p className="w-[350px] mx-[50px] text-white">
             To learn more about how Spotify collects, uses, shares and protects
-            your personal data, please see Spotify's Privacy Policy.
+            your personal data, please see{" "}
+            <a href="#" className="text-[rgb(30,215,96)] underline">
+              Spotify's Privacy Policy
+            </a>
+            .
           </p>
           <Button
             type="submit"

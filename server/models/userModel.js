@@ -26,16 +26,12 @@ const userSchema = mongoose.Schema(
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
-    favourites: [
-      {
-        songId: String,
-      },
-    ],
     role: {
       type: String,
       enum: ["admin", "user"],
       default: "user",
     },
+    listSongs: [{ type: mongoose.Schema.ObjectId, ref: "ListSongs" }],
   },
   { timestamp: true }
 );

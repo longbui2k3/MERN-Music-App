@@ -2,7 +2,7 @@ import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
 import { useState } from "react";
 import { SingleButton } from "./SingleButton";
 import { Logo } from "./Logo";
-import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
+import { InfoErrorInput } from "./InfoErrorInput";
 import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Navigate, useParams } from "react-router-dom";
@@ -150,7 +150,7 @@ export default function PageResetPassword() {
               )}
             </div>
             {isEmptyPassword && (
-              <InfoErrorEmptyInput message="Please enter your new password." />
+              <InfoErrorInput message="Please enter your new password." />
             )}
             <div className="relative">
               <FormLabel className={"text-white mt-[10px] font-[500]"}>
@@ -186,7 +186,7 @@ export default function PageResetPassword() {
               )}
             </div>
             {isEmptyRepeatPassword && (
-              <InfoErrorEmptyInput message="Please repeat your new password." />
+              <InfoErrorInput message="Please repeat your new password." />
             )}
             <SingleButton
               name="Send"

@@ -4,6 +4,7 @@ const genreModel = mongoose.Schema(
     name: {
       type: String,
     },
+    songs: [{ type: mongoose.Schema.ObjectId, ref: "Song" }],
   },
   { timestamp: true }
 );

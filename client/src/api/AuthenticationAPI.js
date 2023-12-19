@@ -8,6 +8,11 @@ export const Login = async (email, password) => {
   return res;
 };
 
+export const Logout = async () => {
+  const res = await axios.get("http://localhost:4000/api/v1/user/logout");
+  return res;
+};
+
 export const ForgotPassword = async (email) => {
   const res = await axios.post(
     "http://localhost:4000/api/v1/user/forgotPassword",

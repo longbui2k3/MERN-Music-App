@@ -5,17 +5,16 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Stack,
   Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
+import { InfoErrorInput } from "./InfoErrorInput";
 import { Select } from "@chakra-ui/react";
 import { Radio, RadioGroup } from "@chakra-ui/react";
 import SignUpStep3 from "./PageSignUpStep3";
 import SignUpStep1 from "./PageSignUpStep1";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setName,
   setDateOfBirth,
@@ -23,16 +22,23 @@ import {
 } from "../features/signUp/signUpSlice";
 export default function SignUpStep2() {
   const dispatch = useDispatch();
+  const name = useSelector((state) => state.signUp.name);
+  const dateOfBirth = useSelector((state) => state.signUp.dateOfBirth);
+  const day = dateOfBirth.split("-")[0];
+  const month = dateOfBirth.split("-")[1];
+  const year = dateOfBirth.split("-")[2];
+  const gender = useSelector((state) => state.signUp.gender);
+
   const {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
   } = useForm();
-  const [inputName, setInputName] = useState("");
-  const [inputDay, setInputDay] = useState("");
-  const [inputMonth, setInputMonth] = useState("");
-  const [inputYear, setInputYear] = useState("");
-  const [genderState, setGenderState] = useState("");
+  const [inputName, setInputName] = useState(name);
+  const [inputDay, setInputDay] = useState(day);
+  const [inputMonth, setInputMonth] = useState(month);
+  const [inputYear, setInputYear] = useState(year);
+  const [genderState, setGenderState] = useState(gender);
   const [isContinue, setIsContinue] = useState(false);
   const [clickBack, setClickBack] = useState(false);
   const handleInputName = async (e) => {
@@ -51,22 +57,59 @@ export default function SignUpStep2() {
     setInputYear(e.target.value);
     await register("year").onChange(e);
   };
-  const isEmptyInputName = inputName === "";
-  const isEmptyInputDay = inputDay === "";
-  const isEmptyInputMonth = inputMonth === "";
-  const isEmptyInputYear = inputYear === "";
+  function handleKeyDown(event) {
+    var numberArray = [];
+    for (var i = 0; i < 10; i++) {
+      var c = String.fromCharCode(48 + i);
+      numberArray.push(c);
+    }
+    var char = event.key;
+    var isLetter = numberArray.includes(char);
+
+    if (!isLetter && char !== "Backspace") {
+      event.preventDefault();
+    }
+  }
+  function handleKeyDownDay(event) {
+    handleKeyDown(event);
+    var char = event.key;
+    if (event.target.value.length >= 2 && char !== "Backspace") {
+      event.preventDefault();
+    }
+  }
+  function handleKeyDownYear(event) {
+    handleKeyDown(event);
+    var char = event.key;
+    if (event.target.value.length >= 4 && char !== "Backspace") {
+      event.preventDefault();
+    }
+  }
+  const isInvalidInputName = inputName === "";
+  const isInvalidInputDay =
+    isNaN(inputDay) || inputDay - "0" < 1 || inputDay - "0" > 31;
+  const isInvalidInputMonth = inputMonth === "";
+  const isInvalidInputYear = inputYear < 1900;
+  const isInvalidGender = genderState === "";
+  const isValidInput =
+    !isInvalidInputName &&
+    !isInvalidInputDay &&
+    !isInvalidInputMonth &&
+    !isInvalidInputYear &&
+    !isInvalidGender;
   const store = (name, dateOfBirth, gender) => {
     dispatch(setName(name));
     dispatch(setGender(gender));
     dispatch(setDateOfBirth(dateOfBirth));
   };
   function onSubmit(values) {
-    store(
-      values.name,
-      `${values.day}/${values.month}/${values.year}`,
-      genderState
-    );
-    setIsContinue(true);
+    if (isValidInput) {
+      store(
+        values.name,
+        `${values.day}-${values.month}-${values.year}`,
+        genderState
+      );
+      setIsContinue(true);
+    }
   }
   function clickBackFunc() {
     setClickBack(true);
@@ -100,10 +143,11 @@ export default function SignUpStep2() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl
             isInvalid={
-              isEmptyInputName ||
-              isEmptyInputDay ||
-              isEmptyInputMonth ||
-              isEmptyInputYear
+              isInvalidInputName ||
+              isInvalidInputDay ||
+              isInvalidInputMonth ||
+              isInvalidInputYear ||
+              isInvalidGender
             }
             className="px-[50px]"
           >
@@ -113,6 +157,7 @@ export default function SignUpStep2() {
               </FormLabel>
               <Input
                 type="text"
+                value={inputName}
                 className={
                   "w-full mt-[5px] bg-[rgb(20, 20, 20)] text-white border-[#aaaaaa]"
                 }
@@ -123,8 +168,8 @@ export default function SignUpStep2() {
                 ref={register("name").ref}
               />
             </div>
-            {isEmptyInputName && (
-              <InfoErrorEmptyInput message="Enter a name for your profile." />
+            {isInvalidInputName && (
+              <InfoErrorInput message="Enter a name for your profile." />
             )}
             <div className="relative">
               <FormLabel className={"text-white mt-[10px] font-[500]"}>
@@ -139,16 +184,19 @@ export default function SignUpStep2() {
                   h="50px"
                   w="100px"
                   placeholder="dd"
+                  value={inputDay}
                   onChange={handleInputDay}
                   name={register("day").name}
                   onBlur={register("day").onBlur}
                   ref={register("day").ref}
+                  onKeyDown={handleKeyDownDay}
                 />
                 <Select
                   placeholder="Month"
                   iconColor="white"
                   iconSize="20px"
                   className="text-white mt-[5px]"
+                  value={inputMonth}
                   onChange={handleInputMonth}
                   name={register("month").name}
                   onBlur={register("month").onBlur}
@@ -200,21 +248,23 @@ export default function SignUpStep2() {
                   h="50px"
                   w="130px"
                   placeholder="yyyy"
+                  value={inputYear}
                   onChange={handleInputYear}
                   name={register("year").name}
                   onBlur={register("year").onBlur}
                   ref={register("year").ref}
+                  onKeyDown={handleKeyDownYear}
                 />
               </div>
             </div>
-            {isEmptyInputDay && (
-              <InfoErrorEmptyInput message="Please enter the day of your birth date by entering a number between 1 and 31." />
+            {isInvalidInputDay && (
+              <InfoErrorInput message="Please enter the day of your birth date by entering a number between 1 and 31." />
             )}
-            {isEmptyInputMonth && (
-              <InfoErrorEmptyInput message="Select your birth month." />
+            {isInvalidInputMonth && (
+              <InfoErrorInput message="Select your birth month." />
             )}
-            {isEmptyInputYear && (
-              <InfoErrorEmptyInput message="Please enter the year of your birth date using four digits (e.g., 1990)." />
+            {isInvalidInputYear && (
+              <InfoErrorInput message="Please enter the year of your birth date using four digits (e.g., 1990)." />
             )}
             <div className="relative">
               <FormLabel className={"text-white mt-[10px] font-[500]"}>
@@ -248,6 +298,9 @@ export default function SignUpStep2() {
                 </div>
               </RadioGroup>
             </div>
+            {isInvalidGender && (
+              <InfoErrorInput message="Select your gender." />
+            )}
             <Button
               type="submit"
               class={`font-bold bg-[rgb(30,215,96)] w-full h-[50px] rounded-lg mt-5`}

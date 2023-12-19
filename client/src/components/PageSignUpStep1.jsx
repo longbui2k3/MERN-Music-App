@@ -3,12 +3,13 @@ import { Logo } from "./Logo";
 import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
+import { InfoErrorInput } from "./InfoErrorInput";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import SignUpStep2 from "./PageSignUpStep2";
 import SignUp from "./PageSignUp";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setPassword } from "../features/signUp/signUpSlice";
+
 export default function SignUpStep1() {
   const dispatch = useDispatch();
   const {
@@ -16,11 +17,34 @@ export default function SignUpStep1() {
     register,
     formState: { errors, isSubmitting },
   } = useForm();
+  const password = useSelector((state) => state.signUp.password);
   const [isShowPassword, setIsShowPassword] = useState(false);
-  const [inputPassword, setInputPassword] = useState(" ");
+  const [inputPassword, setInputPassword] = useState(password);
   const [isContinue, setIsContinue] = useState(false);
   const [clickBack, setClickBack] = useState(false);
-  const isEmptyPassword = inputPassword === "";
+  function containsDigit(inputString) {
+    for (var i = 0; i < inputString.length; i++) {
+      // Kiểm tra xem ký tự hiện tại có phải là chữ số không
+      if (!isNaN(parseInt(inputString[i]))) {
+        return true; // Nếu là chữ số, trả về true
+      }
+    }
+    return false; // Nếu không có chữ số nào, trả về false
+  }
+  function containsSpecialCharacter(inputString) {
+    var specialChars = `!@#$%^&*()_+-=[]{};':\\"\\|,.<>/?`;
+
+    for (var i = 0; i < inputString.length; i++) {
+      // Kiểm tra xem ký tự hiện tại có nằm trong danh sách ký tự đặc biệt không
+      if (specialChars.includes(inputString[i])) {
+        return true; // Nếu có ký tự đặc biệt, trả về true
+      }
+    }
+    return false; // Nếu không có ký tự đặc biệt nào, trả về false
+  }
+  const lengthLower8 = inputPassword.length < 8;
+  const isInvalidPassword =
+    !containsDigit(inputPassword) || !containsSpecialCharacter(inputPassword);
   const togglePassword = (e) => {
     setIsShowPassword(!isShowPassword);
   };
@@ -29,8 +53,10 @@ export default function SignUpStep1() {
   };
   const store = (password) => dispatch(setPassword(password));
   function onSubmit(values) {
-    store(values.password);
-    setIsContinue(true);
+    if (!lengthLower8 && !isInvalidPassword) {
+      store(values.password);
+      setIsContinue(true);
+    }
   }
   function clickBackFunc() {
     setClickBack(true);
@@ -60,7 +86,10 @@ export default function SignUpStep1() {
           </div>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <FormControl isInvalid={isEmptyPassword} className="px-[50px]">
+          <FormControl
+            isInvalid={isInvalidPassword || lengthLower8}
+            className="px-[50px]"
+          >
             <FormLabel className={"text-white mt-[10px] font-[500]"}>
               Password
             </FormLabel>
@@ -72,6 +101,7 @@ export default function SignUpStep1() {
               }
               placeholder="Password"
               h="50px"
+              value={inputPassword}
               name={register("password").name}
               onBlur={register("password").onBlur}
               ref={register("password").ref}
@@ -92,8 +122,12 @@ export default function SignUpStep1() {
                 onClick={togglePassword}
               />
             )}
-            {isEmptyPassword && (
-              <InfoErrorEmptyInput message="Please enter your new password." />
+            {lengthLower8 ? (
+              <InfoErrorInput message="Password should contain at least 8 characters." />
+            ) : isInvalidPassword ? (
+              <InfoErrorInput message="Your password is too weak. Set a stronger one." />
+            ) : (
+              ""
             )}
             <Text className="mt-4 text-[#a7a7a7] fold-bold" fontSize={"15px"}>
               The password must contain at least 8 characters. We recommend

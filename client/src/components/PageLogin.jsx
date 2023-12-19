@@ -1,15 +1,17 @@
 import { Divider, FormControl, FormLabel, Input } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Checkbox } from "./Checkbox";
 import { SingleButton } from "./SingleButton";
 import { ShowNotify } from "./ShowNotify";
 import { Logo } from "./Logo";
-import { InfoErrorEmptyInput } from "./InfoErrorEmptyInput";
+import { InfoErrorInput } from "./InfoErrorInput";
 import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Login } from "../api";
 import { useCookies } from "react-cookie";
 import { Navigate } from "react-router";
+import { AuthContext, useAuth } from "../context/AuthContext";
+import { actionType } from "../context/reducer";
 export default function PageLogin() {
   const {
     handleSubmit,
@@ -23,7 +25,7 @@ export default function PageLogin() {
   const [isLoginSuccessfully, setIsLoginSuccessfully] = useState("");
   const [message, setMessage] = useState("");
   const [isChecked, setIsChecked] = useState(true);
-
+  const [{ user }, dispatch] = useAuth();
   const handleInputPasswordChange = async (e) => {
     setInputPassword(e.target.value);
     await register("password").onChange(e);
@@ -51,16 +53,22 @@ export default function PageLogin() {
         const email = document.getElementById("email");
         setIsLoginSuccessfully(true);
         setMessage(res.data.message);
+
+        dispatch({ type: actionType.SET_USER, user: res.data.data.user });
         setCookie("remember", isChecked ? email.value : "", {});
         setCookie("jwt", res.data.token, {
           path: "/",
         });
+        console.log(res.data.data);
+        localStorage.setItem("user", JSON.stringify(res.data.data.user));
       }
     } catch (err) {
       setIsLoginSuccessfully(false);
+      dispatch({ type: actionType.SET_USER, user: null });
       setMessage(err.response.data.message);
     }
   }
+
   if (isLoginSuccessfully) {
     return <Navigate to="/" />;
   }
@@ -113,7 +121,7 @@ export default function PageLogin() {
               />
             </div>
             {isEmptyInputEmail && (
-              <InfoErrorEmptyInput message="Please enter your email" />
+              <InfoErrorInput message="Please enter your email" />
             )}
             <div className="relative">
               <FormLabel className={"text-white mt-[10px] font-[500]"}>
@@ -149,7 +157,7 @@ export default function PageLogin() {
               )}
             </div>
             {isEmptyPassword && (
-              <InfoErrorEmptyInput message="Please enter your password." />
+              <InfoErrorInput message="Please enter your password." />
             )}
             <Checkbox
               id="rememberMe"
