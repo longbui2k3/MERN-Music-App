@@ -1,9 +1,5 @@
-import { Box, Image, Tooltip } from "@chakra-ui/react";
-import {
-  faCircleChevronRight,
-  faCirclePlay,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { Image } from "@chakra-ui/react";
+import { faCirclePlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import SingerAPI from "../api/SingerAPI";
@@ -19,70 +15,36 @@ const Body = () => {
     getAllSongs();
   }, []);
   return (
-    <>
-      <header className={"h-[64px]"}>
-        <Box
-          display="inline-block"
-          style={{ lineHeight: "64px", padding: "0 20px " }}
-        >
-          <Tooltip label="Go back">
-            <FontAwesomeIcon
-              icon={faCircleChevronRight}
-              rotation={180}
-              size="xl"
-              className={"hover:text-white cursor-pointer"}
-            />
-          </Tooltip>
+    <div
+      style={{
+        lineHeight: "64px",
+        padding: "0 20px",
+        height: "100%",
+        maxHeight: "80%",
+        width: "100%",
+        overflow: "auto",
+        opacity: 0.95,
+        zIndex: 40,
+        backgroundColor: "#121212",
+      }}
+    >
+      {/* Recently played section */}
+      <div>
+        <p className={"text-[22px] text-white"}>Recently played</p>
 
-          <Tooltip label="Go forward">
-            <FontAwesomeIcon
-              icon={faCircleChevronRight}
-              size="xl"
-              style={{ marginLeft: "16px" }}
-              className={"hover:text-white cursor-pointer"}
-            />
-          </Tooltip>
-        </Box>
+        {/* <div
+          className={
+            "grid gap-4 lg:grid-cols-7 md:grid-cols-4 sm:grid-cols-2"
+          }
+          > */}
 
-        <Tooltip label="View profile">
-          <FontAwesomeIcon
-            icon={faUser}
-            style={{
-              float: "right",
-              lineHeight: "64px",
-              padding: "23px 30px ",
-            }}
-            className={"hover:text-white cursor-pointer"}
-          />
-        </Tooltip>
-      </header>
-      {/* Body */}
-      <div
-        style={{
-          lineHeight: "64px",
-          padding: "0 20px",
-          maxHeight: "80%",
-          overflow: "auto",
-        }}
-      >
-        {/* Recently played section */}
         <div>
-          <p className={"text-[22px] text-white"}>Recently played</p>
-
-          {/* <div
-              className={
-                "grid gap-4 lg:grid-cols-7 md:grid-cols-4 sm:grid-cols-2"
-              }
-              > */}
-
-          <div>
-            {songs.map((song, index) => (
-              <SongListItem key={index} song={song} />
-            ))}
-          </div>
+          {songs.map((song, index) => (
+            <SongListItem key={index} song={song} />
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
