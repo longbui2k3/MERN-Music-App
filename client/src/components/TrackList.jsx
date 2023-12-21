@@ -44,7 +44,7 @@ export default function MusicList() {
             <div>
               <span>Added Date</span>
             </div>
-            <div className="flex  items-center justify-end	">
+            <div className="flex  items-center justify-center	">
               <span>
                 <AiFillClockCircle />
               </span>
@@ -95,18 +95,24 @@ export default function MusicList() {
                       <span>Ngay them</span>
                     </div>
 
-                    <div className="flex items-center text-[#dddcdc] justify-end gap-[25px]">
+                    <div className="flex items-center text-[#dddcdc] justify-center gap-[20px]">
                       {hoveredIndex === index ? (
                         <>
                           <div >
                             <AiOutlineHeart size={20} color="gray" />
                           </div>
                           <div >{msToMinutesAndSeconds(10000)}</div>
+                          <div >
+                            <IoIosMore size={20} color="gray" />
+                          </div>
                         </>
                       ) : (
                         <>
                         <div><AiOutlineHeart className="hidden" size={20} color="gray" /></div>
-                        <div className="ml-[20px]">{msToMinutesAndSeconds(10000)}</div>
+                        <div>{msToMinutesAndSeconds(10000)}</div>
+                        <div >
+                            <IoIosMore className="hidden"  size={20} color="gray" />
+                          </div>
                         </>
                         
                       )}
