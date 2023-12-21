@@ -77,8 +77,8 @@ const PageHome = () => {
         <div className="body">
           <Header />
           <div className="body_content">
-            <Body />
-            {/* <TrackList /> */}
+            {/* <Body /> */}
+            <TrackList />
             {/* <Album /> */}
           </div>
         </div>

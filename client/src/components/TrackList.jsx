@@ -57,17 +57,23 @@ export default function MusicList() {
                     <div className="flex items-center text-[#dddcdc]">
                       <span>{index + 1}</span>
                     </div>
-                    <div className="flex items-center text-[#dddcdc] gap-4">
-                      <div className="h-[40px]">
+                    <div className="flex items-center text-[#dddcdc] gap-2 overflow-hidden">
+                      <div className="h-[40px] w-[15%]">
                         <img src={image} alt="track" />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="name">{name}</span>
-                        <span>{artists}</span>
+                      <div className="flex flex-col w-[80%]">
+                        <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                          {name}
+                        </span>
+                        <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                          {artists}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center text-[#dddcdc]">
-                      <span>Hahahahaha</span>
+                    <div className="flex items-center text-[#dddcdc] overflow-hidden">
+                      <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                        Hahahahaha
+                      </span>
                     </div>
                     <div className="flex items-center text-[#dddcdc]">
                       <span>Ngay them</span>
