@@ -13,7 +13,7 @@ const ProgressBar = ({ timeProgress, duration, audioRef, progressBarRef }) => {
     audioRef.current.currentTime = progressBarRef.current.value;
   };
   return (
-    <div className="progress flex flex-row justify-center gap-[8px]">
+    <div className="progress flex flex-row justify-center gap-[8px] items-center">
       <span className="time current text-[11px]" style={{ color: "#A7A7A7" }}>
       {formatTime(timeProgress)}
       </span>

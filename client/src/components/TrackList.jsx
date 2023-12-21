@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { AiFillClockCircle } from "react-icons/ai";
+import { AiFillClockCircle, AiOutlineHeart } from "react-icons/ai";
 import SongAPI from "../api/SongAPI";
 import ActionBar from "./ActionBar";
 import HeaderCover from "./HeaderCover";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { IoIosMore } from "react-icons/io";
 
 export default function MusicList() {
   const [songs, setSongs] = useState([]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+
   useEffect(() => {
     const getAllSongs = async () => {
       const songsData = await SongAPI.getAllSong();
@@ -39,30 +44,46 @@ export default function MusicList() {
             <div>
               <span>Added Date</span>
             </div>
-            <div className="flex justify-center items-center">
+            <div className="flex  items-center justify-end	">
               <span>
                 <AiFillClockCircle />
               </span>
             </div>
+            
           </div>
+
           {/* Song list */}
           <div className="mx-[2rem] flex flex-col pb-10">
             {songs.map(
-              ({ id, name, image, artists, duration, album }, index) => {
+              ({ id, name, imageURL, artists, duration, album }, index) => {
                 return (
                   <div
                     className="py-2 px-4 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] hover:bg-[#000000b3]"
                     key={id}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
                   >
                     <div className="flex items-center text-[#dddcdc]">
-                      <span>{index + 1}</span>
+                      {hoveredIndex === index ? (
+                        <span>
+                          <FontAwesomeIcon icon={faPlay} />
+                        </span>
+                      ) : (
+                        <span>{index + 1}</span>
+                      )}
                     </div>
                     <div className="flex items-center text-[#dddcdc] gap-4">
                       <div className="h-[40px]">
-                        <img src={image} alt="track" />
+                        <img
+                          className="w-[40px] h-[40px] rounded-[5px]"
+                          src={imageURL}
+                          alt="track"
+                        />
                       </div>
                       <div className="flex flex-col">
-                        <span className="name">{name}</span>
+                        <span className="name text-white truncate max-w-[220px]">
+                          {name}
+                        </span>
                         <span>{artists}</span>
                       </div>
                     </div>
@@ -72,8 +93,22 @@ export default function MusicList() {
                     <div className="flex items-center text-[#dddcdc]">
                       <span>Ngay them</span>
                     </div>
-                    <div className="flex items-center text-[#dddcdc] justify-center">
-                      <span>{msToMinutesAndSeconds(10000)}</span>
+
+                    <div className="flex items-center text-[#dddcdc] justify-end gap-[25px]">
+                      {hoveredIndex === index ? (
+                        <>
+                          <div >
+                            <AiOutlineHeart size={20} color="gray" />
+                          </div>
+                          <div >{msToMinutesAndSeconds(10000)}</div>
+                        </>
+                      ) : (
+                        <>
+                        <div><AiOutlineHeart className="hidden" size={20} color="gray" /></div>
+                        <div className="ml-[20px]">{msToMinutesAndSeconds(10000)}</div>
+                        </>
+                        
+                      )}
                     </div>
                   </div>
                 );
