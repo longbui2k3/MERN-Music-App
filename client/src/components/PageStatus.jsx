@@ -2,17 +2,27 @@ import { Logo } from "./Logo";
 import { FaRegUser } from "react-icons/fa6";
 import { Button } from "@chakra-ui/react";
 import { FaRegCircleCheck } from "react-icons/fa6";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Logout } from "../api";
+import { Logout, getUser } from "../api";
 import { useCookies } from "react-cookie";
-import { AuthContext, useAuth } from "../context/AuthContext";
 export default function PageStatus() {
   const [cookies, setCookie] = useCookies([""]);
   const [navigateAccountOverview, setNavigateAccountOverview] = useState(false);
   const [navigateWebPlayer, setNavigateWebPlayer] = useState(false);
   const [navigateLogin, setNavigateLogin] = useState(false);
-  const [{ user }, dispatch] = useAuth();
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    const getUserFunc = async () => {
+      try {
+        const res = await getUser();
+        setUser(res.data.data);
+      } catch (err) {
+        setUser("");
+      }
+    };
+    getUserFunc();
+  }, []);
   async function logout() {
     const res = await Logout();
     console.log(res);
@@ -26,7 +36,7 @@ export default function PageStatus() {
   if (navigateWebPlayer) {
     return <Navigate to="/" />;
   }
-  if (navigateLogin) {
+  if (navigateLogin || user) {
     return <Navigate to="/login" />;
   }
   return (

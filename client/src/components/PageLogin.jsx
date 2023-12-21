@@ -1,5 +1,5 @@
 import { Divider, FormControl, FormLabel, Input } from "@chakra-ui/react";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "./Checkbox";
 import { SingleButton } from "./SingleButton";
 import { ShowNotify } from "./ShowNotify";
@@ -7,11 +7,9 @@ import { Logo } from "./Logo";
 import { InfoErrorInput } from "./InfoErrorInput";
 import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { Login } from "../api";
+import { Login, getUser } from "../api";
 import { useCookies } from "react-cookie";
 import { Navigate } from "react-router";
-import { AuthContext, useAuth } from "../context/AuthContext";
-import { actionType } from "../context/reducer";
 export default function PageLogin() {
   const {
     handleSubmit,
@@ -25,7 +23,18 @@ export default function PageLogin() {
   const [isLoginSuccessfully, setIsLoginSuccessfully] = useState("");
   const [message, setMessage] = useState("");
   const [isChecked, setIsChecked] = useState(true);
-  const [{ user }, dispatch] = useAuth();
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    const getUserFunc = async () => {
+      try {
+        const res = await getUser();
+        setUser(res.data.data);
+      } catch (err) {
+        setUser("");
+      }
+    };
+    getUserFunc();
+  }, []);
   const handleInputPasswordChange = async (e) => {
     setInputPassword(e.target.value);
     await register("password").onChange(e);
@@ -53,8 +62,6 @@ export default function PageLogin() {
         const email = document.getElementById("email");
         setIsLoginSuccessfully(true);
         setMessage(res.data.message);
-
-        dispatch({ type: actionType.SET_USER, user: res.data.data.user });
         setCookie("remember", isChecked ? email.value : "", {});
         setCookie("jwt", res.data.token, {
           path: "/",
@@ -64,12 +71,10 @@ export default function PageLogin() {
       }
     } catch (err) {
       setIsLoginSuccessfully(false);
-      dispatch({ type: actionType.SET_USER, user: null });
       setMessage(err.response.data.message);
     }
   }
-
-  if (isLoginSuccessfully) {
+  if (isLoginSuccessfully || user) {
     return <Navigate to="/" />;
   }
   return (

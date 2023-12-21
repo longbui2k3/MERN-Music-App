@@ -8,8 +8,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import SingerAPI from "../api/SingerAPI";
 import SongAPI from "../api/SongAPI";
+import { getUser } from "../api";
 
 const Body = () => {
+  const [user, setUser] = useState("");
   const [songs, setSongs] = useState([]);
   useEffect(() => {
     const getAllSongs = async () => {
@@ -17,6 +19,17 @@ const Body = () => {
       setSongs(songsData.data.data);
     };
     getAllSongs();
+  }, []);
+  useEffect(() => {
+    const getUserFunc = async () => {
+      try {
+        const res = await getUser();
+        setUser(res.data.data);
+      } catch (err) {
+        setUser("");
+      }
+    };
+    getUserFunc();
   }, []);
   return (
     <>
@@ -44,7 +57,7 @@ const Body = () => {
           </Tooltip>
         </Box>
 
-        <Tooltip label="View profile">
+        <Tooltip label={user.name}>
           <FontAwesomeIcon
             icon={faUser}
             style={{

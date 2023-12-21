@@ -10,7 +10,10 @@ const getAllUsers = async (req, res, next) => {
     next(err);
   }
 };
-
+const getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
 const getUserById = async (req, res, next) => {
   const id = req.params.id;
   await User.findById(id)
@@ -25,4 +28,4 @@ const getUserById = async (req, res, next) => {
     });
 };
 
-module.exports = { getUserById, getAllUsers };
+module.exports = { getUserById, getAllUsers, getMe };
