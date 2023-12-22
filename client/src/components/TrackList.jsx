@@ -4,13 +4,16 @@ import SongAPI from "../api/SongAPI";
 import ActionBar from "./ActionBar";
 import HeaderCover from "./HeaderCover";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { IoIosMore } from "react-icons/io";
 
 export default function MusicList() {
   const [songs, setSongs] = useState([]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
-
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [playingIndex, setPlayingIndex] = useState(null);
+  const [isHoveredHeartIcon, setIsHoveredHeartIcon] = useState(null);
+  const [likedSong, setLikedSong] = useState(null);
   useEffect(() => {
     const getAllSongs = async () => {
       const songsData = await SongAPI.getAllSong();
@@ -24,6 +27,10 @@ export default function MusicList() {
     const seconds = ((ms % 60000) / 1000).toFixed(0);
     return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
   };
+
+  const handleClickOnRow = (index) => {
+    setSelectedRow(index === selectedRow ? null : index);
+  }
 
   return (
     <>
@@ -49,24 +56,34 @@ export default function MusicList() {
                 <AiFillClockCircle />
               </span>
             </div>
-            
           </div>
 
           {/* Song list */}
-          <div className="mx-[2rem] flex flex-col pb-10">
+          <div className="mx-[2rem] flex flex-col pb-10 mt-[8px]">
             {songs.map(
               ({ id, name, imageURL, artists, duration, album }, index) => {
                 return (
+
                   <div
-                    className="py-2 px-4 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] hover:bg-[#000000b3]"
-                    key={id}
+                  className={`py-2 px-4 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] ${selectedRow === index ? "" : "hover:bg-[#2a2929]"} rounded-[5px] ${selectedRow === index ? "bg-[#5a5959]" : ""}`}
+                    onClick={() => handleClickOnRow(index)}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
                   >
                     <div className="flex items-center text-[#dddcdc]">
                       {hoveredIndex === index ? (
                         <span>
-                          <FontAwesomeIcon icon={faPlay} />
+                          {playingIndex === index ? (
+                            <FontAwesomeIcon
+                              icon={faPause}
+                              onClick={() => setPlayingIndex(null)}
+                            />
+                          ) : (
+                            <FontAwesomeIcon
+                              icon={faPlay}
+                              onClick={() => setPlayingIndex(index)}
+                            />
+                          )}
                         </span>
                       ) : (
                         <span>{index + 1}</span>
@@ -95,26 +112,67 @@ export default function MusicList() {
                       <span>Ngay them</span>
                     </div>
 
-                    <div className="flex items-center text-[#dddcdc] justify-center gap-[20px]">
+                    <div className="flex items-center text-[#dddcdc] justify-center gap-[10%]">
                       {hoveredIndex === index ? (
                         <>
-                          <div >
-                            <AiOutlineHeart size={20} color="gray" />
-                          </div>
-                          <div >{msToMinutesAndSeconds(10000)}</div>
-                          <div >
-                            <IoIosMore size={20} color="gray" />
+                          {likedSong === index ? (
+                            <div
+                              onMouseEnter={() => setIsHoveredHeartIcon(true)}
+                              onMouseLeave={() => setIsHoveredHeartIcon(false)}
+                              onClick={() => setLikedSong(null)}
+                            >
+                              <FontAwesomeIcon icon={faHeart} style={{color: "#1dd74c",}} className="text-[20px] cursor-pointer"/>
+                           
+                            </div>
+                          ) : (
+                            <div
+                              onMouseEnter={() => setIsHoveredHeartIcon(true)}
+                              onMouseLeave={() => setIsHoveredHeartIcon(false)}
+                              onClick={() => setLikedSong(index)}
+                            >
+                              {isHoveredHeartIcon ? (
+                                <AiOutlineHeart
+                                  size={20}
+                                  color="white"
+                                  className=" cursor-pointer"
+                                />
+                              ) : (
+                                <AiOutlineHeart
+                                  size={20}
+                                  color="gray"
+                                  className=" cursor-pointer"
+                                />
+                              )}
+                            </div>
+                          )}
+
+                          <div>{msToMinutesAndSeconds(10000)}</div>
+                          <div>
+                            <IoIosMore
+                              size={20}
+                              color="white"
+                              className="cursor-pointer"
+                            />
                           </div>
                         </>
                       ) : (
                         <>
-                        <div><AiOutlineHeart className="hidden" size={20} color="gray" /></div>
-                        <div>{msToMinutesAndSeconds(10000)}</div>
-                        <div >
-                            <IoIosMore className="hidden"  size={20} color="gray" />
+                          <div>
+                            <AiOutlineHeart
+                              className="hidden"
+                              size={20}
+                              color="gray"
+                            />
+                          </div>
+                          <div>{msToMinutesAndSeconds(10000)}</div>
+                          <div>
+                            <IoIosMore
+                              className="hidden"
+                              size={20}
+                              color="white"
+                            />
                           </div>
                         </>
-                        
                       )}
                     </div>
                   </div>
