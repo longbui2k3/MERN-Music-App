@@ -91,8 +91,8 @@ export default function MusicList() {
                     </div>
 
                     <div className="flex items-center text-[#dddcdc] gap-2 overflow-hidden">
-                      <div className="h-[40px] w-[15%]">
-                        <img src={imageURL} alt="track" />
+                      <div className="h-[40px] w-[40px] ">
+                        <img src={imageURL} alt="track" className="rounded-[4px]" />
                       </div>
                       <div className="flex flex-col w-[80%]">
                         <span className="whitespace-nowrap overflow-hidden text-ellipsis">
