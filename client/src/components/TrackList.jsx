@@ -81,7 +81,7 @@ export default function MusicList() {
                           ) : (
                             <FontAwesomeIcon
                               icon={faPlay}
-                              onClick={() => setPlayingIndex(index)}
+                              onClick={() => setPlayingIndex(index)} 
                             />
                           )}
                         </span>
