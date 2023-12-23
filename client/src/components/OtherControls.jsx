@@ -1,10 +1,17 @@
 import { faVolumeHigh, faVolumeLow, faVolumeOff } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-const OtherControls = () => {
+const OtherControls = ({audioRef}) => {
     const [muteVolume, setMuteVolume] = useState(false);
-  const [volume, setVolume] = useState(60);
+    const [volume, setVolume] = useState(60);
+
+    useEffect(() => {
+      if (audioRef) {
+        audioRef.current.volume = volume / 100;
+        audioRef.current.muted = muteVolume;
+      }
+    }, [volume, audioRef, muteVolume]);
   return (
     <>
          <div className="volume w-[120px] flex flex-row gap-[8px] justify-center items-center" >

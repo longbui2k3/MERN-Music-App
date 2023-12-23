@@ -43,7 +43,7 @@ const MusicPlayer = () => {
         />
       </div>
       <div className="w-1/3 flex justify-center items-center">
-        <OtherControls />
+        <OtherControls audioRef={audioRef} />
       </div>
     </div>
   );
