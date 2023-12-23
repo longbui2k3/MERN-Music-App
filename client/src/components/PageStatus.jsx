@@ -11,7 +11,7 @@ export default function PageStatus() {
   const [navigateAccountOverview, setNavigateAccountOverview] = useState(false);
   const [navigateWebPlayer, setNavigateWebPlayer] = useState(false);
   const [navigateLogin, setNavigateLogin] = useState(false);
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(" ");
   useEffect(() => {
     const getUserFunc = async () => {
       try {
@@ -24,11 +24,11 @@ export default function PageStatus() {
     getUserFunc();
   }, []);
   async function logout() {
-    const res = await Logout();
-    console.log(res);
-    setCookie("jwt", "", {});
-    localStorage.setItem("user", "");
-    setNavigateLogin(true);
+    try {
+      const res = await Logout();
+      setCookie("jwt", "", {});
+      setNavigateLogin(true);
+    } catch (err) {}
   }
   if (navigateAccountOverview) {
     return <Navigate to="#" />;
@@ -36,7 +36,7 @@ export default function PageStatus() {
   if (navigateWebPlayer) {
     return <Navigate to="/" />;
   }
-  if (navigateLogin || user) {
+  if (navigateLogin || !user) {
     return <Navigate to="/login" />;
   }
   return (

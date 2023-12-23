@@ -18,7 +18,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { setEmail } from "../features/signUp/signUpSlice";
 import { CheckExistEmail } from "../api";
 import { PiWarningCircleFill } from "react-icons/pi";
-
+import { UserAuth } from "../context/AuthContext";
+import SignUpGoogleStep1 from "./PageSignUpGoogleStep1";
+import SignUpGoogleStep2 from "./PageSignUpGoogleStep2";
+import { useSearchParams } from "react-router-dom";
+import GoogleIcon from "./GoogleIcon";
+import FacebookIcon from "./FacebookIcon";
 export default function SignUp() {
   const dispatch = useDispatch();
   const {
@@ -58,7 +63,18 @@ export default function SignUp() {
   }
 
   const isInvalidInputEmail = !isValidEmail(inputEmail);
-
+  const { googleSignUp } = UserAuth();
+  const handleGoogleSignUp = () => {
+    try {
+      googleSignUp();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const [searchParams, setSearchParams] = useSearchParams();
+  let step = searchParams.get("step");
+  if (step === "1") return <SignUpGoogleStep1 />;
+  if (step === "2") return <SignUpGoogleStep2 />;
   if (isContinue) return <SignUpStep1 />;
   return (
     <>
@@ -136,12 +152,14 @@ export default function SignUp() {
           backgroundColor="#141414"
           borderRadius="500px"
           width="100%"
-          padding="24px 32px"
+          padding="24px 12px"
           fontSize="16px"
           fontWeight="700"
           border="1px solid #555"
           color="white"
           _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
+          onClick={handleGoogleSignUp}
+          leftIcon={<GoogleIcon />}
         >
           Sign up with Google
         </Button>
@@ -156,6 +174,7 @@ export default function SignUp() {
           border="1px solid #555"
           color="white"
           _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
+          leftIcon={<FacebookIcon />}
         >
           Sign up with Facebook
         </Button>

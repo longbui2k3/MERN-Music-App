@@ -5,7 +5,16 @@ require("dotenv").config();
 const generateToken = require("../config/generateToken");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
-
+const admin = require("firebase-admin");
+const firebaseConfig = {
+  apiKey: "AIzaSyAz_-N20aKrjSmxtJsWJE3ylhC7dA-CX7s",
+  authDomain: "auth-music-app.firebaseapp.com",
+  projectId: "auth-music-app",
+  storageBucket: "auth-music-app.appspot.com",
+  messagingSenderId: "779072786560",
+  appId: "1:779072786560:web:633111d0463bf129c85665",
+};
+admin.initializeApp(firebaseConfig);
 const createSendToken = (type, user, statusCode, res) => {
   const token = generateToken(user._id);
   const cookieOptions = {
@@ -88,10 +97,10 @@ const restrictTo = (...roles) => {
 //@description     Register new user
 //@route           POST /api/user/
 //@access          Public
-const registerUser = asyncHandler(async (req, res) => {
+const signUpNormal = async (req, res) => {
   const { name, email, password, gender, dateOfBirth } = req.body;
 
-  if (!name || !email || !password) {
+  if (!name || !email) {
     res.status(400);
     throw new Error("Please Enter all the Feilds");
   }
@@ -112,21 +121,40 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     gender,
     dateOfBirth,
+    typeOfAccount: req.body.typeOfAccount,
   });
+  createSendToken("Sign up", user, 201, res);
+};
+const signUpGoogle = async (req, res) => {
+  const { name, uid, email, gender, dateOfBirth } = req.body;
 
-  if (user) {
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      gender: user.gender,
-      dateOfBirth: user.dateOfBirth,
-      token: generateToken(user._id),
-      message: "Sign up successfully!",
-    });
-  } else {
+  if (!name || !email || !uid) {
     res.status(400);
-    throw new Error("User not found");
+    throw new Error("Please Enter all the Feilds");
+  }
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+
+  const user = await User.create({
+    name,
+    email,
+    uid,
+    gender,
+    dateOfBirth,
+    typeOfAccount: "google",
+  });
+  createSendToken("Sign up", user, 200, res);
+};
+const registerUser = asyncHandler(async (req, res) => {
+  if (req.body.typeOfAccount === "normal") {
+    await signUpNormal(req, res);
+  } else if (req.body.typeOfAccount === "google") {
+    await signUpGoogle(req, res);
   }
 });
 
@@ -282,6 +310,25 @@ const login = async (req, res, next) => {
   }
   createSendToken("Log in", user, 200, res);
 };
+const logInGoogle = async (req, res) => {
+  const { authentication, email } = req.body;
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(authentication);
+    const user = await User.findOne({ email }).select("+uid");
+    if (!user || !(await user.matchUid(decodedToken.uid, user.uid))) {
+      return res.status(401).json({
+        status: "fail",
+        message: "Log in Google unsuccessfully!",
+      });
+    }
+    createSendToken("Log in", user, 200, res);
+  } catch (err) {
+    res.status(401).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+};
 const logout = async (req, res, next) => {
   res.cookie("jwt", "", {
     expires: new Date(Date.now() + 10 * 1000),
@@ -312,6 +359,7 @@ module.exports = {
   sendResetEmail,
   resetPassword,
   login,
+  logInGoogle,
   logout,
   protect,
   restrictTo,

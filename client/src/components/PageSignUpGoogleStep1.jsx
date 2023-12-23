@@ -6,22 +6,28 @@ import { useForm } from "react-hook-form";
 import { InfoErrorInput } from "./InfoErrorInput";
 import { Select } from "@chakra-ui/react";
 import { Radio, RadioGroup } from "@chakra-ui/react";
-import SignUpStep3 from "./PageSignUpStep3";
-import SignUpStep1 from "./PageSignUpStep1";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setName,
-  setDateOfBirth,
-  setGender,
-} from "../features/signUp/signUpSlice";
-export default function SignUpStep2() {
+  setNameGoogle,
+  setDateOfBirthGoogle,
+  setGenderGoogle,
+  setUidGoogle,
+} from "../features/signUp/signUpGoogleSlice";
+import { setEmailGoogle } from "../features/signUp/signUpGoogleSlice";
+import { UserAuth } from "../context/AuthContext";
+import { Navigate } from "react-router-dom";
+export default function SignUpGoogleStep1() {
   const dispatch = useDispatch();
-  const name = useSelector((state) => state.signUp.name);
-  const dateOfBirth = useSelector((state) => state.signUp.dateOfBirth);
+  const { userGoogle } = UserAuth();
+  dispatch(setEmailGoogle(userGoogle.email));
+  dispatch(setUidGoogle(userGoogle.uid));
+  dispatch(setNameGoogle(userGoogle.displayName));
+  const name = useSelector((state) => state.signUpGoogle.name);
+  const dateOfBirth = useSelector((state) => state.signUpGoogle.dateOfBirth);
   const day = dateOfBirth.split("-")[0];
   const month = dateOfBirth.split("-")[1];
   const year = dateOfBirth.split("-")[2];
-  const gender = useSelector((state) => state.signUp.gender);
+  const gender = useSelector((state) => state.signUpGoogle.gender);
 
   const {
     handleSubmit,
@@ -91,9 +97,9 @@ export default function SignUpStep2() {
     !isInvalidInputYear &&
     !isInvalidGender;
   const store = (name, dateOfBirth, gender) => {
-    dispatch(setName(name));
-    dispatch(setGender(gender));
-    dispatch(setDateOfBirth(dateOfBirth));
+    dispatch(setNameGoogle(name));
+    dispatch(setGenderGoogle(gender));
+    dispatch(setDateOfBirthGoogle(dateOfBirth));
   };
   function onSubmit(values) {
     if (isValidInput) {
@@ -117,9 +123,9 @@ export default function SignUpStep2() {
     setClickBack(true);
   }
   if (clickBack) {
-    return <SignUpStep1 />;
+    return <Navigate to="/signup" />;
   }
-  if (isContinue) return <SignUpStep3 />;
+  if (isContinue) return <Navigate to="/signup?step=2" />;
   return (
     <>
       <Logo />
@@ -136,7 +142,7 @@ export default function SignUpStep2() {
             onClick={clickBackFunc}
           />
           <div className="ms-3">
-            <Text className="text-[#a7a7a7] font-bold">Step 2 of 3</Text>
+            <Text className="text-[#a7a7a7] font-bold">Step 1 of 2</Text>
             <Text className="text-white font-bold mt-1">
               Tell us about yourself
             </Text>

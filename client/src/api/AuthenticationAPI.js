@@ -8,6 +8,17 @@ export const Login = async (email, password) => {
   return res;
 };
 
+export const LoginGoogle = async (email, authentication) => {
+  const res = await axios.post(
+    "http://localhost:4000/api/v1/user/loginGoogle",
+    {
+      email,
+      authentication,
+    }
+  );
+  return res;
+};
+
 export const Logout = async () => {
   const res = await axios.get("http://localhost:4000/api/v1/user/logout");
   return res;
@@ -41,6 +52,19 @@ export const SignUp = async (email, password, name, dateOfBirth, gender) => {
     name,
     dateOfBirth,
     gender,
+    typeOfAccount: "normal",
+  });
+  return res;
+};
+
+export const SignUpGoogle = async (email, uid, name, dateOfBirth, gender) => {
+  const res = await axios.post("http://localhost:4000/api/v1/user/signup", {
+    email,
+    uid,
+    name,
+    dateOfBirth,
+    gender,
+    typeOfAccount: "google",
   });
   return res;
 };

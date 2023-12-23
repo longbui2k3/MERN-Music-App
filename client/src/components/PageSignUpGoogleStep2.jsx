@@ -2,14 +2,14 @@ import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { Text, Button } from "@chakra-ui/react";
 import { Logo } from "./Logo";
 import { Checkbox, CheckboxGroup } from "@chakra-ui/react";
-import SignUpStep2 from "./PageSignUpStep2";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { SignUp } from "../api";
+import { SignUpGoogle } from "../api";
 import { Navigate } from "react-router-dom";
+import SignUpGoogleStep1 from "./PageSignUpGoogleStep1";
 import { useCookies } from "react-cookie";
-export default function SignUpStep3() {
+export default function SignUpGoogleStep2() {
   const {
     handleSubmit,
     register,
@@ -21,14 +21,14 @@ export default function SignUpStep3() {
   function clickBackFunc() {
     setClickBack(true);
   }
-  const email = useSelector((state) => state.signUp.email);
-  const password = useSelector((state) => state.signUp.password);
-  const name = useSelector((state) => state.signUp.name);
-  const dateOfBirth = useSelector((state) => state.signUp.dateOfBirth);
-  const gender = useSelector((state) => state.signUp.gender);
+  const email = useSelector((state) => state.signUpGoogle.email);
+  const uid = useSelector((state) => state.signUpGoogle.uid);
+  const name = useSelector((state) => state.signUpGoogle.name);
+  const dateOfBirth = useSelector((state) => state.signUpGoogle.dateOfBirth);
+  const gender = useSelector((state) => state.signUpGoogle.gender);
   async function onSubmit() {
     try {
-      const res = await SignUp(email, password, name, dateOfBirth, gender);
+      const res = await SignUpGoogle(email, uid, name, dateOfBirth, gender);
       setIsLoginSuccessfully(true);
       setCookie("jwt", res.data.token, {
         path: "/",
@@ -45,7 +45,7 @@ export default function SignUpStep3() {
     return <Navigate to="/status" />;
   }
   if (clickBack) {
-    return <SignUpStep2 />;
+    return <Navigate to="/signup?step=1" />;
   }
   return (
     <>
@@ -64,7 +64,7 @@ export default function SignUpStep3() {
               onClick={clickBackFunc}
             />
             <div className="ms-3">
-              <Text className="text-[#a7a7a7] font-bold">Step 3 of 3</Text>
+              <Text className="text-[#a7a7a7] font-bold">Step 2 of 2</Text>
               <Text className="text-white font-bold mt-1">
                 Terms & Conditions
               </Text>

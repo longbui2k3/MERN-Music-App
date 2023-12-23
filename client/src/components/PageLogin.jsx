@@ -1,4 +1,10 @@
-import { Divider, FormControl, FormLabel, Input } from "@chakra-ui/react";
+import {
+  Button,
+  Divider,
+  FormControl,
+  FormLabel,
+  Input,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Checkbox } from "./Checkbox";
 import { SingleButton } from "./SingleButton";
@@ -7,9 +13,12 @@ import { Logo } from "./Logo";
 import { InfoErrorInput } from "./InfoErrorInput";
 import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { Login, getUser } from "../api";
+import { Login, LoginGoogle, getUser } from "../api";
 import { useCookies } from "react-cookie";
 import { Navigate } from "react-router";
+import { UserAuth } from "../context/AuthContext";
+import GoogleIcon from "./GoogleIcon";
+import FacebookIcon from "./FacebookIcon";
 export default function PageLogin() {
   const {
     handleSubmit,
@@ -66,14 +75,26 @@ export default function PageLogin() {
         setCookie("jwt", res.data.token, {
           path: "/",
         });
-        console.log(res.data.data);
-        localStorage.setItem("user", JSON.stringify(res.data.data.user));
+        // console.log(res.data.data);
+        // localStorage.setItem("user", JSON.stringify(res.data.data.user));
       }
     } catch (err) {
       setIsLoginSuccessfully(false);
       setMessage(err.response.data.message);
     }
   }
+  const { googleSignIn, userGoogle } = UserAuth();
+  const handleGoogleSignIn = async () => {
+    try {
+      await googleSignIn();
+      const res = await LoginGoogle(userGoogle.email, userGoogle.accessToken);
+      setCookie("jwt", res.data.token, {
+        path: "/",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
   if (isLoginSuccessfully || user) {
     return <Navigate to="/" />;
   }
@@ -86,7 +107,7 @@ export default function PageLogin() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl
             isInvalid={isEmptyPassword}
-            className={"h-[700px] bg-black px-[120px] py-[70px] w-full"}
+            className={"h-[850px] bg-black px-[120px] py-[70px] w-full"}
           >
             <h1 className="text-white font-[600] text-[40px] text-center mb-[40px]">
               Login
@@ -176,7 +197,38 @@ export default function PageLogin() {
               </h5>
             </a>
             <Divider backgroundColor="#333" margin="40px 2px" />
-            <h5 class="text-[#a7a7a7] text-center w-full mt-5">
+            <Button
+              backgroundColor="#141414"
+              borderRadius="500px"
+              width="100%"
+              padding="24px 32px"
+              fontSize="16px"
+              fontWeight="700"
+              border="1px solid #555"
+              color="white"
+              _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
+              onClick={handleGoogleSignIn}
+              leftIcon={<GoogleIcon />}
+            >
+              Sign in with Google
+            </Button>
+            <Button
+              backgroundColor="#141414"
+              borderRadius="500px"
+              width="100%"
+              padding="24px 32px"
+              fontSize="16px"
+              fontWeight="700"
+              marginTop="8px"
+              border="1px solid #555"
+              color="white"
+              _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
+              // onClick={handleGoogleSignIn}
+              leftIcon={<FacebookIcon />}
+            >
+              Sign in with Facebook
+            </Button>
+            <h5 class="text-[#a7a7a7] text-center w-full mt-10">
               Don't have an acccount?{" "}
               <a href="/signUp" class="underline text-white">
                 Sign Up for Spotify

@@ -60,15 +60,17 @@ const Controls = ({
   const playAnimationRef = useRef();
 
   const repeat = useCallback(() => {
-    const currentTime = audioRef.current.currentTime;
-    setTimeProgress(currentTime);
-    progressBarRef.current.value = currentTime;
-    progressBarRef.current.style.setProperty(
-      "--range-progress",
-      `${(progressBarRef.current.value / duration) * 100}%`
-    );
+    if (audioRef.current !== null) {
+      const currentTime = audioRef.current.currentTime;
+      setTimeProgress(currentTime);
+      progressBarRef.current.value = currentTime;
+      progressBarRef.current.style.setProperty(
+        "--range-progress",
+        `${(progressBarRef.current.value / duration) * 100}%`
+      );
 
-    playAnimationRef.current = requestAnimationFrame(repeat);
+      playAnimationRef.current = requestAnimationFrame(repeat);
+    }
   }, [audioRef, duration, progressBarRef, setTimeProgress]);
 
   useEffect(() => {
@@ -80,7 +82,6 @@ const Controls = ({
     playAnimationRef.current = requestAnimationFrame(repeat);
   }, [isPlaying, audioRef, repeat]);
 
-
   return (
     <>
       <div className="flex-col">
@@ -88,7 +89,10 @@ const Controls = ({
           <div className="text-[16px] text-white text-opacity-50 hover:text-opacity-100">
             <FontAwesomeIcon icon={faShuffle} />
           </div>
-          <div onClick={handlePrevious} className="text-[22px] text-white text-opacity-50 hover:text-opacity-100">
+          <div
+            onClick={handlePrevious}
+            className="text-[22px] text-white text-opacity-50 hover:text-opacity-100"
+          >
             <FontAwesomeIcon icon={faBackwardStep} />
           </div>
           <div onClick={togglePlayPause}>
@@ -105,7 +109,10 @@ const Controls = ({
               />
             )}
           </div>
-          <div onClick={handleNext} className="text-[22px] text-white text-opacity-50 hover:text-opacity-100">
+          <div
+            onClick={handleNext}
+            className="text-[22px] text-white text-opacity-50 hover:text-opacity-100"
+          >
             <FontAwesomeIcon icon={faForwardStep} />
           </div>
           <div className="text-[16px] text-white text-opacity-50 hover:text-opacity-100">
@@ -120,7 +127,6 @@ const Controls = ({
               progressBarRef={progressBarRef}
               setDuration={setDuration}
               handleNext={handleNext}
-
             />
           </>
         </div>

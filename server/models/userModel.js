@@ -17,7 +17,35 @@ const userSchema = mongoose.Schema(
       ],
     },
     dateOfBirth: { type: Date, required: true },
-    password: { type: String, required: true, select: false },
+    typeOfAccount: {
+      type: String,
+      enum: ["normal", "google"],
+      default: "normal",
+    },
+    password: {
+      type: String,
+      select: false,
+      default: "",
+      validate: {
+        validator: function (val) {
+          if (this.typeOfAccount === "normal") return val ? true : false;
+          return true;
+        },
+        message: "Please enter your password!",
+      },
+    },
+    uid: {
+      type: String,
+      select: false,
+      default: "",
+      validate: {
+        validator: function (val) {
+          if (this.typeOfAccount === "google") return val ? true : false;
+          return true;
+        },
+        message: "Please enter your uid!",
+      },
+    },
     resetToken: { type: String, required: false, select: false },
     createAt: { type: Date, required: false },
     expireAt: { type: Date, required: false },
@@ -39,14 +67,21 @@ const userSchema = mongoose.Schema(
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
-
+userSchema.methods.matchUid = async function (enteredUid) {
+  return await bcrypt.compare(enteredUid, this.uid);
+};
 userSchema.pre("save", async function (next) {
   if (!this.isModified) {
     next();
   }
-
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  if (this.typeOfAccount === "normal") {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+  if (this.typeOfAccount === "google") {
+    const salt = await bcrypt.genSalt(10);
+    this.uid = await bcrypt.hash(this.uid, salt);
+  }
 });
 
 const User = mongoose.model("User", userSchema);
