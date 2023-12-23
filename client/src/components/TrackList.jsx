@@ -38,9 +38,9 @@ export default function MusicList() {
         <HeaderCover />
         <div className="opacity-95 z-40">
           <ActionBar />
-          <div className="mx-10 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] text-gray-400 sticky top-[7.5vh] bg-[#121212] py-4 px-2.5 transition duration-300 ease-in-out border-b border-current">
+          <div className="px-10 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] text-gray-400 sticky top-[64px] bg-[#121212] py-4 px-2.5 transition duration-300 ease-in-out border-b border-current">
             <div>
-              <span>#</span>
+              <span >#</span>
             </div>
             <div>
               <span>TITLE</span>
@@ -61,7 +61,7 @@ export default function MusicList() {
           {/* Song list */}
           <div className="mx-[2rem] flex flex-col pb-10 mt-[8px]">
             {songs.map(
-              ({ id, name, imageURL, artists, duration, album }, index) => {
+              ({ id, name, imageURL, artist, duration, album }, index) => {
                 return (
                   <div
                     className={`py-2 px-4 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] ${
@@ -89,11 +89,25 @@ export default function MusicList() {
                           )}
                         </span>
                       ) : (
-                        <span>{index + 1}</span>
+                        <>
+                          {playingIndex === index ? (
+                            <FontAwesomeIcon
+                              icon={faPause}
+                              onClick={() => setPlayingIndex(null)}
+                              color="#1dd74c"
+                            />
+                          ) : (
+                            <span>{index + 1}</span>
+                          )}
+                        </>
                       )}
                     </div>
 
-                    <div className="flex items-center text-[#dddcdc] gap-2 overflow-hidden">
+                    <div
+                      className={`flex items-center text-[#dddcdc] gap-2 overflow-hidden ${
+                        playingIndex === index ? "text-[#1dd74c]" : ""
+                      }`}
+                    >
                       <div className="h-[40px] w-[40px] ">
                         <img src={imageURL} alt="track" className="" />
                       </div>
@@ -102,7 +116,7 @@ export default function MusicList() {
                           {name}
                         </span>
                         <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                          {artists}
+                          {artist}
                         </span>
                       </div>
                     </div>
@@ -165,18 +179,17 @@ export default function MusicList() {
                         <>
                           {likedSong === index ? (
                             <>
-                              <FontAwesomeIcon
-                                icon={faHeart}
-                                style={{ color: "#1dd74c" }}
-                                className="text-[20px] cursor-pointer"
-                              />
+                              <div>
+                                <FontAwesomeIcon
+                                  icon={faHeart}
+                                  style={{ color: "#1dd74c" }}
+                                  className="text-[20px] cursor-pointer"
+                                />
+                              </div>
+
                               <div>{msToMinutesAndSeconds(10000)}</div>
                               <div>
-                                <IoIosMore
-                                  
-                                  size={20}
-                                  color="white"
-                                />
+                                <IoIosMore size={20} color="white" />
                               </div>
                             </>
                           ) : (
