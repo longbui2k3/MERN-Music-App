@@ -6,6 +6,7 @@ import HeaderCover from "./HeaderCover";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { IoIosMore } from "react-icons/io";
+import { SingerAPI } from "../api";
 
 export default function MusicList() {
   const [songs, setSongs] = useState([]);
@@ -17,10 +18,18 @@ export default function MusicList() {
   useEffect(() => {
     const getAllSongs = async () => {
       const songsData = await SongAPI.getAllSong();
+      for (const song of songsData.data.data) {
+        song.artistObject = (await SingerAPI.getSingerById(song.artist)).data.singer;
+        console.log(song.artistObject);
+      }
       setSongs(songsData.data.data);
+
     };
+
     getAllSongs();
   }, []);
+
+  
 
   const msToMinutesAndSeconds = (ms) => {
     const minutes = Math.floor(ms / 60000);
@@ -40,7 +49,7 @@ export default function MusicList() {
           <ActionBar />
           <div className="px-10 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] text-gray-400 sticky top-[64px] bg-[#121212] py-4 px-2.5 transition duration-300 ease-in-out border-b border-current">
             <div>
-              <span >#</span>
+              <span>#</span>
             </div>
             <div>
               <span>TITLE</span>
@@ -61,7 +70,7 @@ export default function MusicList() {
           {/* Song list */}
           <div className="mx-[2rem] flex flex-col pb-10 mt-[8px]">
             {songs.map(
-              ({ id, name, imageURL, artist, duration, album }, index) => {
+              ({ id, name, imageURL, artist, duration, album, artistObject }, index) => {
                 return (
                   <div
                     className={`py-2 px-4 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] ${
@@ -72,6 +81,7 @@ export default function MusicList() {
                     onClick={() => handleClickOnRow(index)}
                     onMouseEnter={() => setHoveredIndex(index)}
                     onMouseLeave={() => setHoveredIndex(null)}
+                    key={index}
                   >
                     <div className="flex items-center text-[#dddcdc]">
                       {hoveredIndex === index ? (
@@ -104,8 +114,8 @@ export default function MusicList() {
                     </div>
 
                     <div
-                      className={`flex items-center text-[#dddcdc] gap-2 overflow-hidden ${
-                        playingIndex === index ? "text-[#1dd74c]" : ""
+                      className={`flex items-center  gap-2 overflow-hidden ${
+                        playingIndex === index ? "text-[#1dd74c]" : "text-[#dddcdc]"
                       }`}
                     >
                       <div className="h-[40px] w-[40px] ">
@@ -116,7 +126,7 @@ export default function MusicList() {
                           {name}
                         </span>
                         <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                          {artist}
+                          {artistObject.name}
                         </span>
                       </div>
                     </div>
