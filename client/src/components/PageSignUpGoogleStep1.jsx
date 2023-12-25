@@ -1,7 +1,7 @@
 import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { Logo } from "./Logo";
 import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { InfoErrorInput } from "./InfoErrorInput";
 import { Select } from "@chakra-ui/react";
@@ -16,12 +16,15 @@ import {
 import { setEmailGoogle } from "../features/signUp/signUpGoogleSlice";
 import { UserAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
+import { CheckExistEmail } from "../api";
+import { ShowNotify } from "./ShowNotify";
 export default function SignUpGoogleStep1() {
   const dispatch = useDispatch();
   const { userGoogle } = UserAuth();
   dispatch(setEmailGoogle(userGoogle.email));
   dispatch(setUidGoogle(userGoogle.uid));
   dispatch(setNameGoogle(userGoogle.displayName));
+  const email = useSelector((state) => state.signUpGoogle.email);
   const name = useSelector((state) => state.signUpGoogle.name);
   const dateOfBirth = useSelector((state) => state.signUpGoogle.dateOfBirth);
   const day = dateOfBirth.split("-")[0];
@@ -41,6 +44,22 @@ export default function SignUpGoogleStep1() {
   const [genderState, setGenderState] = useState(gender);
   const [isContinue, setIsContinue] = useState(false);
   const [clickBack, setClickBack] = useState(false);
+  const [isExistEmail, setIsExistEmail] = useState(false);
+  async function checkExsitEmail(email) {
+    try {
+      const res = await CheckExistEmail(email);
+      return false;
+    } catch (err) {
+      return true;
+    }
+  }
+  useEffect(() => {
+    async function checkExsitEmailFunc() {
+      const res = await checkExsitEmail(email);
+      setIsExistEmail(res);
+    }
+    checkExsitEmailFunc();
+  }, [email]);
   const handleInputName = async (e) => {
     setInputName(e.target.value);
     await register("name").onChange(e);
@@ -144,10 +163,11 @@ export default function SignUpGoogleStep1() {
           <div className="ms-3">
             <Text className="text-[#a7a7a7] font-bold">Step 1 of 2</Text>
             <Text className="text-white font-bold mt-1">
-              Tell us about yourself
+              Finish creating your account
             </Text>
           </div>
         </div>
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl
             isInvalid={
@@ -159,6 +179,15 @@ export default function SignUpGoogleStep1() {
             }
             className="px-[50px]"
           >
+            {isExistEmail && (
+              <ShowNotify
+                type="error"
+                message={"This email is already connected to an account."}
+                link={"Log in"}
+                linkUrl={"/login"}
+                variant={"solid"}
+              />
+            )}
             <div className="relative">
               <FormLabel className={"text-white mt-[10px] font-[500]"}>
                 Name
@@ -174,6 +203,7 @@ export default function SignUpGoogleStep1() {
                 name={register("name").name}
                 onBlur={register("name").onBlur}
                 ref={register("name").ref}
+                disabled={isExistEmail}
               />
             </div>
             {isInvalidInputName && (
@@ -198,6 +228,7 @@ export default function SignUpGoogleStep1() {
                   onBlur={register("day").onBlur}
                   ref={register("day").ref}
                   onKeyDown={handleKeyDownDay}
+                  disabled={isExistEmail}
                 />
                 <Select
                   placeholder="Month"
@@ -210,6 +241,7 @@ export default function SignUpGoogleStep1() {
                   onBlur={register("month").onBlur}
                   ref={register("month").ref}
                   h="50px"
+                  disabled={isExistEmail}
                 >
                   <option value="1" style={{ background: "black" }}>
                     January
@@ -262,6 +294,7 @@ export default function SignUpGoogleStep1() {
                   onBlur={register("year").onBlur}
                   ref={register("year").ref}
                   onKeyDown={handleKeyDownYear}
+                  disabled={isExistEmail}
                 />
               </div>
             </div>
@@ -288,19 +321,33 @@ export default function SignUpGoogleStep1() {
                 className="text-white"
               >
                 <div className="mb-2">
-                  <Radio value="Man" className="">
+                  <Radio value="Man" className="" isDisabled={isExistEmail}>
                     Man
                   </Radio>
-                  <Radio value="Woman" className="ms-10">
+                  <Radio
+                    value="Woman"
+                    className="ms-10"
+                    isDisabled={isExistEmail}
+                  >
                     Woman
                   </Radio>
-                  <Radio value="Non-binary" className="ms-10">
+                  <Radio
+                    value="Non-binary"
+                    className="ms-10"
+                    isDisabled={isExistEmail}
+                  >
                     Non-binary
                   </Radio>
                 </div>
                 <div>
-                  <Radio value="Something else">Something else</Radio>
-                  <Radio value="Prefer not to say" className="ms-11">
+                  <Radio value="Something else" isDisabled={isExistEmail}>
+                    Something else
+                  </Radio>
+                  <Radio
+                    value="Prefer not to say"
+                    className="ms-11"
+                    isDisabled={isExistEmail}
+                  >
                     Prefer not to say
                   </Radio>
                 </div>
@@ -313,6 +360,7 @@ export default function SignUpGoogleStep1() {
               type="submit"
               class={`font-bold bg-[rgb(30,215,96)] w-full h-[50px] rounded-lg mt-5`}
               isLoading={isSubmitting}
+              isDisabled={isExistEmail}
             >
               Next
             </Button>

@@ -1,15 +1,23 @@
-import {
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-} from "@chakra-ui/react";
+import { Alert, AlertIcon } from "@chakra-ui/react";
 
-export function ShowNotify({ type, message, className }) {
+export function ShowNotify({
+  type,
+  message,
+  className,
+  variant,
+  link,
+  linkUrl,
+}) {
   return (
-    <Alert status={type} className={className}>
+    <Alert status={type} className={className} variant={variant}>
       <AlertIcon />
-      {message}
+      <div>
+        {message}{" "}
+        <a href={linkUrl} className="underline">
+          {link}
+        </a>
+        {link ? "." : ""}
+      </div>
     </Alert>
   );
 }

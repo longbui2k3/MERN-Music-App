@@ -6,7 +6,7 @@ export function InfoErrorInput({ message }) {
       className={"text-[rgb(229, 89, 77)] mt-[5px] text-[14px] font-[500]"}
     >
       <PiWarningCircleFill className={"text-[20px] me-[4px]"} />
-      {message}
+      <div className="w-[350px]">{message}</div>
     </FormErrorMessage>
   );
 }

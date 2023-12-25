@@ -63,10 +63,13 @@ export default function SignUp() {
   }
 
   const isInvalidInputEmail = !isValidEmail(inputEmail);
-  const { googleSignUp } = UserAuth();
-  const handleGoogleSignUp = () => {
+  const { googleSignIn } = UserAuth();
+  const handleGoogleSignUp = async () => {
     try {
-      googleSignUp();
+      const userCredential = await googleSignIn();
+      if (userCredential) {
+        window.location.href = "/signup?step=1";
+      }
     } catch (err) {
       console.log(err);
     }
@@ -180,13 +183,18 @@ export default function SignUp() {
         </Button>
 
         <Divider backgroundColor="#333" margin="40px 2px" />
-        <Text textAlign="center" color="#a7a7a7" fontWeight="600">
+        <Text
+          textAlign="center"
+          color="#a7a7a7"
+          fontWeight="600"
+          className="mb-[80px]"
+        >
           Already have an account?{" "}
           <a
             href="/login"
             style={{ textDecoration: "underline", color: "white" }}
           >
-            Login in here
+            Log in here
           </a>
         </Text>
       </Container>

@@ -32,6 +32,7 @@ export default function PageLogin() {
   const [isLoginSuccessfully, setIsLoginSuccessfully] = useState("");
   const [message, setMessage] = useState("");
   const [isChecked, setIsChecked] = useState(true);
+  const [isNoAccountGoogle, setIsNoAccountGoogle] = useState(false);
   const [user, setUser] = useState("");
   useEffect(() => {
     const getUserFunc = async () => {
@@ -86,12 +87,17 @@ export default function PageLogin() {
   const { googleSignIn, userGoogle } = UserAuth();
   const handleGoogleSignIn = async () => {
     try {
-      await googleSignIn();
-      const res = await LoginGoogle(userGoogle.email, userGoogle.accessToken);
+      const credential = await googleSignIn();
+      const res = await LoginGoogle(
+        credential.user.email,
+        credential.user.accessToken
+      );
       setCookie("jwt", res.data.token, {
         path: "/",
       });
+      if (res) setIsLoginSuccessfully(true);
     } catch (err) {
+      setIsNoAccountGoogle(true);
       console.log(err);
     }
   };
@@ -103,15 +109,61 @@ export default function PageLogin() {
       <div className="w-100 bg-black h-[150px] mt-[-40px] mb-[100px] py-[25px]">
         <Logo />
       </div>
-      <div className={"w-[600px] m-auto mt-[-40px]"}>
+      <div className={"w-[600px] m-auto mt-[-40px] relative"}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl
             isInvalid={isEmptyPassword}
-            className={"h-[850px] bg-black px-[120px] py-[70px] w-full"}
+            className={"h-full bg-black px-[120px] py-[70px] w-full "}
           >
             <h1 className="text-white font-[600] text-[40px] text-center mb-[40px]">
-              Login
+              Log in to Spotify
             </h1>
+            {isNoAccountGoogle && (
+              <div className="absolute">
+                <ShowNotify
+                  type="error"
+                  message={
+                    "You do not have a Spotify account connected to your Google Account. If you have a Spotify account, please try log in with your Spotify email or username. If you do not have a Spotify account, please sign up."
+                  }
+                  variant={"solid"}
+                  className={"my-4 -top-[20px] w-[600px] -left-[60px]"}
+                />
+              </div>
+            )}
+            <Button
+              backgroundColor="#141414"
+              borderRadius="500px"
+              width="100%"
+              padding="24px 32px"
+              marginTop={isNoAccountGoogle ? "150px" : ""}
+              fontSize="16px"
+              fontWeight="700"
+              border="1px solid #555"
+              color="white"
+              _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
+              onClick={handleGoogleSignIn}
+              leftIcon={<GoogleIcon />}
+            >
+              Sign in with Google
+            </Button>
+
+            <Button
+              backgroundColor="#141414"
+              borderRadius="500px"
+              width="100%"
+              padding="24px 32px"
+              fontSize="16px"
+              fontWeight="700"
+              marginTop="8px"
+              border="1px solid #555"
+              color="white"
+              _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
+              // onClick={handleGoogleSignIn}
+              leftIcon={<FacebookIcon />}
+            >
+              Sign in with Facebook
+            </Button>
+            <Divider backgroundColor="#333" margin="40px 2px" />
             {isLoginSuccessfully ? (
               <ShowNotify
                 type="success"
@@ -196,38 +248,7 @@ export default function PageLogin() {
                 Forgot your password?
               </h5>
             </a>
-            <Divider backgroundColor="#333" margin="40px 2px" />
-            <Button
-              backgroundColor="#141414"
-              borderRadius="500px"
-              width="100%"
-              padding="24px 32px"
-              fontSize="16px"
-              fontWeight="700"
-              border="1px solid #555"
-              color="white"
-              _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
-              onClick={handleGoogleSignIn}
-              leftIcon={<GoogleIcon />}
-            >
-              Sign in with Google
-            </Button>
-            <Button
-              backgroundColor="#141414"
-              borderRadius="500px"
-              width="100%"
-              padding="24px 32px"
-              fontSize="16px"
-              fontWeight="700"
-              marginTop="8px"
-              border="1px solid #555"
-              color="white"
-              _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
-              // onClick={handleGoogleSignIn}
-              leftIcon={<FacebookIcon />}
-            >
-              Sign in with Facebook
-            </Button>
+
             <h5 class="text-[#a7a7a7] text-center w-full mt-10">
               Don't have an acccount?{" "}
               <a href="/signUp" class="underline text-white">
