@@ -5,6 +5,8 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { IoPersonOutline } from "react-icons/io5";
+import { Image } from "@chakra-ui/react";
+import { faCirclePlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import SingerAPI from "../api/SingerAPI";
@@ -115,6 +117,22 @@ const Body = () => {
               className={"hover:text-white cursor-pointer"}
             />
           </Tooltip>
+    <div
+      style={{
+        lineHeight: "64px",
+        padding: "0 20px",
+        height: "100%",
+        maxHeight: "80%",
+        width: "100%",
+        overflow: "auto",
+        opacity: 0.95,
+        zIndex: 40,
+        backgroundColor: "#121212",
+      }}
+    >
+      {/* Recently played section */}
+      <div>
+        <p className={"text-[22px] text-white"}>Recently played</p>
 
           <Tooltip label="Go forward">
             <FontAwesomeIcon
@@ -183,23 +201,19 @@ const Body = () => {
         }}
       >
         {/* Recently played section */}
+        {/* <div
+          className={
+            "grid gap-4 lg:grid-cols-7 md:grid-cols-4 sm:grid-cols-2"
+          }
+          > */}
+
         <div>
-          <p className={"text-[22px] text-white"}>Recently played</p>
-
-          {/* <div
-              className={
-                "grid gap-4 lg:grid-cols-7 md:grid-cols-4 sm:grid-cols-2"
-              }
-              > */}
-
-          <div>
-            {songs.map((song, index) => (
-              <SongListItem key={index} song={song} />
-            ))}
-          </div>
+          {songs.map((song, index) => (
+            <SongListItem key={index} song={song} />
+          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

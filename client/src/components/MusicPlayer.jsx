@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { tracks } from "../data/tracks.js";
 import Controls from "./Controls";
+import OtherControls from "./OtherControls.jsx";
 import ProgressBar from "./ProgressBar.jsx";
 import ShortInfo from "./ShortInfo";
-import OtherControls from "./OtherControls.jsx";
 const MusicPlayer = () => {
   const [trackIndex, setTrackIndex] = useState(0);
   const [currentTrack, setCurrentTrack] = useState(tracks[trackIndex]);
@@ -43,7 +43,7 @@ const MusicPlayer = () => {
         />
       </div>
       <div className="w-1/3 flex justify-center items-center">
-        <OtherControls />
+        <OtherControls audioRef={audioRef} />
       </div>
     </div>
   );

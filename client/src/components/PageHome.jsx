@@ -4,6 +4,9 @@ import TopMenu from "./TopMenu";
 import Body from "./Body";
 import MusicPlayer from "./MusicPlayer";
 import { styled } from "styled-components";
+import TrackList from "./TrackList";
+import Header from "./Header";
+import Album from "./Album";
 
 const Container = styled.div`
   max-height: 100vh;
@@ -11,7 +14,7 @@ const Container = styled.div`
   display: grid;
   grid-template-rows: 89vh 11vh;
   overflow: hidden;
-  .body {
+  .web_body {
     display: grid;
     grid-template-columns: 20% 80%;
     column-gap: 8px;
@@ -43,21 +46,25 @@ const Container = styled.div`
     padding: 8px 8px;
   }
 
-  .body-content {
+  .body {
     border-radius: 5px;
     background-color: #121212;
     color: #b3b3b3;
+    overflow: auto;
+  }
+
+  .body_content {
   }
 
   .footer {
-    z-index: 100;
+    z-index: 30;
   }
 `;
 
 const PageHome = () => {
   return (
     <Container>
-      <div className="body">
+      <div className="web_body">
         <div className="side-bar">
           <div className="top-menu">
             <TopMenu />
@@ -67,8 +74,13 @@ const PageHome = () => {
             <Library />
           </div>
         </div>
-        <div className="body-content">
-          <Body />
+        <div className="body">
+          <Header />
+          <div className="body_content">
+            {/* <Body /> */}
+            <TrackList />
+            {/* <Album /> */}
+          </div>
         </div>
       </div>
       <div className="footer">
