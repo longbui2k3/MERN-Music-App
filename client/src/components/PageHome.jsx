@@ -7,7 +7,7 @@ import { styled } from "styled-components";
 import TrackList from "./TrackList";
 import Header from "./Header";
 import Album from "./Album";
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 const Container = styled.div`
   max-height: 100vh;
   max-width: 100vw;
@@ -61,7 +61,7 @@ const Container = styled.div`
   }
 `;
 
-const PageHome = () => {
+const PageHome = ({ children }) => {
   return (
     <Container>
       <div className="web_body">
@@ -76,11 +76,7 @@ const PageHome = () => {
         </div>
         <div className="body">
           <Header />
-          <div className="body_content">
-            {/* <Body /> */}
-            <TrackList />
-            {/* <Album /> */}
-          </div>
+          <div className="body_content">{children}</div>
         </div>
       </div>
       <div className="footer">
