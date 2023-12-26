@@ -10,10 +10,21 @@ export const Login = async (email, password) => {
 
 export const LoginGoogle = async (email, authentication) => {
   const res = await axios.post(
-    "http://localhost:4000/api/v1/user/loginGoogle",
+    "http://localhost:4000/api/v1/user/login?type=google",
     {
       email,
       authentication,
+    }
+  );
+  return res;
+};
+// http://localhost:4000/api/v1/user/login?type=facebook
+export const LoginFacebook = async (authentication, federatedId) => {
+  const res = await axios.post(
+    "http://localhost:4000/api/v1/user/login?type=facebook",
+    {
+      authentication,
+      federatedId,
     }
   );
   return res;
@@ -57,18 +68,47 @@ export const SignUp = async (email, password, name, dateOfBirth, gender) => {
   return res;
 };
 
-export const SignUpGoogle = async (email, uid, name, dateOfBirth, gender) => {
+export const SignUpGoogle = async (
+  email,
+  uid,
+  name,
+  dateOfBirth,
+  gender,
+  avatar
+) => {
   const res = await axios.post("http://localhost:4000/api/v1/user/signup", {
     email,
     uid,
     name,
     dateOfBirth,
     gender,
+    avatar,
     typeOfAccount: "google",
   });
   return res;
 };
 
+export const SignUpFacebook = async (
+  email,
+  uid,
+  name,
+  dateOfBirth,
+  gender,
+  avatar,
+  federatedId
+) => {
+  const res = await axios.post("http://localhost:4000/api/v1/user/signup", {
+    email,
+    uid,
+    name,
+    dateOfBirth,
+    gender,
+    avatar,
+    federatedId,
+    typeOfAccount: "facebook",
+  });
+  return res;
+};
 export const CheckExistEmail = async (email) => {
   const res = await axios.post(
     "http://localhost:4000/api/v1/user/checkExistEmail",

@@ -5,10 +5,10 @@ import { Checkbox, CheckboxGroup } from "@chakra-ui/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { SignUpGoogle } from "../api";
+import { SignUpFacebook, SignUpGoogle } from "../api";
 import { Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-export default function SignUpGoogleStep2() {
+export default function SignUpFacebookStep2() {
   const {
     handleSubmit,
     register,
@@ -26,9 +26,18 @@ export default function SignUpGoogleStep2() {
   const dateOfBirth = useSelector((state) => state.signUpAuth.dateOfBirth);
   const gender = useSelector((state) => state.signUpAuth.gender);
   const avatar = useSelector((state) => state.signUpAuth.avatar);
+  const federatedId = useSelector((state) => state.signUpAuth.federatedId);
   async function onSubmit() {
     try {
-      const res = await SignUpGoogle(email, uid, name, dateOfBirth, gender, avatar);
+      const res = await SignUpFacebook(
+        email,
+        uid,
+        name,
+        dateOfBirth,
+        gender,
+        avatar,
+        federatedId
+      );
       setIsLoginSuccessfully(true);
       setCookie("jwt", res.data.token, {
         path: "/",

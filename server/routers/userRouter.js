@@ -12,7 +12,6 @@ router
   .route("/resetPassword/:userId/:token")
   .patch(authenController.resetPassword);
 router.route("/login").post(authenController.login);
-router.route("/loginGoogle").post(authenController.logInGoogle);
 router.use(authenController.protect);
 router.route("/").get(userController.getAllUsers);
 router.route("/me").get(userController.getMe, userController.getUserById);

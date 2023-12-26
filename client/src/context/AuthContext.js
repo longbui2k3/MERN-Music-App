@@ -4,34 +4,52 @@ import {
   signInWithPopup,
   signOut,
   onAuthStateChanged,
+  FacebookAuthProvider,
+  getAdditionalUserInfo,
 } from "firebase/auth";
 import { auth } from "../config/firebase";
+import { useDispatch } from "react-redux";
+import { setAvatarAuth } from "../features/signUp/signUpAuthSlice";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [userGoogle, setUserGoogle] = useState({});
+  const dispatch = useDispatch();
+  const [userAuth, setUserAuth] = useState({});
+  const [additionalUserAuth, setAdditionalUserAuth] = useState({});
   //   const navigate = useNavigate();
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     return await signInWithPopup(auth, provider);
   };
-
+  const facebookSignIn = async () => {
+    const provider = new FacebookAuthProvider();
+    const res = await signInWithPopup(auth, provider);
+    return res;
+  };
   const logOut = () => {
     signOut(auth);
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUserGoogle(currentUser);
-      //   navigate("/signup?step=1");
-      console.log("User", currentUser);
+      setUserAuth(currentUser);
+      console.log(currentUser.accessToken);
+      console.log(currentUser);
     });
     return () => {
       unsubscribe();
     };
   }, []);
   return (
-    <AuthContext.Provider value={{ googleSignIn, logOut, userGoogle }}>
+    <AuthContext.Provider
+      value={{
+        googleSignIn,
+        logOut,
+        userAuth,
+        additionalUserAuth,
+        facebookSignIn,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

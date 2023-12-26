@@ -4,6 +4,7 @@ import {
   faCirclePlay,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
+import { IoPersonOutline } from "react-icons/io5";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import SingerAPI from "../api/SingerAPI";
@@ -128,16 +129,27 @@ const Body = () => {
           user ? (
             <>
               <Tooltip label={user.name}>
-                <FontAwesomeIcon
-                  icon={faUser}
-                  style={{
-                    float: "right",
-                    lineHeight: "64px",
-                    padding: "23px 30px ",
-                  }}
-                  className={"hover:text-white cursor-pointer me-2"}
-                  onClick={avatarClick}
-                />
+                {user.avatar ? (
+                  <div
+                    className={
+                      "w-[100px] h-[100px] scale-[0.35] rounded-full -mt-3 me-1 absolute top-0 right-0"
+                    }
+                    style={{
+                      backgroundImage: "url('" + user.avatar + "')",
+                    }}
+                    onClick={avatarClick}
+                  ></div>
+                ) : (
+                  <div
+                    className="w-[100px] h-[100px] scale-[0.35] rounded-full -mt-3 me-1 absolute top-0 right-0 bg-black"
+                    onClick={avatarClick}
+                  >
+                    <IoPersonOutline
+                      className={"hover:text-white cursor-pointer mx-auto mt-3"}
+                      fontSize={"65px"}
+                    />
+                  </div>
+                )}
               </Tooltip>
               <VerticalNavigateAvatar navigateAvatar={navigateAvatar} />{" "}
             </>

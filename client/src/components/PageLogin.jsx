@@ -13,7 +13,7 @@ import { Logo } from "./Logo";
 import { InfoErrorInput } from "./InfoErrorInput";
 import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { Login, LoginGoogle, getUser } from "../api";
+import { Login, LoginFacebook, LoginGoogle, getUser } from "../api";
 import { useCookies } from "react-cookie";
 import { Navigate } from "react-router";
 import { UserAuth } from "../context/AuthContext";
@@ -33,6 +33,7 @@ export default function PageLogin() {
   const [message, setMessage] = useState("");
   const [isChecked, setIsChecked] = useState(true);
   const [isNoAccountGoogle, setIsNoAccountGoogle] = useState(false);
+  const [isNoAccountFacebook, setIsNoAccountFacebook] = useState(false);
   const [user, setUser] = useState("");
   useEffect(() => {
     const getUserFunc = async () => {
@@ -84,7 +85,7 @@ export default function PageLogin() {
       setMessage(err.response.data.message);
     }
   }
-  const { googleSignIn, userGoogle } = UserAuth();
+  const { googleSignIn, facebookSignIn } = UserAuth();
   const handleGoogleSignIn = async () => {
     try {
       const credential = await googleSignIn();
@@ -98,6 +99,22 @@ export default function PageLogin() {
       if (res) setIsLoginSuccessfully(true);
     } catch (err) {
       setIsNoAccountGoogle(true);
+      console.log(err);
+    }
+  };
+  const handleFacebookSignIn = async () => {
+    try {
+      const credential = await facebookSignIn();
+      const res = await LoginFacebook(
+        credential.user.accessToken,
+        credential.user.providerData[0].uid
+      );
+      setCookie("jwt", res.data.token, {
+        path: "/",
+      });
+      if (res) setIsLoginSuccessfully(true);
+    } catch (err) {
+      setIsNoAccountFacebook(true);
       console.log(err);
     }
   };
@@ -158,6 +175,7 @@ export default function PageLogin() {
               border="1px solid #555"
               color="white"
               _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
+              onClick={handleFacebookSignIn}
               // onClick={handleGoogleSignIn}
               leftIcon={<FacebookIcon />}
             >

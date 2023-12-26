@@ -19,7 +19,7 @@ const userSchema = mongoose.Schema(
     dateOfBirth: { type: Date, required: true },
     typeOfAccount: {
       type: String,
-      enum: ["normal", "google"],
+      enum: ["normal", "google", "facebook"],
       default: "normal",
     },
     password: {
@@ -40,19 +40,34 @@ const userSchema = mongoose.Schema(
       default: "",
       validate: {
         validator: function (val) {
-          if (this.typeOfAccount === "google") return val ? true : false;
+          if (
+            this.typeOfAccount === "google" &&
+            this.typeOfAccount === "facebook"
+          )
+            return val ? true : false;
           return true;
         },
         message: "Please enter your uid!",
       },
     },
+    federatedId: {
+      type: String,
+      default: "",
+      validate: {
+        validator: function (val) {
+          if (this.typeOfAccount === "facebook") return val ? true : false;
+          return false;
+        },
+        message: "Please enter your federated id!",
+      },
+    },
     resetToken: { type: String, required: false, select: false },
     createAt: { type: Date, required: false },
     expireAt: { type: Date, required: false },
-    pic: {
+    avatar: {
       type: String,
-      default:
-        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+      // default:
+      //   "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
     role: {
       type: String,
@@ -78,7 +93,7 @@ userSchema.pre("save", async function (next) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
-  if (this.typeOfAccount === "google") {
+  else {
     const salt = await bcrypt.genSalt(10);
     this.uid = await bcrypt.hash(this.uid, salt);
   }

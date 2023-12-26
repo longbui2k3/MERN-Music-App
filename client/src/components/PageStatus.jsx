@@ -46,7 +46,14 @@ export default function PageStatus() {
         <h1 className="font-bold text-[30px] text-white text-center">
           Logged in as
         </h1>
-        <FaRegUser className="text-white mx-auto my-7" size="50px" />
+        {/* <FaRegUser className="text-white mx-auto my-7" size="50px" /> */}
+        <div
+          className={"w-[100px] h-[100px] mx-auto my-7 rounded-full"}
+          style={{
+            backgroundImage: "url('" + user.avatar + "')",
+            backgroundRepeat: "no-repeat",
+          }}
+        ></div>
         <h5 className=" text-white text-center">{user.name}</h5>
         <div class="w-full flex justify-center">
           <Button
@@ -94,6 +101,7 @@ export default function PageStatus() {
             width="280px"
             padding="24px 10px"
             fontSize="17px"
+            textColor={"white"}
             fontWeight="700"
             marginTop="24px"
             _hover={{ textDecoration: "underline", transform: "scale(1.05)" }}

@@ -98,9 +98,17 @@ const restrictTo = (...roles) => {
 //@route           POST /api/user/
 //@access          Public
 const signUpNormal = async (req, res) => {
-  const { name, email, password, gender, dateOfBirth } = req.body;
+  const { name, email, password, gender, dateOfBirth, typeOfAccount } =
+    req.body;
 
-  if (!name || !email) {
+  if (
+    !name ||
+    !email ||
+    !password ||
+    !gender ||
+    !dateOfBirth ||
+    !typeOfAccount
+  ) {
     res.status(400);
     throw new Error("Please Enter all the Feilds");
   }
@@ -121,14 +129,15 @@ const signUpNormal = async (req, res) => {
     password,
     gender,
     dateOfBirth,
-    typeOfAccount: req.body.typeOfAccount,
+    typeOfAccount,
   });
   createSendToken("Sign up", user, 201, res);
 };
-const signUpGoogle = async (req, res) => {
-  const { name, uid, email, gender, dateOfBirth } = req.body;
+const signUpAuth = async (req, res) => {
+  const { name, uid, email, gender, dateOfBirth, avatar, typeOfAccount, federatedId } =
+    req.body;
 
-  if (!name || !email || !uid) {
+  if (!name || !email || !uid || !gender || !dateOfBirth || !typeOfAccount || (!federatedId && typeOfAccount==="facebook")) {
     res.status(400);
     throw new Error("Please Enter all the Feilds");
   }
@@ -146,15 +155,17 @@ const signUpGoogle = async (req, res) => {
     uid,
     gender,
     dateOfBirth,
-    typeOfAccount: "google",
+    avatar,
+    federatedId,
+    typeOfAccount,
   });
   createSendToken("Sign up", user, 200, res);
 };
 const registerUser = asyncHandler(async (req, res) => {
   if (req.body.typeOfAccount === "normal") {
     await signUpNormal(req, res);
-  } else if (req.body.typeOfAccount === "google") {
-    await signUpGoogle(req, res);
+  } else {
+    await signUpAuth(req, res);
   }
 });
 
@@ -290,25 +301,30 @@ const resetPassword = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
-  const { email, password } = req.body;
-  console.log(email, password);
+  const type = req.query.type;
+  if (type === "google") await logInGoogle(req, res);
+  else if (type === "facebook") await logInFacebook(req, res);
+  else {
+    const { email, password } = req.body;
+    console.log(email, password);
 
-  if (!email || !password) {
-    return res.status(400).json({
-      status: "fail",
-      message: "Please provide email or password!",
-    });
-  }
+    if (!email || !password) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Please provide email or password!",
+      });
+    }
 
-  const user = await User.findOne({ email }).select("+password");
-  console.log();
-  if (!user || !(await user.matchPassword(password))) {
-    return res.status(401).json({
-      status: "fail",
-      message: "Incorrect email or password!",
-    });
+    const user = await User.findOne({ email }).select("+password");
+    console.log();
+    if (!user || !(await user.matchPassword(password))) {
+      return res.status(401).json({
+        status: "fail",
+        message: "Incorrect email or password!",
+      });
+    }
+    createSendToken("Log in", user, 200, res);
   }
-  createSendToken("Log in", user, 200, res);
 };
 const logInGoogle = async (req, res) => {
   const { authentication, email } = req.body;
@@ -319,6 +335,25 @@ const logInGoogle = async (req, res) => {
       return res.status(401).json({
         status: "fail",
         message: "Log in Google unsuccessfully!",
+      });
+    }
+    createSendToken("Log in", user, 200, res);
+  } catch (err) {
+    res.status(401).json({
+      status: "fail",
+      message: err.message,
+    });
+  }
+};
+const logInFacebook = async (req, res) => {
+  const { authentication, federatedId } = req.body;
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(authentication);
+    const user = await User.findOne({ federatedId }).select("+uid");
+    if (!user || !(await user.matchUid(decodedToken.uid, user.uid))) {
+      return res.status(401).json({
+        status: "fail",
+        message: "Log in Facebook unsuccessfully!",
       });
     }
     createSendToken("Log in", user, 200, res);
@@ -359,7 +394,6 @@ module.exports = {
   sendResetEmail,
   resetPassword,
   login,
-  logInGoogle,
   logout,
   protect,
   restrictTo,

@@ -21,10 +21,15 @@ import { PiWarningCircleFill } from "react-icons/pi";
 import { UserAuth } from "../context/AuthContext";
 import SignUpGoogleStep1 from "./PageSignUpGoogleStep1";
 import SignUpGoogleStep2 from "./PageSignUpGoogleStep2";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import GoogleIcon from "./GoogleIcon";
 import FacebookIcon from "./FacebookIcon";
+import SignUpFacebookStep1 from "./PageSignUpFacebookStep1";
+import SignUpFacebookStep2 from "./PageSignUpFacebookStep2";
+import { FacebookAuthProvider, getAdditionalUserInfo } from "firebase/auth";
+import { setAvatarAuth } from "../features/signUp/signUpAuthSlice";
 export default function SignUp() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
     handleSubmit,
@@ -63,21 +68,44 @@ export default function SignUp() {
   }
 
   const isInvalidInputEmail = !isValidEmail(inputEmail);
-  const { googleSignIn } = UserAuth();
+  const { googleSignIn, facebookSignIn } = UserAuth();
   const handleGoogleSignUp = async () => {
     try {
       const userCredential = await googleSignIn();
       if (userCredential) {
-        window.location.href = "/signup?step=1";
+        let additional = getAdditionalUserInfo(userCredential);
+        dispatch(
+          setAvatarAuth(additional.profile.picture.slice(0, -5) + "s100-c")
+        );
+        navigate("/signup?type=google&step=1");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleFacebookSignUp = async () => {
+    try {
+      const userCredential = await facebookSignIn();
+      if (userCredential) {
+        dispatch(
+          setAvatarAuth(userCredential.user.photoURL + "?width=100&height=100")
+        );
+        navigate("/signup?type=facebook&step=1");
       }
     } catch (err) {
       console.log(err);
     }
   };
   const [searchParams, setSearchParams] = useSearchParams();
-  let step = searchParams.get("step");
-  if (step === "1") return <SignUpGoogleStep1 />;
-  if (step === "2") return <SignUpGoogleStep2 />;
+  const step = searchParams.get("step");
+  const type = searchParams.get("type");
+  if (type === "google") {
+    if (step === "1") return <SignUpGoogleStep1 />;
+    if (step === "2") return <SignUpGoogleStep2 />;
+  } else if (type === "facebook") {
+    if (step === "1") return <SignUpFacebookStep1 />;
+    if (step === "2") return <SignUpFacebookStep2 />;
+  }
   if (isContinue) return <SignUpStep1 />;
   return (
     <>
@@ -177,6 +205,7 @@ export default function SignUp() {
           border="1px solid #555"
           color="white"
           _hover={{ backgroundColor: "#141414", border: "1px solid white" }}
+          onClick={handleFacebookSignUp}
           leftIcon={<FacebookIcon />}
         >
           Sign up with Facebook

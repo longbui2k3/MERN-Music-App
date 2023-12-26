@@ -13,18 +13,19 @@ import {
   setGenderAuth,
   setUidAuth,
   setEmailAuth,
+  setAvatarAuth,
+  setFederatedId,
 } from "../features/signUp/signUpAuthSlice";
 import { UserAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { CheckExistEmail } from "../api";
-import { ShowNotify } from "./ShowNotify";
-export default function SignUpGoogleStep1() {
+import { PiWarningCircleFill } from "react-icons/pi";
+export default function SignUpFacebookStep1() {
   const dispatch = useDispatch();
   const { userAuth } = UserAuth();
-  dispatch(setEmailAuth(userAuth.email));
   dispatch(setUidAuth(userAuth.uid));
   dispatch(setNameAuth(userAuth.displayName));
-  const email = useSelector((state) => state.signUpAuth.email);
+  dispatch(setFederatedId(userAuth.providerData[0].uid));
   const name = useSelector((state) => state.signUpAuth.name);
   const dateOfBirth = useSelector((state) => state.signUpAuth.dateOfBirth);
   const day = dateOfBirth.split("-")[0];
@@ -37,6 +38,8 @@ export default function SignUpGoogleStep1() {
     register,
     formState: { errors, isSubmitting },
   } = useForm();
+  const email = useSelector((state) => state.signUpAuth.email);
+  const [inputEmail, setInputEmail] = useState(email);
   const [inputName, setInputName] = useState(name);
   const [inputDay, setInputDay] = useState(day);
   const [inputMonth, setInputMonth] = useState(month);
@@ -45,6 +48,7 @@ export default function SignUpGoogleStep1() {
   const [isContinue, setIsContinue] = useState(false);
   const [clickBack, setClickBack] = useState(false);
   const [isExistEmail, setIsExistEmail] = useState(false);
+
   async function checkExsitEmail(email) {
     try {
       const res = await CheckExistEmail(email);
@@ -53,13 +57,12 @@ export default function SignUpGoogleStep1() {
       return true;
     }
   }
-  useEffect(() => {
-    async function checkExsitEmailFunc() {
-      const res = await checkExsitEmail(email);
-      setIsExistEmail(res);
-    }
-    checkExsitEmailFunc();
-  }, [email]);
+  const handleInputEmail = async (e) => {
+    setInputEmail(e.target.value);
+    await register("email").onChange(e);
+    setIsExistEmail(await checkExsitEmail(e.target.value));
+  };
+
   const handleInputName = async (e) => {
     setInputName(e.target.value);
     await register("name").onChange(e);
@@ -103,6 +106,13 @@ export default function SignUpGoogleStep1() {
       event.preventDefault();
     }
   }
+  function isValidEmail(email) {
+    const emailRegex = new RegExp(
+      "([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=?A-Z^-~-]+)*|\"([]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(.[!#-'*+/-9=A-Z^-~-]+)*|[[\t -Z^-~]*])"
+    );
+    return emailRegex.test(email);
+  }
+  const isInvalidInputEmail = !isValidEmail(inputEmail);
   const isInvalidInputName = inputName === "";
   const isInvalidInputDay =
     isNaN(inputDay) || inputDay - "0" < 1 || inputDay - "0" > 31;
@@ -110,12 +120,14 @@ export default function SignUpGoogleStep1() {
   const isInvalidInputYear = inputYear < 1900;
   const isInvalidGender = genderState === "";
   const isValidInput =
+    !isInvalidInputEmail &&
     !isInvalidInputName &&
     !isInvalidInputDay &&
     !isInvalidInputMonth &&
     !isInvalidInputYear &&
     !isInvalidGender;
-  const store = (name, dateOfBirth, gender) => {
+  const store = (email, name, dateOfBirth, gender) => {
+    dispatch(setEmailAuth(email));
     dispatch(setNameAuth(name));
     dispatch(setGenderAuth(gender));
     dispatch(setDateOfBirthAuth(dateOfBirth));
@@ -123,6 +135,7 @@ export default function SignUpGoogleStep1() {
   function onSubmit(values) {
     if (isValidInput) {
       store(
+        values.email,
         values.name,
         `${values.year}-${
           Number(values.month) < 10
@@ -144,7 +157,7 @@ export default function SignUpGoogleStep1() {
   if (clickBack) {
     return <Navigate to="/signup" />;
   }
-  if (isContinue) return <Navigate to="/signup?type=google&step=2" />;
+  if (isContinue) return <Navigate to="/signup?type=facebook&step=2" />;
   return (
     <>
       <Logo />
@@ -171,6 +184,7 @@ export default function SignUpGoogleStep1() {
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormControl
             isInvalid={
+              isInvalidInputEmail ||
               isInvalidInputName ||
               isInvalidInputDay ||
               isInvalidInputMonth ||
@@ -179,14 +193,41 @@ export default function SignUpGoogleStep1() {
             }
             className="px-[50px]"
           >
-            {isExistEmail && (
-              <ShowNotify
-                type="error"
-                message={"This email is already connected to an account."}
-                link={"Log in"}
-                linkUrl={"/login"}
-                variant={"solid"}
+            <div className="relative">
+              <FormLabel className={"text-white mt-[10px] font-[500]"}>
+                Email
+              </FormLabel>
+              <Input
+                type="email"
+                className={
+                  "w-full mt-[5px] bg-[rgb(20, 20, 20)] text-white border-[#aaaaaa]"
+                }
+                placeholder="name@domain.com"
+                h="50px"
+                value={inputEmail}
+                onChange={handleInputEmail}
+                name={register("email").name}
+                onBlur={register("email").onBlur}
+                ref={register("email").ref}
               />
+            </div>
+            {isExistEmail && (
+              <div className="bg-[#ffa42b] flex rounded-md my-4">
+                <PiWarningCircleFill
+                  className={"text-[40px] mx-[5px] my-[10px]"}
+                />
+                <p className="my-[10px]">
+                  This address is already linked to an existing account. To
+                  continue,{" "}
+                  <a className="underline" href="/login">
+                    log in
+                  </a>
+                  .
+                </p>
+              </div>
+            )}
+            {isInvalidInputEmail && (
+              <InfoErrorInput message="This email is invalid. Make sure it's written like example@email.com" />
             )}
             <div className="relative">
               <FormLabel className={"text-white mt-[10px] font-[500]"}>
