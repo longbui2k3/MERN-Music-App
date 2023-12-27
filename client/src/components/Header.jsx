@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Tooltip } from "@chakra-ui/react";
-import {
-  faCircleChevronLeft,
-  faCircleChevronRight,
-  faUser,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { Logout, getUser } from "../api";

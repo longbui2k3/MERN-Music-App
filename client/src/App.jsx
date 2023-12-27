@@ -5,8 +5,6 @@ import {
   PageResetPassword,
   PageSignUp,
   PageStatus,
-  SignUpGoogleStep1,
-  SignUpGoogleStep2,
 } from "./components";
 import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
