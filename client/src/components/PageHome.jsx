@@ -1,82 +1,107 @@
 import React from "react";
+import { useState, useEffect, useRef } from "react";
+import "../styles/sidebar.css";
 import Library from "./Library";
 import TopMenu from "./TopMenu";
-import Body from "./Body";
+import Header from "./Header";
 import MusicPlayer from "./MusicPlayer";
 import { styled } from "styled-components";
-import TrackList from "./TrackList";
-import Header from "./Header";
-import Album from "./Album";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useResizeDetector } from "react-resize-detector";
 const Container = styled.div`
-  max-height: 100vh;
-  max-width: 100vw;
   display: grid;
-  grid-template-rows: 89vh 11vh;
-  overflow: hidden;
-  .web_body {
-    display: grid;
-    grid-template-columns: 20% 80%;
-    column-gap: 8px;
-    height: 100%;
-    width: 100%;
-    background-color: rgb(0 0 0);
-    padding: 8px 15px 0 8px;
-  }
-  .side-bar {
-    background-color: black;
-    color: #b3b3b3;
-    border-radius: 5px;
-    display: grid;
-    grid-template-rows: 15% 83.7%;
-    row-gap: 8px;
-  }
-
-  .top-menu {
-    border-radius: 5px;
-    background-color: #121212;
-    color: #b3b3b3;
-    padding: 8px 8px;
-  }
-
-  .library {
-    border-radius: 5px;
-    background-color: #121212;
-    color: #b3b3b3;
-    padding: 8px 8px;
-  }
-
+  grid-template-rows: 88vh 12vh;
+  background-color: rgb(0 0 0);
   .body {
     border-radius: 5px;
     background-color: #121212;
     color: #b3b3b3;
     overflow: auto;
   }
-
-  .body_content {
-  }
-
   .footer {
     z-index: 30;
   }
+  .top-menu {
+    border-radius: 5px;
+    background-color: #121212;
+    color: #b3b3b3;
+    padding: 8px 0px 8px 8px;
+    margin-bottom: 8px;
+  }
+  .library {
+    border-radius: 5px;
+    background-color: #121212;
+    color: #b3b3b3;
+    padding: 8px 0px 8px 8px;
+  }
 `;
+function PageHome({ children }) {
+  const sidebarRef = useRef(null);
+  const [isResizing, setIsResizing] = useState(false);
+  const [sidebarWidth, setSidebarWidth] = useState(290);
 
-const PageHome = ({ children }) => {
+  const startResizing = React.useCallback((mouseDownEvent) => {
+    setIsResizing(true);
+  }, []);
+
+  const stopResizing = React.useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  const resize = React.useCallback(
+    (mouseMoveEvent) => {
+      if (isResizing) {
+        setSidebarWidth(
+          mouseMoveEvent.clientX -
+            sidebarRef.current.getBoundingClientRect().left
+        );
+      }
+    },
+    [isResizing]
+  );
+
+  React.useEffect(() => {
+    window.addEventListener("mousemove", resize);
+    window.addEventListener("mouseup", stopResizing);
+    return () => {
+      window.removeEventListener("mousemove", resize);
+      window.removeEventListener("mouseup", stopResizing);
+    };
+  }, [resize, stopResizing]);
+
+  const { width, height, ref } = useResizeDetector();
+  const [resizeStyle, setResizeStyle] = useState(false);
+  useEffect(() => {
+    console.log(width);
+    if (width < 223) {
+      setResizeStyle(true);
+    } else {
+      setResizeStyle(false);
+    }
+  }, [width]);
   return (
     <Container>
-      <div className="web_body">
-        <div className="side-bar">
-          <div className="top-menu">
-            <TopMenu />
+      <div className="app-container">
+        <div
+          ref={sidebarRef}
+          className={`app-sidebar`}
+          style={{ width: sidebarWidth < 290 ? 93 : sidebarWidth }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          <div className={"app-sidebar-content"}>
+            <div className="top-menu">
+              <TopMenu />
+            </div>
+            <div className="library">
+              <Library />
+            </div>
           </div>
-
-          <div className="library">
-            <Library />
-          </div>
+          <div className={"app-sidebar-resizer"} onMouseDown={startResizing} />
         </div>
-        <div className="body">
-          <Header />
-          <div className="body_content">{children}</div>
+        <div className="app-frame">
+          <div className="body">
+            <Header />
+            <div className="body_content">{children}</div>{" "}
+          </div>
         </div>
       </div>
       <div className="footer">
@@ -84,8 +109,6 @@ const PageHome = ({ children }) => {
       </div>
     </Container>
   );
-};
-
-//========================================================
+}
 
 export default PageHome;

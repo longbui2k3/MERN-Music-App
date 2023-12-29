@@ -47,9 +47,14 @@ const SongListItem = ({ song }) => {
   const [artist, setArtist] = useState("");
   useEffect(() => {
     const getArtist = async () => {
-      const artistData = await SingerAPI.getSingerById(song.artist);
-      setArtist(artistData.data.singer);
+      try {
+        const artistData = await SingerAPI.getSingerById(song.artist);
+        setArtist(artistData.data.singer);
+      } catch (err) {
+        console.log(err);
+      }
     };
+
     getArtist();
   }, []);
   return (

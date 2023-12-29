@@ -17,14 +17,18 @@ export default function MusicList() {
   const [likedSong, setLikedSong] = useState(null);
   useEffect(() => {
     const getAllSongs = async () => {
-      const songsData = await SongAPI.getAllSong();
-      for (const song of songsData.data.data) {
-        song.artistObject = (
-          await SingerAPI.getSingerById(song.artist)
-        ).data.singer;
-        console.log(song.artistObject);
+      try {
+        const songsData = await SongAPI.getAllSong();
+        for (const song of songsData.data.data) {
+          song.artistObject = (
+            await SingerAPI.getSingerById(song.artist)
+          ).data.singer;
+          console.log(song.artistObject);
+        }
+        setSongs(songsData.data.data);
+      } catch (err) {
+        console.log(err);
       }
-      setSongs(songsData.data.data);
     };
 
     getAllSongs();
