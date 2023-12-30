@@ -23,12 +23,19 @@ const songSchema = new Schema({
     required: true,
   },
   album: {
-    type: String,
+    type: mongoose.Schema.ObjectId,
+    ref: "ListSongs",
   },
   singers: [
     {
       type: mongoose.Schema.ObjectId,
       ref: "Singer",
+    },
+  ],
+  authors: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Author",
     },
   ],
   genres: [
@@ -38,6 +45,18 @@ const songSchema = new Schema({
     },
   ],
 });
+
+songSchema.path("singers").validate(function (value) {
+  return value.length > 0;
+}, "singers must not be empty");
+
+songSchema.path("authors").validate(function (value) {
+  return value.length > 0;
+}, "authors must not be empty");
+
+songSchema.path("genres").validate(function (value) {
+  return value.length > 0;
+}, "genres must not be empty");
 
 const Song = mongoose.model("Song", songSchema);
 

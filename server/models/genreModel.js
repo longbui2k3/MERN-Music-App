@@ -9,4 +9,5 @@ const genreModel = mongoose.Schema(
   { timestamp: true }
 );
 
-module.exports = mongoose.model("genre", genreModel);
+const Genre = mongoose.model("Genre", genreModel);
+module.exports = Genre;
