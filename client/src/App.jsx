@@ -12,6 +12,7 @@ import { AuthContextProvider } from "./context/AuthContext";
 import Body from "./components/Body";
 import TrackList from "./components/TrackList";
 import Album from "./components/Album";
+import Profile from "./components/Profile";
 export function App() {
   return (
     <ChakraProvider>
@@ -56,6 +57,14 @@ export function App() {
               element={
                 <PageHome>
                   <Album />
+                </PageHome>
+              }
+            />
+            <Route
+              path="/user"
+              element={
+                <PageHome>
+                  <Profile />
                 </PageHome>
               }
             />
