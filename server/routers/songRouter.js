@@ -6,12 +6,8 @@ const router = express.Router();
 router
   .route("/")
   .get(songController.getAllSongs)
+  .post(songController.createSong);
 
-  .post(
-    authenController.protect,
-    authenController.restrictTo("admin"),
-    songController.createSong
-  );
 router
   .route("/:id")
   .get(songController.getSong)

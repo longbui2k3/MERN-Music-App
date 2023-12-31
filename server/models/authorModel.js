@@ -11,5 +11,5 @@ const authorSchema = mongoose.Schema({
   songs: [{ type: mongoose.Schema.ObjectId, ref: "Song" }],
 });
 
-const author = mongoose.model("Author", authorSchema);
-module.exports = author;
+const Author = mongoose.model("Author", authorSchema);
+module.exports = Author;

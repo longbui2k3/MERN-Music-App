@@ -7,6 +7,7 @@ const listSongsSchema = mongoose.Schema({
   type: {
     type: String,
     enum: ["LikedSongs", "Playlist", "Album"],
+    default: "Playlist",
   },
   imageURL: {
     type: String,
@@ -15,4 +16,4 @@ const listSongsSchema = mongoose.Schema({
   songs: [{ type: mongoose.Schema.ObjectId, ref: "Song" }],
 });
 const ListSongs = mongoose.model("ListSongs", listSongsSchema);
-module.exports = ListSongsistSongs;
+module.exports = ListSongs;
