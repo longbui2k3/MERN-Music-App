@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Tooltip } from "@chakra-ui/react";
+import { Box, Button, Divider, Tooltip } from "@chakra-ui/react";
 import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 import { Logout, getUser } from "../api";
 import { IoPersonOutline } from "react-icons/io5";
 import { useCookies } from "react-cookie";
+import { IoMdOpen } from "react-icons/io";
 // import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const VerticalNavigateAvatar = ({ navigateAvatar }) => {
@@ -33,11 +34,11 @@ const VerticalNavigateAvatar = ({ navigateAvatar }) => {
         <nav className="absolute right-7 w-[200px] bg-[rgb(40,40,40)] z-50 rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)] overflow-hidden">
           <ul>
             <li
-              className="px-4 py-3 hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer"
+              className="flex justify-between px-4 py-3 hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer"
               onClick={clickNavigateAccount}
             >
-              {/* Account <ExternalLinkIcon className="float-right text-[20px]" /> */}
-              Account
+              {/* Account  */}
+              Account <IoMdOpen className="my-auto" fontSize={"20"} />
             </li>
             <li
               className="px-4 py-3 hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer "
@@ -45,6 +46,7 @@ const VerticalNavigateAvatar = ({ navigateAvatar }) => {
             >
               Profile
             </li>
+            <div className="bg-[rgb(50,50,50)] mt-[1px] h-[1px]" />
             <li
               className="px-4 py-3 hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer "
               onClick={clickLogOut}
@@ -136,7 +138,7 @@ export default function Header() {
               {user.avatar ? (
                 <div
                   className={
-                    "w-[100px] h-[100px] scale-[0.35] rounded-full -mt-3 me-1 absolute top-0 right-0"
+                    "w-[100px] h-[100px] scale-[0.35] rounded-full -mt-4 me-1 absolute top-0 right-0"
                   }
                   style={{
                     backgroundImage: "url('" + user.avatar + "')",
@@ -145,7 +147,7 @@ export default function Header() {
                 ></div>
               ) : (
                 <div
-                  className="w-[100px] h-[100px] scale-[0.35] rounded-full -mt-3 me-1 absolute top-0 right-0 bg-black"
+                  className="w-[100px] h-[100px] scale-[0.35] rounded-full -mt-4 me-1 absolute top-0 right-0 bg-black"
                   onClick={avatarClick}
                 >
                   <IoPersonOutline

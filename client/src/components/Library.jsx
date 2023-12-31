@@ -1,34 +1,83 @@
 import { Box } from "@chakra-ui/react";
-import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useRef, useState } from "react";
 import { FaList, FaPlus } from "react-icons/fa6";
 import { FaArrowRight } from "react-icons/fa6";
-import { LuAlignJustify } from "react-icons/lu";
 import ExpandIcon from "./ExpandIcon";
 import CollapseIcon from "./CollapseIcon";
 import "../styles/searchbar.css";
 import { useResizeDetector } from "react-resize-detector";
-function useOutsideSearch(ref) {
+import VerticalNavigateCreateLibrary from "./VerticalNavigateCreateLibrary";
+import VerticalNavigateViewModeLibrary from "./VerticalNavigateViewModeLibrary";
+
+function useOutsideComponents(
+  ref1,
+  ref2,
+  setIsOpenVNCreate,
+  ref3,
+  setIsOpenVNViewMode
+) {
   useEffect(() => {
     function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
+      if (ref1.current && !ref1.current.contains(event.target)) {
         document.querySelector(".search-input").style = "width: 0px;";
+      }
+      if (ref2.current && !ref2.current.contains(event.target)) {
+        setIsOpenVNCreate(false);
+      }
+      if (ref3.current && !ref3.current.contains(event.target)) {
+        setIsOpenVNViewMode(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [ref]);
+  }, [ref1, ref2]);
 }
 
 const Library = () => {
   const openSearchBar = (event) => {
     document.querySelector(".search-input").style = "width: 160px;";
   };
-  const wrapperRef = useRef(null);
-  useOutsideSearch(wrapperRef);
+  const searchRef = useRef(null);
+
+  const [isOpenVNCreate, setIsOpenVNCreate] = useState(false);
+  const openVerticalNavigateCreate = (e) => {
+    setIsOpenVNCreate(!isOpenVNCreate);
+  };
+  const [positionVNCreate, setPositionVNCreate] = useState(205);
+  const createBtnRef = useRef(null);
+  useEffect(() => {
+    if (createBtnRef.current) {
+      setPositionVNCreate(
+        Math.floor(createBtnRef.current.getBoundingClientRect().left - 16)
+      );
+    }
+  }, [createBtnRef.current?.getBoundingClientRect().left]);
+
+  const [isOpenVNViewMode, setIsOpenVNViewMode] = useState(false);
+  const openVerticalNavigateViewMode = (e) => {
+    setIsOpenVNViewMode(!isOpenVNViewMode);
+  };
+
+  const [positionVNViewMode, setPositionVNViewMode] = useState(205);
+  const viewModeBtnRef = useRef(null);
+
+  useEffect(() => {
+    if (viewModeBtnRef.current) {
+      setPositionVNViewMode(
+        Math.floor(viewModeBtnRef.current.getBoundingClientRect().left - 20)
+      );
+    }
+  }, [viewModeBtnRef.current?.getBoundingClientRect().left]);
+
+  useOutsideComponents(
+    searchRef,
+    createBtnRef,
+    setIsOpenVNCreate,
+    viewModeBtnRef,
+    setIsOpenVNViewMode
+  );
 
   const { width, height, ref } = useResizeDetector();
   const [resizeStyle, setResizeStyle] = useState(false);
@@ -45,10 +94,31 @@ const Library = () => {
   const expandSidebarFunc = () => {
     document.querySelector(".app-sidebar").style = "width: 290px";
   };
+
+  const [sortBy, setSortBy] = useState("Recents");
+  const [viewAs, setViewAs] = useState("List");
+  
   return (
-    <>
-      <div className="relative overflow-x-hidden h-[100px]" ref={ref}>
-        {" "}
+    <div className="relative">
+      {isOpenVNCreate ? (
+        <VerticalNavigateCreateLibrary leftPos={positionVNCreate} />
+      ) : (
+        ""
+      )}
+      <VerticalNavigateViewModeLibrary
+        leftPos={positionVNViewMode}
+        sortBy={sortBy}
+        viewAs={viewAs}
+        setSortBy={setSortBy}
+        setViewAs={setViewAs}
+        isHidden={!isOpenVNViewMode}
+      />
+      <div
+        className={`relative overflow-x-hidden ${
+          resizeStyle ? "h-[50px]" : "h-[100px]"
+        }`}
+        ref={ref}
+      >
         <div className="flex justify-between">
           <Box marginTop={2} padding="4px 12px 4px 20px" className="flex">
             {!resizeStyle ? (
@@ -69,7 +139,11 @@ const Library = () => {
               resizeStyle ? "hidden" : ""
             }`}
           >
-            <div className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white mt-1 me-[10px] rounded-full p-1">
+            <div
+              className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white mt-1 me-[10px] rounded-full p-1"
+              onClick={openVerticalNavigateCreate}
+              ref={createBtnRef}
+            >
               <FaPlus
                 color="#b3b3b3"
                 size={"20px"}
@@ -105,9 +179,9 @@ const Library = () => {
           </div>
         </div>
       </div>
-      <div className="h-[410px] overflow-y-scroll">
+      <div>
         <div
-          className={`flex justify-between mb-3 mt-1 ms-2 ${
+          className={`flex justify-between mb-3 mt-1 ms-2 me-3 m ${
             resizeStyle ? "hidden" : ""
           }`}
         >
@@ -115,7 +189,7 @@ const Library = () => {
             <div
               className="search-icon flex flex-col justify-center hover:bg-[rgb(35,35,35)] hover:text-white text-[#b3b3b3] px-1 py-1 relative z-10 rounded-full w-[30px] h-[30px] cursor-pointer"
               onClick={openSearchBar}
-              ref={wrapperRef}
+              ref={searchRef}
             >
               <svg
                 width="16"
@@ -149,18 +223,26 @@ const Library = () => {
             />
           </div>
           <div
-            className="flex justify-between w-[77px] rounded-full font-normal text-[10px] focus:outline-none cursor-pointer mt-[6px] me-[4px] text-[#b3b3b3] hover:text-white"
+            className="flex justify-end w-[130px] rounded-full font-normal focus:outline-none cursor-pointer mt-[9px] me-[4px] text-[#b3b3b3] hover:text-white"
             style={{
               background: "none",
-              fontSize: "16px",
+              fontSize: "14px",
             }}
+            onClick={openVerticalNavigateViewMode}
+            ref={viewModeBtnRef}
           >
-            Recents
-            <FaList className="mt-[6px]" size="16px" />
+            {sortBy}
+            <FaList
+              className="ms-[6px] mt-[3px]"
+              style={{ fontSize: "18px" }}
+            />
           </div>
         </div>
-        <div>
-          {/*flex gap-2 p-2 items-center*/}
+        <div
+          className={`${
+            resizeStyle ? "h-[435px]" : "h-[330px]"
+          } overflow-y-scroll scroll-smooth`}
+        >
           <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
             <div class="h-[50px] w-[50px] ">
               <img
@@ -181,9 +263,230 @@ const Library = () => {
               </span>
             </div>
           </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 9 songs
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+            <div class="h-[50px] w-[50px] ">
+              <img
+                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                alt="track"
+              />
+            </div>
+            <div
+              class={`listsong-info flex flex-col ${
+                resizeStyle ? "hidden" : ""
+              }`}
+            >
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                Chìm Sâu
+              </span>
+              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                Playlists • 10 songs
+              </span>
+            </div>
+          </div>
+          <div className="h-[10px]"></div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

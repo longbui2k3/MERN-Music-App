@@ -7,7 +7,10 @@ import Header from "./Header";
 import MusicPlayer from "./MusicPlayer";
 import { styled } from "styled-components";
 import { useResizeDetector } from "react-resize-detector";
+import VerticalNavigateCreateLibrary from "./VerticalNavigateCreateLibrary";
+import VerticalNavigateViewModeLibrary from "./VerticalNavigateViewModeLibrary";
 const Container = styled.div`
+  position: relative;
   display: grid;
   grid-template-rows: 88vh 12vh;
   background-color: rgb(0 0 0);
@@ -18,7 +21,7 @@ const Container = styled.div`
     overflow: auto;
   }
   .footer {
-    z-index: 30;
+    z-index: 3;
   }
   .top-menu {
     border-radius: 5px;
@@ -32,6 +35,7 @@ const Container = styled.div`
     background-color: #121212;
     color: #b3b3b3;
     padding: 8px 0px 8px 8px;
+    z-index: 5;
   }
 `;
 function PageHome({ children }) {
@@ -83,11 +87,11 @@ function PageHome({ children }) {
       <div className="app-container">
         <div
           ref={sidebarRef}
-          className={`app-sidebar`}
+          className={"app-sidebar"}
           style={{ width: sidebarWidth < 290 ? 93 : sidebarWidth }}
           onMouseDown={(e) => e.preventDefault()}
         >
-          <div className={"app-sidebar-content"}>
+          <div className={"app-sidebar-content "}>
             <div className="top-menu">
               <TopMenu />
             </div>
@@ -95,6 +99,7 @@ function PageHome({ children }) {
               <Library />
             </div>
           </div>
+
           <div className={"app-sidebar-resizer"} onMouseDown={startResizing} />
         </div>
         <div className="app-frame">
