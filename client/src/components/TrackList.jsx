@@ -16,10 +16,8 @@ export default function MusicList() {
   const [playingIndex, setPlayingIndex] = useState(null);
   const [isHoveredHeartIcon, setIsHoveredHeartIcon] = useState(null);
   const [likedSong, setLikedSong] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   let params = useParams();
   useEffect(() => {
-    setIsLoading(true);
     const getAllSongs = async () => {
       try {
         const songsData = await getPlaylist(params.id);
@@ -31,8 +29,6 @@ export default function MusicList() {
         setSongs(songsData.data.playlist.songs);
       } catch (err) {
         console.log(err);
-      } finally {
-        setIsLoading(false);
       }
     };
     getAllSongs();
