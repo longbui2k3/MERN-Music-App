@@ -8,6 +8,7 @@ import "../styles/searchbar.css";
 import { useResizeDetector } from "react-resize-detector";
 import VerticalNavigateCreateLibrary from "./VerticalNavigateCreateLibrary";
 import VerticalNavigateViewModeLibrary from "./VerticalNavigateViewModeLibrary";
+import { IoIosList } from "react-icons/io";
 
 function useOutsideComponents(
   ref1,
@@ -97,7 +98,7 @@ const Library = () => {
 
   const [sortBy, setSortBy] = useState("Recents");
   const [viewAs, setViewAs] = useState("List");
-  
+
   return (
     <div className="relative">
       {isOpenVNCreate ? (
@@ -232,10 +233,11 @@ const Library = () => {
             ref={viewModeBtnRef}
           >
             {sortBy}
-            <FaList
+            <IoIosList size={18} color="white" className="ms-[6px] mt-[3px]" />
+            {/* <FaList
               className="ms-[6px] mt-[3px]"
               style={{ fontSize: "18px" }}
-            />
+            /> */}
           </div>
         </div>
         <div

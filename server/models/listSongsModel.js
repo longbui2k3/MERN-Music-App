@@ -12,6 +12,7 @@ const listSongsSchema = mongoose.Schema({
   imageURL: {
     type: String,
   },
+  description: { type: String, default: "This is some description" },
   singers: [{ type: mongoose.Schema.ObjectId, ref: "Singer" }],
   songs: [{ type: mongoose.Schema.ObjectId, ref: "Song" }],
 });

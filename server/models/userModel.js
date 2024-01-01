@@ -56,7 +56,7 @@ const userSchema = mongoose.Schema(
       validate: {
         validator: function (val) {
           if (this.typeOfAccount === "facebook") return val ? true : false;
-          return false;
+          return true;
         },
         message: "Please enter your federated id!",
       },
@@ -92,8 +92,7 @@ userSchema.pre("save", async function (next) {
   if (this.typeOfAccount === "normal") {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
-  }
-  else {
+  } else {
     const salt = await bcrypt.genSalt(10);
     this.uid = await bcrypt.hash(this.uid, salt);
   }

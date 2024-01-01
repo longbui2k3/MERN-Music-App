@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { AiFillClockCircle, AiOutlineHeart } from "react-icons/ai";
-import SongAPI from "../api/SongAPI";
 import ActionBar from "./ActionBar";
 import HeaderCover from "./HeaderCover";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { IoIosMore } from "react-icons/io";
 import { SingerAPI } from "../api";
+import { getPlaylist } from "../api/PlaylistAPI";
+import { useParams } from "react-router-dom";
 
 export default function MusicList() {
   const [songs, setSongs] = useState([]);
@@ -15,22 +16,25 @@ export default function MusicList() {
   const [playingIndex, setPlayingIndex] = useState(null);
   const [isHoveredHeartIcon, setIsHoveredHeartIcon] = useState(null);
   const [likedSong, setLikedSong] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  let params = useParams();
   useEffect(() => {
+    setIsLoading(true);
     const getAllSongs = async () => {
       try {
-        const songsData = await SongAPI.getAllSong();
-        for (const song of songsData.data.data) {
+        const songsData = await getPlaylist(params.id);
+        for (const song of songsData.data.playlist.songs) {
           song.artistObject = (
             await SingerAPI.getSingerById(song.artist)
           ).data.singer;
-          console.log(song.artistObject);
         }
-        setSongs(songsData.data.data);
+        setSongs(songsData.data.playlist.songs);
       } catch (err) {
         console.log(err);
+      } finally {
+        setIsLoading(false);
       }
     };
-
     getAllSongs();
   }, []);
 
