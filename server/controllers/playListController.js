@@ -36,8 +36,7 @@ exports.getPlaylistById = async (req, res, next) => {
   try {
     const playlistId = req.params.playlistId;
 
-    const playlist = await ListSongs.findById(playlistId);
-
+    const playlist = await ListSongs.findById(playlistId).populate("songs");
     res.status(200).json({
       status: "success",
       playlist,

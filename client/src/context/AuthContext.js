@@ -5,11 +5,9 @@ import {
   signOut,
   onAuthStateChanged,
   FacebookAuthProvider,
-  getAdditionalUserInfo,
 } from "firebase/auth";
 import { auth } from "../config/firebase";
 import { useDispatch } from "react-redux";
-import { setAvatarAuth } from "../features/signUp/signUpAuthSlice";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
