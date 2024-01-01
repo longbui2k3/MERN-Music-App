@@ -20,7 +20,7 @@ export default function HeaderCoverProfile() {
               className="absolute  text-[48px] w-[100%] text-white"
               style={{ margin: "auto auto" }}
             />
-            <p className="text-white mt-[35%]">Choose a photo</p>
+            <p className="text-white mt-[40%]">Choose a photo</p>
           </>
         ) : (
           <FontAwesomeIcon
