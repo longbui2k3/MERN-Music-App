@@ -7,8 +7,8 @@ import Header from "./Header";
 import MusicPlayer from "./MusicPlayer";
 import { styled } from "styled-components";
 import { useResizeDetector } from "react-resize-detector";
-import VerticalNavigateCreateLibrary from "./VerticalNavigateCreateLibrary";
-import VerticalNavigateViewModeLibrary from "./VerticalNavigateViewModeLibrary";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import { FreeMode, Navigation } from "swiper/modules";
 const Container = styled.div`
   position: relative;
   display: grid;
@@ -89,7 +89,6 @@ function PageHome({ children }) {
           ref={sidebarRef}
           className={"app-sidebar"}
           style={{ width: sidebarWidth < 290 ? 93 : sidebarWidth }}
-          onMouseDown={(e) => e.preventDefault()}
         >
           <div className={"app-sidebar-content "}>
             <div className="top-menu">

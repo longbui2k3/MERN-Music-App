@@ -1,4 +1,4 @@
-import { ChevronLeftIcon } from "@chakra-ui/icons";
+import { GoChevronLeft } from "react-icons/go";
 import { Logo } from "./Logo";
 import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -167,8 +167,8 @@ export default function SignUpFacebookStep1() {
           <div class="h-full bg-[#1ED760] absolute w-2/3"></div>
         </div>
         <div className="mt-6 mb-6 flex">
-          <ChevronLeftIcon
-            boxSize={10}
+          <GoChevronLeft
+            fontSize={36}
             color="#a7a7a7"
             className="mt-2 hover:text-white cursor-pointer"
             onClick={clickBackFunc}

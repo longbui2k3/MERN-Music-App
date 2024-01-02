@@ -4,7 +4,7 @@ import { TbMusicPlus } from "react-icons/tb";
 export default function VerticalNavigateCreateLibrary({ leftPos }) {
   return (
     <nav
-      className={`navigate-create absolute top-[48px] z-[1000] w-[220px] bg-[rgb(40,40,40)] rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)] overflow-hidden`}
+      className={`navigate-create absolute top-[184px] z-[1000] w-[220px] bg-[rgb(40,40,40)] rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)] overflow-hidden`}
       style={{ left: `${leftPos}px` }}
     >
       <ul>

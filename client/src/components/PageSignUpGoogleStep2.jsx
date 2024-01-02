@@ -1,4 +1,3 @@
-// import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { Text, Button } from "@chakra-ui/react";
 import { Logo } from "./Logo";
 import { Checkbox, CheckboxGroup } from "@chakra-ui/react";
@@ -8,6 +7,7 @@ import { useSelector } from "react-redux";
 import { SignUpGoogle } from "../api";
 import { Navigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+import { GoChevronLeft } from "react-icons/go";
 export default function SignUpGoogleStep2() {
   const {
     handleSubmit,
@@ -28,7 +28,14 @@ export default function SignUpGoogleStep2() {
   const avatar = useSelector((state) => state.signUpAuth.avatar);
   async function onSubmit() {
     try {
-      const res = await SignUpGoogle(email, uid, name, dateOfBirth, gender, avatar);
+      const res = await SignUpGoogle(
+        email,
+        uid,
+        name,
+        dateOfBirth,
+        gender,
+        avatar
+      );
       setIsLoginSuccessfully(true);
       setCookie("jwt", res.data.token, {
         path: "/",
@@ -57,12 +64,12 @@ export default function SignUpGoogleStep2() {
             <div class="h-full bg-[#1ED760] absolute w-full"></div>
           </div>
           <div className="mt-6 mb-6 flex">
-            {/* <ChevronLeftIcon
-              boxSize={10}
+            <GoChevronLeft
+              fontSize={36}
               color="#a7a7a7"
               className="mt-2 hover:text-white cursor-pointer"
               onClick={clickBackFunc}
-            /> */}
+            />
             <div className="ms-3">
               <Text className="text-[#a7a7a7] font-bold">Step 2 of 2</Text>
               <Text className="text-white font-bold mt-1">

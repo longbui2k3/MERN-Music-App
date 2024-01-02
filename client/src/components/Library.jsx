@@ -1,7 +1,11 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Tooltip } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
-import { FaList, FaPlus } from "react-icons/fa6";
-import { FaArrowRight } from "react-icons/fa6";
+import {
+  GoPlus,
+  GoArrowRight,
+  GoChevronLeft,
+  GoChevronRight,
+} from "react-icons/go";
 import ExpandIcon from "./ExpandIcon";
 import CollapseIcon from "./CollapseIcon";
 import "../styles/searchbar.css";
@@ -9,7 +13,17 @@ import { useResizeDetector } from "react-resize-detector";
 import VerticalNavigateCreateLibrary from "./VerticalNavigateCreateLibrary";
 import VerticalNavigateViewModeLibrary from "./VerticalNavigateViewModeLibrary";
 import { IoIosList } from "react-icons/io";
+import { HiOutlineBars3 } from "react-icons/hi2";
+import { IoGridOutline } from "react-icons/io5";
+import { Swiper, SwiperSlide } from "swiper/react";
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
+// import "swiper/css/navigation";
+import "../styles/swiper.css";
 
+// import required modules
+import { FreeMode, Pagination, Navigation } from "swiper/modules";
 function useOutsideComponents(
   ref1,
   ref2,
@@ -30,9 +44,9 @@ function useOutsideComponents(
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    // return () => {
+    //   document.removeEventListener("mousedown", handleClickOutside);
+    // };
   }, [ref1, ref2]);
 }
 
@@ -46,31 +60,13 @@ const Library = () => {
   const openVerticalNavigateCreate = (e) => {
     setIsOpenVNCreate(!isOpenVNCreate);
   };
-  const [positionVNCreate, setPositionVNCreate] = useState(205);
   const createBtnRef = useRef(null);
-  useEffect(() => {
-    if (createBtnRef.current) {
-      setPositionVNCreate(
-        Math.floor(createBtnRef.current.getBoundingClientRect().left - 16)
-      );
-    }
-  }, [createBtnRef.current?.getBoundingClientRect().left]);
 
   const [isOpenVNViewMode, setIsOpenVNViewMode] = useState(false);
   const openVerticalNavigateViewMode = (e) => {
     setIsOpenVNViewMode(!isOpenVNViewMode);
   };
-
-  const [positionVNViewMode, setPositionVNViewMode] = useState(205);
   const viewModeBtnRef = useRef(null);
-
-  useEffect(() => {
-    if (viewModeBtnRef.current) {
-      setPositionVNViewMode(
-        Math.floor(viewModeBtnRef.current.getBoundingClientRect().left - 20)
-      );
-    }
-  }, [viewModeBtnRef.current?.getBoundingClientRect().left]);
 
   useOutsideComponents(
     searchRef,
@@ -99,15 +95,25 @@ const Library = () => {
   const [sortBy, setSortBy] = useState("Recents");
   const [viewAs, setViewAs] = useState("List");
 
+  function mouseEnterLibraryLabel() {
+    document.querySelector(".library-label svg").style.fill = "white";
+    document.querySelector(".library-label").style.color = "white";
+  }
+  function mouseLeaveLibraryLabel() {
+    document.querySelector(".library-label svg").style.fill = "#b3b3b3";
+    document.querySelector(".library-label").style.color = "#b3b3b3";
+  }
   return (
-    <div className="relative">
+    <div>
       {isOpenVNCreate ? (
-        <VerticalNavigateCreateLibrary leftPos={positionVNCreate} />
+        <VerticalNavigateCreateLibrary
+          leftPos={createBtnRef.current?.getBoundingClientRect().left}
+        />
       ) : (
         ""
       )}
       <VerticalNavigateViewModeLibrary
-        leftPos={positionVNViewMode}
+        leftPos={viewModeBtnRef.current?.getBoundingClientRect().left - 109}
         sortBy={sortBy}
         viewAs={viewAs}
         setSortBy={setSortBy}
@@ -123,95 +129,167 @@ const Library = () => {
         <div className="flex justify-between">
           <Box marginTop={2} padding="4px 12px 4px 20px" className="flex">
             {!resizeStyle ? (
-              <ExpandIcon onClick={collapseSidebarFunc} />
+              <Tooltip
+                label="Collapse Your Library"
+                placement="top-end"
+                bg="rgb(40,40,40)"
+              >
+                <div
+                  className="library-label flex cursor-pointer text-[#b3b3b3]"
+                  onClick={collapseSidebarFunc}
+                  onMouseEnter={mouseEnterLibraryLabel}
+                  onMouseLeave={mouseLeaveLibraryLabel}
+                >
+                  <ExpandIcon className="fill-[#b3b3b3]" />
+                  <span className={`ml-[15px] text-[16px] font-bold`}>
+                    Your Library
+                  </span>
+                </div>
+              </Tooltip>
             ) : (
-              <CollapseIcon onClick={expandSidebarFunc} />
+              <Tooltip
+                label="Expand Your Library"
+                placement="right"
+                bg="rgb(40,40,40)"
+              >
+                <div>
+                  <CollapseIcon
+                    onClick={expandSidebarFunc}
+                    className={"fill-[#b3b3b3] hover:fill-white"}
+                  />
+                </div>
+              </Tooltip>
             )}{" "}
-            <span
-              className={`ml-[15px] text-[16px] font-bold  ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              Library
-            </span>
           </Box>
           <div
             className={`mt-[8px] me-2 flex flex-row ${
               resizeStyle ? "hidden" : ""
             }`}
           >
-            <div
-              className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white mt-1 me-[10px] rounded-full p-1"
-              onClick={openVerticalNavigateCreate}
-              ref={createBtnRef}
+            <Tooltip
+              label="Create playlist or folder"
+              placement="top"
+              bg="rgb(40,40,40)"
             >
-              <FaPlus
-                color="#b3b3b3"
-                size={"20px"}
-                style={{
-                  background: "none",
-                }}
-              />
-            </div>
-            <div className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white mt-1 me-[10px] rounded-full p-1">
-              <FaArrowRight
-                color="#b3b3b3"
-                size={"20px"}
-                style={{
-                  background: "none",
-                }}
-              />
-            </div>
+              <div
+                className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white me-[10px] rounded-full p-1"
+                onClick={openVerticalNavigateCreate}
+                ref={createBtnRef}
+              >
+                <GoPlus
+                  color="#b3b3b3"
+                  size={"25px"}
+                  style={{
+                    background: "none",
+                  }}
+                />
+              </div>
+            </Tooltip>
+            <Tooltip label="Show more" placement="top" bg="rgb(40,40,40)">
+              <div className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white me-[10px] rounded-full p-1">
+                <GoArrowRight
+                  color="#b3b3b3"
+                  size={"25px"}
+                  style={{
+                    background: "none",
+                  }}
+                />
+              </div>
+            </Tooltip>
           </div>
         </div>
         <div
-          className={`flex mt-4 ms-2 absolute w-[1000px] ${
+          className={`relative ms-2 me-4 mt-4 mb-2 z-50 ${
             resizeStyle ? "hidden" : ""
           }`}
         >
-          <div className="bg-[rgb(35,35,35)] py-1 px-3 text-white rounded-[10px] me-2 hover:bg-[rgb(50,50,50)] cursor-pointer">
-            Playlists
+          <div className="swiper-button image-swiper-button-next">
+            <GoChevronRight />
           </div>
-          <div className="bg-[rgb(35,35,35)] py-1 px-3 text-white rounded-[10px] me-2 hover:bg-[rgb(50,50,50)] cursor-pointer">
-            Albums
+          <div className="swiper-button image-swiper-button-prev">
+            <GoChevronLeft />
           </div>
-          <div className="bg-[rgb(35,35,35)] py-1 px-3 text-white rounded-[10px] me-2 hover:bg-[rgb(50,50,50)] cursor-pointer">
-            Podcasts & Shows
-          </div>
+          <Swiper
+            // navigation={true}
+            spaceBetween={10}
+            keyboard={true}
+            slidesPerView={"auto"}
+            freeMode={true}
+            modules={[FreeMode, Navigation]}
+            className={`mySwiper`}
+            navigation={{
+              nextEl: ".image-swiper-button-next",
+              prevEl: ".image-swiper-button-prev",
+              disabledClass: "swiper-button-disabled",
+            }}
+          >
+            <SwiperSlide
+              className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
+              style={{
+                width: "fit-content",
+              }}
+            >
+              Playlists
+            </SwiperSlide>
+            <SwiperSlide
+              className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
+              style={{
+                width: "fit-content",
+              }}
+            >
+              Albums
+            </SwiperSlide>
+            <SwiperSlide
+              className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
+              style={{
+                width: "fit-content",
+              }}
+            >
+              Podcasts & Shows
+            </SwiperSlide>
+          </Swiper>
         </div>
       </div>
       <div>
         <div
-          className={`flex justify-between mb-3 mt-1 ms-2 me-3 m ${
+          className={`flex justify-between mb-3 mt-0 ms-2 me-3 ${
             resizeStyle ? "hidden" : ""
           }`}
         >
-          <div className="flex justify-center items-center rounded-lg relative mt-1 bg-[rgb(35,35,35)]">
-            <div
-              className="search-icon flex flex-col justify-center hover:bg-[rgb(35,35,35)] hover:text-white text-[#b3b3b3] px-1 py-1 relative z-10 rounded-full w-[30px] h-[30px] cursor-pointer"
-              onClick={openSearchBar}
-              ref={searchRef}
+          <div
+            className="flex justify-center items-center rounded-lg relative mt-1 bg-[rgb(35,35,35)]"
+            ref={searchRef}
+          >
+            <Tooltip
+              label="Search in Your Library"
+              placement="top-end"
+              bg="rgb(40,40,40)"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ margin: "0px auto" }}
+              <div
+                className="search-icon flex flex-col justify-center hover:bg-[rgb(35,35,35)] hover:text-white text-[#b3b3b3] px-1 py-1 relative z-10 rounded-full w-[30px] h-[30px] cursor-pointer"
+                onClick={openSearchBar}
               >
-                <path
-                  d="M19 19L13 13M15 8C15 8.91925 14.8189 9.82951 14.4672 10.6788C14.1154 11.5281 13.5998 12.2997 12.9497 12.9497C12.2997 13.5998 11.5281 14.1154 10.6788 14.4672C9.82951 14.8189 8.91925 15 8 15C7.08075 15 6.1705 14.8189 5.32122 14.4672C4.47194 14.1154 3.70026 13.5998 3.05025 12.9497C2.40024 12.2997 1.88463 11.5281 1.53284 10.6788C1.18106 9.82951 1 8.91925 1 8C1 6.14348 1.7375 4.36301 3.05025 3.05025C4.36301 1.7375 6.14348 1 8 1C9.85652 1 11.637 1.7375 12.9497 3.05025C14.2625 4.36301 15 6.14348 15 8Z"
-                  stroke="#b3b3b3"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  style={{ margin: "0px auto" }}
+                >
+                  <path
+                    d="M19 19L13 13M15 8C15 8.91925 14.8189 9.82951 14.4672 10.6788C14.1154 11.5281 13.5998 12.2997 12.9497 12.9497C12.2997 13.5998 11.5281 14.1154 10.6788 14.4672C9.82951 14.8189 8.91925 15 8 15C7.08075 15 6.1705 14.8189 5.32122 14.4672C4.47194 14.1154 3.70026 13.5998 3.05025 12.9497C2.40024 12.2997 1.88463 11.5281 1.53284 10.6788C1.18106 9.82951 1 8.91925 1 8C1 6.14348 1.7375 4.36301 3.05025 3.05025C4.36301 1.7375 6.14348 1 8 1C9.85652 1 11.637 1.7375 12.9497 3.05025C14.2625 4.36301 15 6.14348 15 8Z"
+                    stroke="#b3b3b3"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            </Tooltip>
             <input
               class={
-                "listsong search-input rounded-r-lg text-[14px] text-[#b3b3b3] outline-none focus:outline-none:focus bg-[rgb(35,35,35)] p-[5px] w-0"
+                "search-input rounded-r-lg text-[14px] text-[#b3b3b3] bg-[rgb(35,35,35)] p-[5px] w-0"
               }
               type="search"
               autocomplete="off"
@@ -224,25 +302,46 @@ const Library = () => {
             />
           </div>
           <div
-            className="flex justify-end w-[130px] rounded-full font-normal focus:outline-none cursor-pointer mt-[9px] me-[4px] text-[#b3b3b3] hover:text-white"
+            className="viewas flex justify-end rounded-full font-normal focus:outline-none cursor-pointer mt-[9px] me-[4px] text-[#b3b3b3] hover:text-white"
             style={{
               background: "none",
               fontSize: "14px",
+              minWidth: "0px",
             }}
             onClick={openVerticalNavigateViewMode}
             ref={viewModeBtnRef}
           >
-            {sortBy}
-            <IoIosList size={18} color="white" className="ms-[6px] mt-[3px]" />
-            {/* <FaList
-              className="ms-[6px] mt-[3px]"
-              style={{ fontSize: "18px" }}
-            /> */}
+            <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">
+              {sortBy}
+            </div>
+            <div className="w-[23px]">
+              {viewAs === "List" ? (
+                <IoIosList
+                  size={20}
+                  color="white"
+                  className="ms-[6px] mt-[2px]"
+                />
+              ) : viewAs === "Compact" ? (
+                <HiOutlineBars3
+                  size={20}
+                  color="white"
+                  className="ms-[6px] mt-[2px]"
+                />
+              ) : viewAs === "Grid" ? (
+                <IoGridOutline
+                  size={19}
+                  color="white"
+                  className="ms-[6px] mt-[2px]"
+                />
+              ) : (
+                ""
+              )}
+            </div>
           </div>
         </div>
         <div
           className={`${
-            resizeStyle ? "h-[435px]" : "h-[330px]"
+            resizeStyle ? "h-[419px]" : "h-[322px]"
           } overflow-y-scroll scroll-smooth`}
         >
           <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
@@ -265,227 +364,7 @@ const Library = () => {
               </span>
             </div>
           </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 9 songs
-              </span>
-            </div>
-          </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-            <div class="h-[50px] w-[50px] ">
-              <img
-                src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                alt="track"
-              />
-            </div>
-            <div
-              class={`listsong-info flex flex-col ${
-                resizeStyle ? "hidden" : ""
-              }`}
-            >
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                Chìm Sâu
-              </span>
-              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                Playlists • 10 songs
-              </span>
-            </div>
-          </div>
-          <div className="h-[10px]"></div>
+          <div className="h-[5px]"></div>
         </div>
       </div>
     </div>

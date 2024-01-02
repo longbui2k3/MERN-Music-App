@@ -40,7 +40,7 @@ export default function VerticalNavigateViewModeLibrary({
 
   return (
     <nav
-      className={`navigate-viewmode absolute top-[150px] z-[1000] w-[180px] bg-[rgb(40,40,40)] rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)]`}
+      className={`navigate-viewmode absolute top-[275px] z-[1000] w-[180px] bg-[rgb(40,40,40)] rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)]`}
       style={{
         left: `${leftPos}px`,
         zIndex: "100",

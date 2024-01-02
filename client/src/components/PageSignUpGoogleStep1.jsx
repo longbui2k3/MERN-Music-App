@@ -1,4 +1,3 @@
-// import { ChevronLeftIcon } from "@chakra-ui/icons";
 import { Logo } from "./Logo";
 import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -18,6 +17,7 @@ import { UserAuth } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
 import { CheckExistEmail } from "../api";
 import { ShowNotify } from "./ShowNotify";
+import { GoChevronLeft } from "react-icons/go";
 export default function SignUpGoogleStep1() {
   const dispatch = useDispatch();
   const { userAuth } = UserAuth();
@@ -154,12 +154,12 @@ export default function SignUpGoogleStep1() {
           <div class="h-full bg-[#1ED760] absolute w-2/3"></div>
         </div>
         <div className="mt-6 mb-6 flex">
-          {/* <ChevronLeftIcon
-            boxSize={10}
+          <GoChevronLeft
+            fontSize={36}
             color="#a7a7a7"
             className="mt-2 hover:text-white cursor-pointer"
             onClick={clickBackFunc}
-          /> */}
+          />
           <div className="ms-3">
             <Text className="text-[#a7a7a7] font-bold">Step 1 of 2</Text>
             <Text className="text-white font-bold mt-1">

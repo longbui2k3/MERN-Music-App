@@ -31,6 +31,7 @@
 
 .app-sidebar .app-sidebar-content {
   flex: 1;
+  overflow: hidden;
 }
 
 .app-sidebar .app-sidebar-resizer {
