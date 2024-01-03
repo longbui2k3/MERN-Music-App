@@ -20,6 +20,9 @@ exports.getAllLikedSongsById = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const user = await User.findById(userId).populate("listSongs").exec();
+    if (!user) {
+      throw new Error(`User with id: ${userId} not found`);
+    }
 
     const likedSongs = user.listSongs.filter(
       (item) => item.type === "LikedSongs"

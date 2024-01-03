@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const ListSongs = require("../models/listSongsModel");
+const { startSession } = require("mongoose");
 
 exports.getAllAlbums = async (req, res, next) => {
   try {
@@ -20,6 +21,7 @@ exports.getAllAlbumsById = async (req, res, next) => {
   try {
     const userId = req.params.userId;
     const user = await User.findById(userId).populate("listSongs").exec();
+    if (!user) throw new Error(`User with id: ${userId} not found`);
 
     const albums = user.listSongs.filter((item) => item.type === "Album");
 
@@ -37,6 +39,7 @@ exports.getAlbumById = async (req, res, next) => {
     const albumId = req.params.albumId;
 
     const album = await ListSongs.findById(albumId);
+    if (!album) throw new Error(`Album with id: ${albumId} not found`);
 
     res.status(200).json({
       status: "success",
@@ -48,21 +51,30 @@ exports.getAlbumById = async (req, res, next) => {
 };
 
 exports.createAlbum = async (req, res, next) => {
+  const session = await startSession();
   try {
     const userId = req.params.userId;
 
-    const album = await ListSongs.create(req.body);
+    session.startTransaction();
+    const album = await ListSongs.create([req.body], { session });
 
-    const updatedUser = await User.updateOne(
+    const updatedUser = await User.findOneAndUpdate(
       { _id: userId },
-      { $push: { listSongs: album } }
+      { $push: { listSongs: album } },
+      { session, new: true }
     );
+    if (!updatedUser) throw new Error(`User with id: ${userId} not found`);
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.status(201).json({
       status: "success",
-      updatedUser,
+      album,
     });
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
     next(err);
   }
 };
@@ -71,34 +83,40 @@ exports.updateAlbum = async (req, res, next) => {
   try {
     const albumId = req.params.albumId;
 
-    const updatedAlbum = await ListSongs.findByIdAndUpdate(albumId, req.body);
-
-    res.status(204).json({
-      status: "success",
-      updatedAlbum,
+    const updatedAlbum = await ListSongs.findByIdAndUpdate(albumId, req.body, {
+      session,
+      new: true,
     });
+    if (!updatedAlbum) throw new Error(`Album with id: ${albumId} not found`);
+
+    res.status(204);
   } catch (err) {
     next(err);
   }
 };
 
 exports.deleteAlbum = async (req, res, next) => {
+  const session = await startSession();
   try {
     const userId = req.params.userId;
     const albumId = req.params.albumId;
 
-    const updatedUser = await User.updateOne(
+    session.startTransaction();
+    const updatedUser = await User.findOneAndUpdate(
       { _id: userId },
       { $pull: { listSongs: albumId } }
     );
+    if (!updatedUser) throw new Error(`User with id: ${userId} not found`);
 
-    await ListSongs.findByIdAndDelete(albumId);
+    await ListSongs.findByIdAndDelete(albumId, { session, new: true });
 
-    res.status(200).json({
-      status: "success",
-      updatedUser,
-    });
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(204);
   } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
     next(err);
   }
 };
