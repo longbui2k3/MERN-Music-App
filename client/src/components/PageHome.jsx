@@ -7,8 +7,6 @@ import Header from "./Header";
 import MusicPlayer from "./MusicPlayer";
 import { styled } from "styled-components";
 import { useResizeDetector } from "react-resize-detector";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { FreeMode, Navigation } from "swiper/modules";
 const Container = styled.div`
   position: relative;
   display: grid;
@@ -90,11 +88,11 @@ function PageHome({ children }) {
           className={"app-sidebar"}
           style={{ width: sidebarWidth < 290 ? 93 : sidebarWidth }}
         >
-          <div className={"app-sidebar-content "}>
-            <div className="top-menu">
+          <div className={"app-sidebar-content flex flex-col "}>
+            <div className="h-[120px] top-menu">
               <TopMenu />
             </div>
-            <div className="library">
+            <div className="library grow">
               <Library />
             </div>
           </div>
