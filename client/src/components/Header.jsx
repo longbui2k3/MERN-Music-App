@@ -16,7 +16,7 @@ const VerticalNavigateAvatar = ({ navigateAvatar }) => {
     navigate("#", { replace: true });
   }
   function clickNavigateProfile() {
-    navigate("#");
+    navigate("/user");
   }
   async function clickLogOut() {
     try {

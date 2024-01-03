@@ -64,6 +64,12 @@ export default function SignUpGoogleStep2() {
             <div class="h-full bg-[#1ED760] absolute w-full"></div>
           </div>
           <div className="mt-6 mb-6 flex">
+            {/* <ChevronLeftIcon
+              boxSize={10}
+              color="#a7a7a7"
+              className="mt-2 hover:text-white cursor-pointer"
+              onClick={clickBackFunc}
+            /> */}
             <div className="ms-3">
               <Text className="text-[#a7a7a7] font-bold">Step 2 of 2</Text>
               <Text className="text-white font-bold mt-1">
