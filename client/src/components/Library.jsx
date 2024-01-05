@@ -23,31 +23,43 @@ import "swiper/css/pagination";
 import "../styles/swiper.css";
 
 // import required modules
-import { FreeMode, Pagination, Navigation } from "swiper/modules";
+import { FreeMode, Navigation } from "swiper/modules";
+import { FaRegFolder } from "react-icons/fa6";
 function useOutsideComponents(
-  ref1,
-  ref2,
-  setIsOpenVNCreate,
-  ref3,
-  setIsOpenVNViewMode
+  searchRef,
+  createBtnRef,
+  setIsOpenVNCreateNew,
+  viewModeBtnRef,
+  setIsOpenVNViewMode,
+  libraryRef,
+  setIsOpenVNCreate
 ) {
   useEffect(() => {
     function handleClickOutside(event) {
-      if (ref1.current && !ref1.current.contains(event.target)) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
         document.querySelector(".search-input").style = "width: 0px;";
       }
-      if (ref2.current && !ref2.current.contains(event.target)) {
-        setIsOpenVNCreate(false);
+      if (
+        createBtnRef.current &&
+        !createBtnRef.current.contains(event.target)
+      ) {
+        setIsOpenVNCreateNew(false);
       }
-      if (ref3.current && !ref3.current.contains(event.target)) {
+      if (
+        viewModeBtnRef.current &&
+        !viewModeBtnRef.current.contains(event.target)
+      ) {
         setIsOpenVNViewMode(false);
+      }
+      if (libraryRef.current && !libraryRef.current.contains(event.target)) {
+        setIsOpenVNCreate(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    // return () => {
-    //   document.removeEventListener("mousedown", handleClickOutside);
-    // };
-  }, [ref1, ref2]);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 }
 
 const Library = () => {
@@ -56,9 +68,9 @@ const Library = () => {
   };
   const searchRef = useRef(null);
 
-  const [isOpenVNCreate, setIsOpenVNCreate] = useState(false);
-  const openVerticalNavigateCreate = (e) => {
-    setIsOpenVNCreate(!isOpenVNCreate);
+  const [isOpenVNCreateNew, setIsOpenVNCreateNew] = useState(false);
+  const openVerticalNavigateCreateNew = (e) => {
+    setIsOpenVNCreateNew(!isOpenVNCreateNew);
   };
   const createBtnRef = useRef(null);
 
@@ -67,14 +79,7 @@ const Library = () => {
     setIsOpenVNViewMode(!isOpenVNViewMode);
   };
   const viewModeBtnRef = useRef(null);
-
-  useOutsideComponents(
-    searchRef,
-    createBtnRef,
-    setIsOpenVNCreate,
-    viewModeBtnRef,
-    setIsOpenVNViewMode
-  );
+  const libraryRef = useRef(null);
 
   const { width, height, ref } = useResizeDetector();
   const [resizeStyle, setResizeStyle] = useState(false);
@@ -95,22 +100,54 @@ const Library = () => {
   const [sortBy, setSortBy] = useState("Recents");
   const [viewAs, setViewAs] = useState("List");
 
-  function mouseEnterLibraryLabel() {
-    document.querySelector(".library-label svg").style.fill = "white";
-    document.querySelector(".library-label").style.color = "white";
-  }
-  function mouseLeaveLibraryLabel() {
-    document.querySelector(".library-label svg").style.fill = "#b3b3b3";
-    document.querySelector(".library-label").style.color = "#b3b3b3";
-  }
-
   const headerListSongsRef = useRef(null);
   const listSongRef = useRef(null);
+
+  const [isOpenVNCreate, setIsOpenVNCreate] = useState(false);
+  const openVerticalNavigateCreate = (e) => {
+    e.preventDefault();
+    setIsOpenVNCreate(true);
+  };
+  const [mouse, setMouse] = useState({ left: 0, top: 0 });
+  const closeVerticalNavigateCreate = (e) => {
+    setMouse({ left: e.clientX, top: e.clientY });
+    setIsOpenVNCreate(false);
+  };
+
+  useOutsideComponents(
+    searchRef,
+    createBtnRef,
+    setIsOpenVNCreateNew,
+    viewModeBtnRef,
+    setIsOpenVNViewMode,
+    libraryRef,
+    setIsOpenVNCreate
+  );
+
   return (
-    <div className="h-full flex flex-col">
+    <div
+      className="h-full flex flex-col"
+      onContextMenu={openVerticalNavigateCreate}
+      onMouseDown={closeVerticalNavigateCreate}
+      ref={libraryRef}
+    >
       {isOpenVNCreate ? (
         <VerticalNavigateCreateLibrary
+          leftPos={mouse.left}
+          topPos={mouse.top}
+          text1="Create playlist"
+          icon2={<GoPlus className="my-auto text-[20px] me-3 text-white" />}
+          text2="Create folder"
+        />
+      ) : (
+        ""
+      )}
+      {isOpenVNCreateNew ? (
+        <VerticalNavigateCreateLibrary
           leftPos={createBtnRef.current?.getBoundingClientRect().left}
+          text1="Create a new playlist"
+          icon2={<FaRegFolder className="my-auto text-[20px] me-3" />}
+          text2="Create a new folder"
         />
       ) : (
         ""
@@ -129,7 +166,7 @@ const Library = () => {
         }`}
         ref={ref}
         style={{
-          minHeight: "100px",
+          minHeight: `${resizeStyle ? "0px" : "100px"}`,
         }}
       >
         <div className="flex justify-between">
@@ -143,8 +180,18 @@ const Library = () => {
                 <div
                   className="library-label flex cursor-pointer text-[#b3b3b3]"
                   onClick={collapseSidebarFunc}
-                  onMouseEnter={mouseEnterLibraryLabel}
-                  onMouseLeave={mouseLeaveLibraryLabel}
+                  onMouseEnter={function () {
+                    document.querySelector(".library-label svg").style.fill =
+                      "white";
+                    document.querySelector(".library-label").style.color =
+                      "white";
+                  }}
+                  onMouseLeave={function () {
+                    document.querySelector(".library-label svg").style.fill =
+                      "#b3b3b3";
+                    document.querySelector(".library-label").style.color =
+                      "#b3b3b3";
+                  }}
                 >
                   <ExpandIcon className="fill-[#b3b3b3]" />
                   <span className={`ml-[15px] text-[16px] font-bold`}>
@@ -179,7 +226,7 @@ const Library = () => {
             >
               <div
                 className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white me-[10px] rounded-full p-1"
-                onClick={openVerticalNavigateCreate}
+                onClick={openVerticalNavigateCreateNew}
                 ref={createBtnRef}
               >
                 <GoPlus
@@ -316,7 +363,7 @@ const Library = () => {
               />
             </div>
             <div
-              className="viewas flex justify-end rounded-full font-normal focus:outline-none cursor-pointer mt-[9px] me-[4px] text-[#b3b3b3] hover:text-white"
+              className="viewas flex justify-end rounded-full font-normal focus:outline-none cursor-pointer mt-[9px] me-[4px] text-[#b3b3b3] hover:text-white hover:fill-white"
               style={{
                 background: "none",
                 fontSize: "14px",
@@ -324,6 +371,18 @@ const Library = () => {
               }}
               onClick={openVerticalNavigateViewMode}
               ref={viewModeBtnRef}
+              onMouseEnter={function () {
+                document.querySelector(".viewas svg").style.fill = "white";
+                document.querySelector(".viewas").style.color = "white";
+                document.querySelector(".viewas").style.transform =
+                  "scale(1.05)";
+              }}
+              onMouseLeave={function () {
+                document.querySelector(".viewas svg").style.fill = "#b3b3b3";
+                document.querySelector(".viewas").style.color = "#b3b3b3";
+                document.querySelector(".viewas").style.transform =
+                  "scale(1.0)";
+              }}
             >
               <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">
                 {sortBy}
@@ -332,20 +391,19 @@ const Library = () => {
                 {viewAs === "List" ? (
                   <IoIosList
                     size={20}
-                    color="white"
-                    className="ms-[6px] mt-[1px]"
+                    className="ms-[6px] mt-[1px] fill-[#b3b3b3]"
                   />
                 ) : viewAs === "Compact" ? (
                   <HiOutlineBars3
                     size={20}
-                    color="white"
-                    className="ms-[6px] mt-[2px]"
+                    color="#b3b3b3"
+                    className="ms-[6px] mt-[2px] fill-[#b3b3b3]"
                   />
                 ) : viewAs === "Grid" ? (
                   <IoGridOutline
                     size={19}
-                    color="white"
-                    className="ms-[6px] mt-[2px]"
+                    color="#b3b3b3"
+                    className="ms-[6px] mt-[2px] fill-[#b3b3b3]"
                   />
                 ) : (
                   ""
