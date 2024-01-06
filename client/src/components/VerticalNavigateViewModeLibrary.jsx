@@ -11,6 +11,7 @@ export default function VerticalNavigateViewModeLibrary({
   setSortBy,
   setViewAs,
   isHidden,
+  top,
 }) {
   useEffect(() => {
     console.log(sortBy === "Recents" ? "rgb(29,185,84)" : "white");
@@ -40,9 +41,10 @@ export default function VerticalNavigateViewModeLibrary({
 
   return (
     <nav
-      className={`navigate-viewmode absolute top-[280px] z-[1000] w-[180px] bg-[rgb(40,40,40)] rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)]`}
+      className={`navigate-viewmode absolute z-[1000] w-[180px] bg-[rgb(40,40,40)] rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)]`}
       style={{
         left: `${leftPos}px`,
+        top: `${top}px`,
         zIndex: "100",
         display: `${isHidden ? "none" : "inline"}`,
       }}

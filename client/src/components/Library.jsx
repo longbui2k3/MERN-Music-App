@@ -5,6 +5,7 @@ import {
   GoArrowRight,
   GoChevronLeft,
   GoChevronRight,
+  GoArrowLeft,
 } from "react-icons/go";
 import ExpandIcon from "./ExpandIcon";
 import CollapseIcon from "./CollapseIcon";
@@ -25,6 +26,8 @@ import "../styles/swiper.css";
 // import required modules
 import { FreeMode, Navigation } from "swiper/modules";
 import { FaRegFolder } from "react-icons/fa6";
+import SearchBarLibrary from "./SearchBarLibrary";
+import ViewModeLibrary from "./ViewModeLibrary";
 function useOutsideComponents(
   searchRef,
   createBtnRef,
@@ -63,9 +66,6 @@ function useOutsideComponents(
 }
 
 const Library = () => {
-  const openSearchBar = (event) => {
-    document.querySelector(".search-input").style = "width: 160px;";
-  };
   const searchRef = useRef(null);
 
   const [isOpenVNCreateNew, setIsOpenVNCreateNew] = useState(false);
@@ -80,7 +80,7 @@ const Library = () => {
   };
   const viewModeBtnRef = useRef(null);
   const libraryRef = useRef(null);
-
+  const [isShowMore, setIsShowMore] = useState(false);
   const { width, height, ref } = useResizeDetector();
   const [resizeStyle, setResizeStyle] = useState(false);
   useEffect(() => {
@@ -92,9 +92,10 @@ const Library = () => {
   }, [width]);
   const collapseSidebarFunc = () => {
     document.querySelector(".app-sidebar").style = "width: 93px";
+    setIsShowMore(false);
   };
   const expandSidebarFunc = () => {
-    document.querySelector(".app-sidebar").style = "width: 290px";
+    document.querySelector(".app-sidebar").style = "width: 360px";
   };
 
   const [sortBy, setSortBy] = useState("Recents");
@@ -123,6 +124,15 @@ const Library = () => {
     libraryRef,
     setIsOpenVNCreate
   );
+
+  function showMoreClick() {
+    setIsShowMore(true);
+    document.querySelector(".app-sidebar").style = "width: 600px";
+  }
+  function showLessClick() {
+    setIsShowMore(false);
+    document.querySelector(".app-sidebar").style = "width: 360px";
+  }
 
   return (
     <div
@@ -153,16 +163,17 @@ const Library = () => {
         ""
       )}
       <VerticalNavigateViewModeLibrary
-        leftPos={viewModeBtnRef.current?.getBoundingClientRect().left - 109}
+        leftPos={viewModeBtnRef.current?.getBoundingClientRect().left - 108}
         sortBy={sortBy}
         viewAs={viewAs}
         setSortBy={setSortBy}
         setViewAs={setViewAs}
         isHidden={!isOpenVNViewMode}
+        top={isShowMore ? "235" : "280"}
       />
       <div
         className={`relative overflow-x-hidden ${
-          resizeStyle ? "h-[50px]" : "h-[100px]"
+          resizeStyle ? "h-[50px]" : isShowMore ? "h-[190px]" : "h-[100px]"
         }`}
         ref={ref}
         style={{
@@ -238,69 +249,112 @@ const Library = () => {
                 />
               </div>
             </Tooltip>
-            <Tooltip label="Show more" placement="top" bg="rgb(40,40,40)">
-              <div className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white me-[10px] rounded-full p-1">
-                <GoArrowRight
-                  color="#b3b3b3"
-                  size={"25px"}
-                  style={{
-                    background: "none",
-                  }}
-                />
-              </div>
-            </Tooltip>
+            {!isShowMore ? (
+              <Tooltip label="Show more" placement="top" bg="rgb(40,40,40)">
+                <div className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white me-[10px] rounded-full p-1">
+                  <GoArrowRight
+                    color="#b3b3b3"
+                    size={"25px"}
+                    style={{
+                      background: "none",
+                    }}
+                    onClick={showMoreClick}
+                  />
+                </div>
+              </Tooltip>
+            ) : (
+              <Tooltip label="Show less" placement="top" bg="rgb(40,40,40)">
+                <div className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white me-[10px] rounded-full p-1">
+                  <GoArrowLeft
+                    color="#b3b3b3"
+                    size={"25px"}
+                    style={{
+                      background: "none",
+                    }}
+                    onClick={showLessClick}
+                  />
+                </div>
+              </Tooltip>
+            )}
           </div>
         </div>
-        <div
-          className={`relative ms-2 me-4 mt-4 mb-2 z-50 ${
-            resizeStyle ? "hidden" : ""
-          }`}
-        >
-          <div className="swiper-button image-swiper-button-next">
-            <GoChevronRight />
-          </div>
-          <div className="swiper-button image-swiper-button-prev">
-            <GoChevronLeft />
-          </div>
-          <Swiper
-            // navigation={true}
-            spaceBetween={10}
-            keyboard={true}
-            slidesPerView={"auto"}
-            freeMode={true}
-            modules={[FreeMode, Navigation]}
-            className={`mySwiper`}
-            navigation={{
-              nextEl: ".image-swiper-button-next",
-              prevEl: ".image-swiper-button-prev",
-              disabledClass: "swiper-button-disabled",
-            }}
+        <div className="flex justify-between">
+          <div
+            className={`relative ms-2 me-4 mt-4 mb-2 z-50 ${
+              resizeStyle ? "hidden" : ""
+            }`}
           >
-            <SwiperSlide
-              className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
-              style={{
-                width: "fit-content",
+            <div className="swiper-button image-swiper-button-next">
+              <GoChevronRight />
+            </div>
+            <div className="swiper-button image-swiper-button-prev">
+              <GoChevronLeft />
+            </div>
+            <Swiper
+              // navigation={true}
+              spaceBetween={10}
+              keyboard={true}
+              slidesPerView={"auto"}
+              freeMode={true}
+              modules={[FreeMode, Navigation]}
+              className={`mySwiper`}
+              navigation={{
+                nextEl: ".image-swiper-button-next",
+                prevEl: ".image-swiper-button-prev",
+                disabledClass: "swiper-button-disabled",
               }}
             >
-              Playlists
-            </SwiperSlide>
-            <SwiperSlide
-              className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
-              style={{
-                width: "fit-content",
-              }}
-            >
-              Albums
-            </SwiperSlide>
-            <SwiperSlide
-              className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
-              style={{
-                width: "fit-content",
-              }}
-            >
-              Podcasts & Shows
-            </SwiperSlide>
-          </Swiper>
+              <SwiperSlide
+                className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center text-[14px] font-semibold rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
+                style={{
+                  width: "fit-content",
+                }}
+              >
+                Playlists
+              </SwiperSlide>
+              <SwiperSlide
+                className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center text-[14px] font-semibold rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
+                style={{
+                  width: "fit-content",
+                }}
+              >
+                Albums
+              </SwiperSlide>
+              <SwiperSlide
+                className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center text-[14px] font-semibold rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
+                style={{
+                  width: "fit-content",
+                }}
+              >
+                Podcasts & Shows
+              </SwiperSlide>
+            </Swiper>
+          </div>
+          <div
+            className={`flex mt-3 ms-2 me-3 h-[40px] ${
+              !isShowMore ? "hidden" : ""
+            }`}
+            ref={headerListSongsRef}
+          >
+            {isShowMore ? <SearchBarLibrary searchRef={searchRef} /> : ""}
+            {isShowMore ? (
+              <ViewModeLibrary
+                openVerticalNavigateViewMode={openVerticalNavigateViewMode}
+                viewModeBtnRef={viewModeBtnRef}
+                sortBy={sortBy}
+                viewAs={viewAs}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+        </div>
+        <div className={`ms-2 my-2 ${isShowMore ? "" : "hidden"}`}>
+          <ul className="flex font-semibold text-[14px]">
+            <li className="basis-3/5">Title</li>
+            <li className="basis-[30%]">Date Added</li>
+            <li className="basis-[10%]">Played</li>
+          </ul>
         </div>
       </div>
       <div
@@ -313,103 +367,25 @@ const Library = () => {
         <div className={`listsongs h-[100%] w-full absolute overflow-y-scroll`}>
           <div
             className={`flex justify-between ms-2 me-3 h-[40px] ${
-              resizeStyle ? "hidden" : ""
+              resizeStyle || isShowMore ? "hidden" : ""
             }`}
             ref={headerListSongsRef}
           >
-            <div
-              className="flex justify-center items-center rounded-lg relative mt-1 h-[30px] bg-[rgb(35,35,35)]"
-              ref={searchRef}
-            >
-              <Tooltip
-                label="Search in Your Library"
-                placement="top-end"
-                bg="rgb(40,40,40)"
-              >
-                <div
-                  className="search-icon flex flex-col justify-center hover:bg-[rgb(35,35,35)] hover:text-white text-[#b3b3b3] px-1 py-1 relative z-10 rounded-full w-[30px] h-[30px] cursor-pointer"
-                  onClick={openSearchBar}
-                >
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{ margin: "0px auto" }}
-                  >
-                    <path
-                      d="M19 19L13 13M15 8C15 8.91925 14.8189 9.82951 14.4672 10.6788C14.1154 11.5281 13.5998 12.2997 12.9497 12.9497C12.2997 13.5998 11.5281 14.1154 10.6788 14.4672C9.82951 14.8189 8.91925 15 8 15C7.08075 15 6.1705 14.8189 5.32122 14.4672C4.47194 14.1154 3.70026 13.5998 3.05025 12.9497C2.40024 12.2997 1.88463 11.5281 1.53284 10.6788C1.18106 9.82951 1 8.91925 1 8C1 6.14348 1.7375 4.36301 3.05025 3.05025C4.36301 1.7375 6.14348 1 8 1C9.85652 1 11.637 1.7375 12.9497 3.05025C14.2625 4.36301 15 6.14348 15 8Z"
-                      stroke="#b3b3b3"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-              </Tooltip>
-              <input
-                class={
-                  "search-input rounded-r-lg text-[14px] text-[#b3b3b3] bg-[rgb(35,35,35)] p-[5px] w-0"
-                }
-                type="search"
-                autocomplete="off"
-                spellcheck="false"
-                aria-live="polite"
-                placeholder="Search in Your Library"
-                style={{
-                  transition: "width 0.1s ease-in-out",
-                }}
+            {!resizeStyle && !isShowMore ? (
+              <SearchBarLibrary searchRef={searchRef} />
+            ) : (
+              ""
+            )}
+            {!resizeStyle && !isShowMore ? (
+              <ViewModeLibrary
+                openVerticalNavigateViewMode={openVerticalNavigateViewMode}
+                viewModeBtnRef={viewModeBtnRef}
+                sortBy={sortBy}
+                viewAs={viewAs}
               />
-            </div>
-            <div
-              className="viewas flex justify-end rounded-full font-normal focus:outline-none cursor-pointer mt-[9px] me-[4px] text-[#b3b3b3] hover:text-white hover:fill-white"
-              style={{
-                background: "none",
-                fontSize: "14px",
-                minWidth: "0px",
-              }}
-              onClick={openVerticalNavigateViewMode}
-              ref={viewModeBtnRef}
-              onMouseEnter={function () {
-                document.querySelector(".viewas svg").style.fill = "white";
-                document.querySelector(".viewas").style.color = "white";
-                document.querySelector(".viewas").style.transform =
-                  "scale(1.05)";
-              }}
-              onMouseLeave={function () {
-                document.querySelector(".viewas svg").style.fill = "#b3b3b3";
-                document.querySelector(".viewas").style.color = "#b3b3b3";
-                document.querySelector(".viewas").style.transform =
-                  "scale(1.0)";
-              }}
-            >
-              <div className="overflow-hidden whitespace-nowrap overflow-ellipsis">
-                {sortBy}
-              </div>
-              <div className="w-[23px]">
-                {viewAs === "List" ? (
-                  <IoIosList
-                    size={20}
-                    className="ms-[6px] mt-[1px] fill-[#b3b3b3]"
-                  />
-                ) : viewAs === "Compact" ? (
-                  <HiOutlineBars3
-                    size={20}
-                    color="#b3b3b3"
-                    className="ms-[6px] mt-[2px] fill-[#b3b3b3]"
-                  />
-                ) : viewAs === "Grid" ? (
-                  <IoGridOutline
-                    size={19}
-                    color="#b3b3b3"
-                    className="ms-[6px] mt-[2px] fill-[#b3b3b3]"
-                  />
-                ) : (
-                  ""
-                )}
-              </div>
-            </div>
+            ) : (
+              ""
+            )}
           </div>
           <div>
             {[...Array(9)].map((x, i) => (

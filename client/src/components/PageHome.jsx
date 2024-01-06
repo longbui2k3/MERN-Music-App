@@ -39,7 +39,7 @@ const Container = styled.div`
 function PageHome({ children }) {
   const sidebarRef = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
-  const [sidebarWidth, setSidebarWidth] = useState(290);
+  const [sidebarWidth, setSidebarWidth] = useState(360);
 
   const startResizing = React.useCallback((mouseDownEvent) => {
     setIsResizing(true);
