@@ -242,7 +242,7 @@ const Library = () => {
         </div>
         <div
           className={`${
-            resizeStyle ? "h-[435px]" : "h-[330px]"
+            resizeStyle ? "h-[435px]" : "h-[600px]"
           } overflow-y-scroll scroll-smooth`}
         >
           <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
@@ -465,7 +465,7 @@ const Library = () => {
               </span>
             </div>
           </div>
-          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+          <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full z-0">
             <div class="h-[50px] w-[50px] ">
               <img
                 src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
@@ -485,7 +485,7 @@ const Library = () => {
               </span>
             </div>
           </div>
-          <div className="h-[10px]"></div>
+          <div className="h-[10px] "></div>
         </div>
       </div>
     </div>
