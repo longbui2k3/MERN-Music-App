@@ -12,7 +12,7 @@ export default function SearchBarLibrary({ searchRef }) {
     >
       <Tooltip
         label="Search in Your Library"
-        placement="top-end"
+        placement="top-start"
         bg="rgb(40,40,40)"
       >
         <div

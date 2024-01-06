@@ -13,9 +13,6 @@ import "../styles/searchbar.css";
 import { useResizeDetector } from "react-resize-detector";
 import VerticalNavigateCreateLibrary from "./VerticalNavigateCreateLibrary";
 import VerticalNavigateViewModeLibrary from "./VerticalNavigateViewModeLibrary";
-import { IoIosList } from "react-icons/io";
-import { HiOutlineBars3 } from "react-icons/hi2";
-import { IoGridOutline } from "react-icons/io5";
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import "swiper/css";
@@ -80,22 +77,24 @@ const Library = () => {
   };
   const viewModeBtnRef = useRef(null);
   const libraryRef = useRef(null);
-  const [isShowMore, setIsShowMore] = useState(false);
   const { width, height, ref } = useResizeDetector();
-  const [resizeStyle, setResizeStyle] = useState(false);
+  const [resizeStyle, setResizeStyle] = useState("2");
   useEffect(() => {
     if (width < 223) {
-      setResizeStyle(true);
+      setResizeStyle("1");
+    } else if (width < 570) {
+      setResizeStyle("2");
     } else {
-      setResizeStyle(false);
+      setResizeStyle("3");
     }
   }, [width]);
   const collapseSidebarFunc = () => {
     document.querySelector(".app-sidebar").style = "width: 93px";
-    setIsShowMore(false);
+    setResizeStyle("1");
   };
   const expandSidebarFunc = () => {
     document.querySelector(".app-sidebar").style = "width: 360px";
+    setResizeStyle("2");
   };
 
   const [sortBy, setSortBy] = useState("Recents");
@@ -126,11 +125,11 @@ const Library = () => {
   );
 
   function showMoreClick() {
-    setIsShowMore(true);
+    setResizeStyle("3");
     document.querySelector(".app-sidebar").style = "width: 600px";
   }
   function showLessClick() {
-    setIsShowMore(false);
+    setResizeStyle("2");
     document.querySelector(".app-sidebar").style = "width: 360px";
   }
 
@@ -163,26 +162,30 @@ const Library = () => {
         ""
       )}
       <VerticalNavigateViewModeLibrary
-        leftPos={viewModeBtnRef.current?.getBoundingClientRect().left - 108}
+        leftPos={viewModeBtnRef.current?.getBoundingClientRect().left - 107}
         sortBy={sortBy}
         viewAs={viewAs}
         setSortBy={setSortBy}
         setViewAs={setViewAs}
         isHidden={!isOpenVNViewMode}
-        top={isShowMore ? "235" : "280"}
+        top={resizeStyle === "3" ? "235" : "280"}
       />
       <div
         className={`relative overflow-x-hidden ${
-          resizeStyle ? "h-[50px]" : isShowMore ? "h-[190px]" : "h-[100px]"
+          resizeStyle === "1"
+            ? "h-[50px]"
+            : resizeStyle === "3"
+            ? "h-[195px]"
+            : "h-[70px]"
         }`}
         ref={ref}
         style={{
-          minHeight: `${resizeStyle ? "0px" : "100px"}`,
+          minHeight: `${resizeStyle === "1" ? "0px" : "100px"}`,
         }}
       >
         <div className="flex justify-between">
           <Box marginTop={2} padding="4px 12px 4px 20px" className="flex">
-            {!resizeStyle ? (
+            {!(resizeStyle === "1") ? (
               <Tooltip
                 label="Collapse Your Library"
                 placement="top-end"
@@ -227,7 +230,7 @@ const Library = () => {
           </Box>
           <div
             className={`mt-[8px] me-2 flex flex-row ${
-              resizeStyle ? "hidden" : ""
+              resizeStyle === "1" ? "hidden" : ""
             }`}
           >
             <Tooltip
@@ -249,7 +252,7 @@ const Library = () => {
                 />
               </div>
             </Tooltip>
-            {!isShowMore ? (
+            {!(resizeStyle === "3") ? (
               <Tooltip label="Show more" placement="top" bg="rgb(40,40,40)">
                 <div className="flex flex-col justify-center hover:scale-[1.05] hover:bg-[rgb(35,35,35)] hover:text-white me-[10px] rounded-full p-1">
                   <GoArrowRight
@@ -281,7 +284,7 @@ const Library = () => {
         <div className="flex justify-between">
           <div
             className={`relative ms-2 me-4 mt-4 mb-2 z-50 ${
-              resizeStyle ? "hidden" : ""
+              resizeStyle === "1" ? "hidden" : ""
             }`}
           >
             <div className="swiper-button image-swiper-button-next">
@@ -332,12 +335,16 @@ const Library = () => {
           </div>
           <div
             className={`flex mt-3 ms-2 me-3 h-[40px] ${
-              !isShowMore ? "hidden" : ""
+              !(resizeStyle === "3") ? "hidden" : ""
             }`}
             ref={headerListSongsRef}
           >
-            {isShowMore ? <SearchBarLibrary searchRef={searchRef} /> : ""}
-            {isShowMore ? (
+            {resizeStyle === "3" ? (
+              <SearchBarLibrary searchRef={searchRef} />
+            ) : (
+              ""
+            )}
+            {resizeStyle === "3" ? (
               <ViewModeLibrary
                 openVerticalNavigateViewMode={openVerticalNavigateViewMode}
                 viewModeBtnRef={viewModeBtnRef}
@@ -349,12 +356,13 @@ const Library = () => {
             )}
           </div>
         </div>
-        <div className={`ms-2 my-2 ${isShowMore ? "" : "hidden"}`}>
-          <ul className="flex font-semibold text-[14px]">
-            <li className="basis-3/5">Title</li>
-            <li className="basis-[30%]">Date Added</li>
+        <div className={`mx-2 mt-2 ${resizeStyle === "3" ? "" : "hidden"}`}>
+          <ul className="flex font-semibold text-[13px]">
+            <li className="basis-[50%]">Title</li>
+            <li className="basis-[40%]">Date Added</li>
             <li className="basis-[10%]">Played</li>
           </ul>
+          <div className="mt-3 h-[1px] w-[100%] border-t-[1px] border-[rgb(40,40,40)]"></div>
         </div>
       </div>
       <div
@@ -367,16 +375,16 @@ const Library = () => {
         <div className={`listsongs h-[100%] w-full absolute overflow-y-scroll`}>
           <div
             className={`flex justify-between ms-2 me-3 h-[40px] ${
-              resizeStyle || isShowMore ? "hidden" : ""
+              resizeStyle === "1" || resizeStyle === "3" ? "hidden" : ""
             }`}
             ref={headerListSongsRef}
           >
-            {!resizeStyle && !isShowMore ? (
+            {!(resizeStyle === "1") && !(resizeStyle === "3") ? (
               <SearchBarLibrary searchRef={searchRef} />
             ) : (
               ""
             )}
-            {!resizeStyle && !isShowMore ? (
+            {!(resizeStyle === "1") && !(resizeStyle === "3") ? (
               <ViewModeLibrary
                 openVerticalNavigateViewMode={openVerticalNavigateViewMode}
                 viewModeBtnRef={viewModeBtnRef}
@@ -389,24 +397,45 @@ const Library = () => {
           </div>
           <div>
             {[...Array(9)].map((x, i) => (
-              <div class="flex gap-2 p-2 overflow-hidden text-[#b3b3b3] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-                <div class="h-[45px] w-[45px] " ref={listSongRef}>
-                  <img
-                    src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                    alt="track"
-                  />
-                </div>
-                <div
-                  class={`listsong-info flex flex-col ${
-                    resizeStyle ? "hidden" : ""
-                  }`}
-                >
-                  <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                    Chìm Sâu
-                  </span>
-                  <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                    Playlists • 9 songs
-                  </span>
+              <div class="gap-2 p-2 overflow-hidden text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+                <div className="flex w-full">
+                  <div className="flex basis-[50%]">
+                    <div class="h-[45px] w-[45px] " ref={listSongRef}>
+                      <img
+                        src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                        alt="track"
+                      />
+                    </div>
+                    <div
+                      class={`listsong-info ms-3 flex flex-col overflow-hidden ${
+                        resizeStyle === "1" ? "hidden" : ""
+                      }`}
+                      style={{
+                        maxWidth: "200px",
+                      }}
+                    >
+                      <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                        Chìm Sâu jdsfhjshfjsdgfahdgadhgadgfjffhg
+                      </span>
+                      <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                        Playlists • 9 songs
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    className={`my-auto w-[92px] basis-[22%] ${
+                      resizeStyle !== "3" ? "hidden" : ""
+                    }`}
+                  >
+                    3 minutes ago
+                  </div>
+                  <div
+                    className={`my-auto w-[92px] basis-[26%] text-right ${
+                      resizeStyle !== "3" ? "hidden" : ""
+                    }`}
+                  >
+                    3 minutes ago
+                  </div>
                 </div>
               </div>
             ))}
