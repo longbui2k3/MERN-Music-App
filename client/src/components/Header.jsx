@@ -9,14 +9,14 @@ import { useCookies } from "react-cookie";
 import { IoMdOpen } from "react-icons/io";
 // import { ExternalLinkIcon } from "@chakra-ui/icons";
 
-const VerticalNavigateAvatar = ({ navigateAvatar }) => {
+const VerticalNavigateAvatar = ({ navigateAvatar, user }) => {
   let navigate = useNavigate();
   const [cookies, setCookie] = useCookies([""]);
   function clickNavigateAccount() {
     navigate("#", { replace: true });
   }
   function clickNavigateProfile() {
-    navigate("#");
+    navigate(`/user/${user._id}`);
   }
   async function clickLogOut() {
     try {
@@ -157,7 +157,10 @@ export default function Header() {
                 </div>
               )}
             </Tooltip>
-            <VerticalNavigateAvatar navigateAvatar={navigateAvatar} />{" "}
+            <VerticalNavigateAvatar
+              navigateAvatar={navigateAvatar}
+              user={user}
+            />{" "}
           </>
         ) : (
           <div className="float-right me-[40px] my-[10px]">

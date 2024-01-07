@@ -82,7 +82,7 @@ function PageHome({ children }) {
   }, [width]);
   return (
     <Container>
-      <div className="app-container">
+      <div className="app-container h-full">
         <div
           ref={sidebarRef}
           className={"app-sidebar"}
@@ -100,7 +100,7 @@ function PageHome({ children }) {
           <div className={"app-sidebar-resizer"} onMouseDown={startResizing} />
         </div>
         <div className="app-frame">
-          <div className="body">
+          <div className="body h-full">
             <Header />
             <div className="body_content">{children}</div>{" "}
           </div>
