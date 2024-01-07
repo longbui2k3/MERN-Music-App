@@ -34,7 +34,7 @@ export default function ViewModeLibrary({
       </div>
       <div className="w-[23px]">
         {viewAs === "List" ? (
-          <IoIosList size={20} className="ms-[6px] mt-[1px] fill-[#b3b3b3]" />
+          <IoIosList size={20} className="ms-[6px] fill-[#b3b3b3]" />
         ) : viewAs === "Compact" ? (
           <HiOutlineBars3
             size={20}

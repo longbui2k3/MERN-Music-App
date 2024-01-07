@@ -175,7 +175,9 @@ const Library = () => {
           resizeStyle === "1"
             ? "h-[50px]"
             : resizeStyle === "3"
-            ? "h-[195px]"
+            ? viewAs === "Grid"
+              ? "h-[100px]"
+              : "h-[195px]"
             : "h-[70px]"
         }`}
         ref={ref}
@@ -356,7 +358,11 @@ const Library = () => {
             )}
           </div>
         </div>
-        <div className={`mx-2 mt-2 ${resizeStyle === "3" ? "" : "hidden"}`}>
+        <div
+          className={`mx-2 mt-2 ${
+            resizeStyle === "3" && viewAs !== "Grid" ? "" : "hidden"
+          }`}
+        >
           <ul className="flex font-semibold text-[13px]">
             <li className="basis-[50%]">Title</li>
             <li className="basis-[40%]">Date Added</li>
@@ -395,50 +401,114 @@ const Library = () => {
               ""
             )}
           </div>
-          <div>
-            {[...Array(9)].map((x, i) => (
-              <div class="gap-2 p-2 overflow-hidden text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
-                <div className="flex w-full">
-                  <div className="flex basis-[50%]">
-                    <div class="h-[45px] w-[45px] " ref={listSongRef}>
+          <div className="mt-3">
+            {viewAs === "Grid" ? (
+              <div className="grid grid-cols-4 gap-2 justify-between">
+                {[...Array(18)].map((x, i) => (
+                  <Tooltip
+                    label={
+                      <>
+                        <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                          Chìm Sâu
+                        </div>
+                        <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                          Playlists • 9 songs
+                        </div>
+                      </>
+                    }
+                    placement="right"
+                    bg="rgb(40,40,40)"
+                  >
+                    <div class="rounded-md overflow-hidden" ref={listSongRef}>
                       <img
                         src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
                         alt="track"
                       />
                     </div>
+                  </Tooltip>
+                ))}
+              </div>
+            ) : (
+              [...Array(9)].map((x, i) => (
+                <div class="gap-2 p-2 overflow-hidden text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+                  <div className="flex w-full">
+                    {viewAs === "List" || resizeStyle === "1" ? (
+                      <div
+                        className={`flex w-full ${
+                          resizeStyle === "3" ? "basis-[50%]" : "grow"
+                        }`}
+                      >
+                        <div class="h-[45px] w-[45px] " ref={listSongRef}>
+                          <img
+                            src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
+                            alt="track"
+                          />
+                        </div>
+                        <div
+                          class={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
+                            resizeStyle === "1" ? "hidden" : ""
+                          }`}
+                          style={{
+                            maxWidth: `${
+                              resizeStyle === "3" ? "200px" : "100%"
+                            }`,
+                          }}
+                        >
+                          <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                            Chìm Sâu jdsfhjshfjsdgfahdgadhgadgfjffhg
+                          </span>
+                          <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                            Playlists • 9 songs
+                          </span>
+                        </div>
+                      </div>
+                    ) : viewAs === "Compact" &&
+                      (resizeStyle === "2" || resizeStyle === "3") ? (
+                      <div
+                        className={`w-full ${
+                          resizeStyle === "3" ? "basis-[50%]" : "grow"
+                        }`}
+                      >
+                        <div
+                          class={`listsong-info grow flex overflow-hidden ${
+                            resizeStyle === "1" ? "hidden" : ""
+                          }`}
+                          style={{
+                            maxWidth: `${
+                              resizeStyle === "3" ? "200px" : "100%"
+                            }`,
+                          }}
+                        >
+                          <span class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                            Chìm Sâu
+                          </span>
+                          <span class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
+                            • Playlists
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      ""
+                    )}
+
                     <div
-                      class={`listsong-info ms-3 flex flex-col overflow-hidden ${
-                        resizeStyle === "1" ? "hidden" : ""
+                      className={`my-auto w-[92px] basis-[22%] ${
+                        resizeStyle !== "3" ? "hidden" : ""
                       }`}
-                      style={{
-                        maxWidth: "200px",
-                      }}
                     >
-                      <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                        Chìm Sâu jdsfhjshfjsdgfahdgadhgadgfjffhg
-                      </span>
-                      <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                        Playlists • 9 songs
-                      </span>
+                      3 minutes ago
+                    </div>
+                    <div
+                      className={`my-auto w-[92px] basis-[26%] text-right ${
+                        resizeStyle !== "3" ? "hidden" : ""
+                      }`}
+                    >
+                      3 minutes ago
                     </div>
                   </div>
-                  <div
-                    className={`my-auto w-[92px] basis-[22%] ${
-                      resizeStyle !== "3" ? "hidden" : ""
-                    }`}
-                  >
-                    3 minutes ago
-                  </div>
-                  <div
-                    className={`my-auto w-[92px] basis-[26%] text-right ${
-                      resizeStyle !== "3" ? "hidden" : ""
-                    }`}
-                  >
-                    3 minutes ago
-                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
