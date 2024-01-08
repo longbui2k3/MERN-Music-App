@@ -1,23 +1,10 @@
-import React, { useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faUser } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
-import { getUser } from "../api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 
-export default function HeaderCoverProfile() {
+export default function HeaderCoverProfile({ user }) {
   const [isHoverAvatar, setIsHoverAvatar] = useState(false);
-  const [user, setUser] = useState(" ");
-  useEffect(() => {
-    const getUserFunc = async () => {
-      try {
-        const res = await getUser();
-        setUser(res.data.data);
-      } catch (err) {
-        setUser("");
-      }
-    };
-    getUserFunc();
-  }, []);
+
   return (
     <div className="w-full mx-0 my-0.5 flex items-center gap-0.5 pl-[20px] pr-[20px] p-[20px]">
       <div
