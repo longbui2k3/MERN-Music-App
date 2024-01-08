@@ -402,8 +402,15 @@ const Library = () => {
             )}
           </div>
           <div className="mt-3">
-            {viewAs === "Grid" ? (
-              <div className="grid grid-cols-4 gap-2 justify-between">
+            {viewAs === "Grid" && resizeStyle !== "1" ? (
+              <div
+                className="flex flex-wrap gap-2 content-start"
+                style={{
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(calc(10% - 1rem), 1fr))",
+                  gridAutoFlow: "row dense",
+                }}
+              >
                 {[...Array(18)].map((x, i) => (
                   <Tooltip
                     label={
@@ -419,7 +426,13 @@ const Library = () => {
                     placement="right"
                     bg="rgb(40,40,40)"
                   >
-                    <div class="rounded-md overflow-hidden" ref={listSongRef}>
+                    <div
+                      className="rounded-md overflow-hidden max-w-[100px] grow"
+                      ref={listSongRef}
+                      style={{
+                        minWidth: "calc(10% - 1em)",
+                      }}
+                    >
                       <img
                         src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
                         alt="track"

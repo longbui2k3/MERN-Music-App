@@ -21,7 +21,7 @@ import { GoChevronLeft } from "react-icons/go";
 export default function SignUpGoogleStep1() {
   const dispatch = useDispatch();
   const { userAuth } = UserAuth();
-  dispatch(setEmailAuth(userAuth.email));
+  dispatch(setEmailAuth(userAuth.providerData[0].email));
   dispatch(setUidAuth(userAuth.uid));
   dispatch(setNameAuth(userAuth.displayName));
   const email = useSelector((state) => state.signUpAuth.email);

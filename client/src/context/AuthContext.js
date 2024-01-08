@@ -17,12 +17,10 @@ export const AuthContextProvider = ({ children }) => {
   //   const navigate = useNavigate();
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    provider.addScope("email");
     return await signInWithPopup(auth, provider);
   };
   const facebookSignIn = async () => {
     const provider = new FacebookAuthProvider();
-    provider.addScope("email");
     const res = await signInWithPopup(auth, provider);
     return res;
   };
@@ -33,6 +31,7 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUserAuth(currentUser);
+      console.log(currentUser);
     });
     return () => {
       unsubscribe();
