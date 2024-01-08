@@ -5,8 +5,6 @@ export const getAllPlaylists = async () => {
   return res;
 };
 export const getPlaylist = async (id) => {
-  const res = await axios.get(
-    `http://localhost:4000/api/v1/playlist/6573ecf5018c9cbc567f72bf/${id}`
-  );
+  const res = await axios.get(`http://localhost:4000/api/v1/playlist/${id}`);
   return res;
 };

@@ -17,6 +17,7 @@ export default function MusicList() {
   const [isHoveredHeartIcon, setIsHoveredHeartIcon] = useState(null);
   const [likedSong, setLikedSong] = useState(null);
   let params = useParams();
+  console.log(params.id);
   useEffect(() => {
     const getAllSongs = async () => {
       try {
@@ -74,7 +75,7 @@ export default function MusicList() {
           <div className="mx-[2rem] flex flex-col pb-10 mt-[8px]">
             {songs.map(
               (
-                { id, name, imageURL, artist, duration, album, artistObject },
+                { id, name, imageURL, singers, duration, album, artistObject },
                 index
               ) => {
                 return (
@@ -134,13 +135,13 @@ export default function MusicList() {
                           {name}
                         </span>
                         <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                          {artistObject.name}
+                          {singers.map((item) => item.name + " ")}
                         </span>
                       </div>
                     </div>
                     <div className="flex items-center text-[#dddcdc] overflow-hidden">
                       <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                        Hahahahaha
+                        {artistObject.name}
                       </span>
                     </div>
                     <div className="flex items-center text-[#dddcdc]">

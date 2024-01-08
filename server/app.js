@@ -7,6 +7,7 @@ const singerRouter = require("./routers/singerRouter");
 const albumRouter = require("./routers/albumRouter");
 const playlistRouter = require("./routers/playListRouter");
 const likedSongRouter = require("./routers/likedSongRouter");
+const sectionRouter = require("./routers/sectionRouter");
 const router = express.Router();
 const cors = require("cors");
 
@@ -24,6 +25,7 @@ app.use("/api/v1/singer", singerRouter);
 app.use("/api/v1/album", albumRouter);
 app.use("/api/v1/playlist", playlistRouter);
 app.use("/api/v1/likedSongs", likedSongRouter);
+app.use("/api/v1/sections", sectionRouter);
 
 app.use("/", (err, req, res, next) => {
   res.status(404).json({

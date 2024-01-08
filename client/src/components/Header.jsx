@@ -91,7 +91,7 @@ export default function Header() {
     if (isLoading) getUserFunc();
   }, []);
   return (
-    <header className={"h-[70px] relative"}>
+    <header className={"h-[70px] sticky top-0 z-40 bg-[#121212]"}>
       <Box
         display="inline-block"
         style={{ lineHeight: "64px", padding: "0 20px " }}

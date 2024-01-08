@@ -12,7 +12,7 @@ import VerticalNavigateViewModeLibrary from "./VerticalNavigateViewModeLibrary";
 const Container = styled.div`
   position: relative;
   display: grid;
-  grid-template-rows: 88vh 12vh;
+  grid-template-rows: 89vh 11vh;
   background-color: rgb(0 0 0);
   .body {
     border-radius: 5px;
@@ -41,7 +41,7 @@ const Container = styled.div`
 function PageHome({ children }) {
   const sidebarRef = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
-  const [sidebarWidth, setSidebarWidth] = useState(290);
+  const [sidebarWidth, setSidebarWidth] = useState(360);
 
   const startResizing = React.useCallback((mouseDownEvent) => {
     setIsResizing(true);
@@ -91,11 +91,11 @@ function PageHome({ children }) {
           style={{ width: sidebarWidth < 290 ? 93 : sidebarWidth }}
           onMouseDown={(e) => e.preventDefault()}
         >
-          <div className={"app-sidebar-content "}>
-            <div className="top-menu">
+          <div className={"app-sidebar-content flex flex-col"}>
+            <div className="h-[120px] top-menu">
               <TopMenu />
             </div>
-            <div className="library">
+            <div className="library grow">
               <Library />
             </div>
           </div>
@@ -105,7 +105,7 @@ function PageHome({ children }) {
         <div className="app-frame">
           <div className="body">
             <Header />
-            <div className="body_content">{children}</div>{" "}
+            <div className="body_content">{children}</div>
           </div>
         </div>
       </div>

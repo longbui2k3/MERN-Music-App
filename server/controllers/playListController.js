@@ -40,6 +40,7 @@ exports.getPlaylistById = async (req, res, next) => {
 
     const playlist = await ListSongs.findById(playlistId)
       .populate("songs")
+      .populate("singers")
       .exec();
 
     if (!playlist) throw new Error(`Playlist with Id: ${playlistId} not found`);

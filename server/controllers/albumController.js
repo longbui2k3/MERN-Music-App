@@ -1,4 +1,4 @@
-const User = require("../models/userModel");
+const Singer = require("../models/singerModel");
 const ListSongs = require("../models/listSongsModel");
 const { startSession } = require("mongoose");
 
@@ -53,17 +53,17 @@ exports.getAlbumById = async (req, res, next) => {
 exports.createAlbum = async (req, res, next) => {
   const session = await startSession();
   try {
-    const userId = req.params.userId;
+    const singerId = req.params.singerId;
 
     session.startTransaction();
     const album = await ListSongs.create([req.body], { session });
 
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: userId },
-      { $push: { listSongs: album } },
+    const updatedSinger = await Singer.findOneAndUpdate(
+      { _id: singerId },
+      { $push: { albums: album } },
       { session, new: true }
     );
-    if (!updatedUser) throw new Error(`User with id: ${userId} not found`);
+    if (!updatedSinger) throw new Error(`User with id: ${singerId} not found`);
 
     await session.commitTransaction();
     session.endSession();
@@ -98,15 +98,15 @@ exports.updateAlbum = async (req, res, next) => {
 exports.deleteAlbum = async (req, res, next) => {
   const session = await startSession();
   try {
-    const userId = req.params.userId;
+    const singerId = req.params.singerId;
     const albumId = req.params.albumId;
 
     session.startTransaction();
-    const updatedUser = await User.findOneAndUpdate(
-      { _id: userId },
-      { $pull: { listSongs: albumId } }
+    const updatedSinger = await Singer.findOneAndUpdate(
+      { _id: singerId },
+      { $pull: { albums: albumId } }
     );
-    if (!updatedUser) throw new Error(`User with id: ${userId} not found`);
+    if (!updatedSinger) throw new Error(`User with id: ${singerId} not found`);
 
     await ListSongs.findByIdAndDelete(albumId, { session, new: true });
 

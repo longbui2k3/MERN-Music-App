@@ -4,7 +4,7 @@ const authenController = require("../controllers/authenController");
 const router = express.Router();
 
 router.route("/").get(albumController.getAllAlbums);
-router.route("/all/:userId").get(albumController.getAllAlbumsById).post(
+router.route("/all/:singerId").get(albumController.getAllAlbumsById).post(
   // authenController.protect,
   // authenController.restrictTo("admin"),
   albumController.createAlbum
@@ -19,7 +19,7 @@ router
     albumController.updateAlbum
   );
 
-router.route("/:albumId/:userId").delete(
+router.route("/:albumId/:singerId").delete(
   // authenController.protect,
   // authenController.restrictTo("admin"),
   albumController.deleteAlbum
