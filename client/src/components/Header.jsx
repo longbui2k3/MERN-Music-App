@@ -7,6 +7,10 @@ import { Logout, getUser } from "../api";
 import { IoPersonOutline } from "react-icons/io5";
 import { useCookies } from "react-cookie";
 import { IoMdOpen } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { back, next } from "../features/navigate/navigateSlice";
+import { current } from "@reduxjs/toolkit";
+import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 // import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const VerticalNavigateAvatar = ({ navigateAvatar, user }) => {
@@ -15,12 +19,14 @@ const VerticalNavigateAvatar = ({ navigateAvatar, user }) => {
   function clickNavigateAccount() {
     navigate("#", { replace: true });
   }
+  const dispatch = useDispatch();
   function clickNavigateProfile() {
     navigate(`/user/${user._id}`);
+    dispatch(next(`/user/${user._id}`));
   }
   async function clickLogOut() {
     try {
-      const res = await Logout();
+      await Logout();
       setCookie("jwt", "", {});
       localStorage.setItem("user", "");
       navigate(0);
@@ -76,6 +82,19 @@ export default function Header() {
   function navigateSignUpClick() {
     navigate("/signUp");
   }
+
+  const dispatch = useDispatch();
+  const currentPage = useSelector((state) => state.navigate.currentPage);
+
+  function goBackFunc() {
+    dispatch(back());
+  }
+  function goForwardFunc() {
+    dispatch(next());
+  }
+  useEffect(() => {
+    navigate(currentPage.data);
+  }, [currentPage]);
   useEffect(() => {
     const getUserFunc = async () => {
       try {
@@ -91,26 +110,34 @@ export default function Header() {
     if (isLoading) getUserFunc();
   }, []);
   return (
-    <header className={"h-[70px] relative"}>
-      <Box
-        display="inline-block"
-        style={{ lineHeight: "64px", padding: "0 20px " }}
-      >
+    <header className={"h-[70px] relative bg-[#121212] text-[#b3b3b3]"}>
+      <Box display="flex" style={{ lineHeight: "64px", padding: "0 20px " }}>
         <Tooltip label="Go back">
-          <FontAwesomeIcon
-            icon={faCircleChevronRight}
-            rotation={180}
-            size="xl"
-            className={"hover:text-white cursor-pointer"}
-          />
+          <button
+            disabled={!currentPage.prev}
+            className="flex flex-col justify-center bg-black my-[17px] w-[32px] h-[32px] rounded-full disabled:opacity-60"
+            onMouseDown={goBackFunc}
+          >
+            <GoChevronLeft
+              size="25px"
+              className={"mx-auto hover:text-white cursor-pointer"}
+              color="white"
+            />
+          </button>
         </Tooltip>
         <Tooltip label="Go forward">
-          <FontAwesomeIcon
-            icon={faCircleChevronRight}
-            size="xl"
-            style={{ marginLeft: "16px" }}
-            className={"hover:text-white cursor-pointer"}
-          />
+          <button
+            disabled={!currentPage.next}
+            className="flex flex-col justify-center bg-black my-[17px] w-[32px] h-[32px] rounded-full disabled:opacity-60"
+            style={{ marginLeft: "10px" }}
+            onMouseDown={goForwardFunc}
+          >
+            <GoChevronRight
+              size="25px"
+              className={"mx-auto hover:text-white cursor-pointer"}
+              color="white"
+            />
+          </button>
         </Tooltip>
         {/* <div
           style={{
