@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.route("/").get(likedSongController.getAllLikedSongs);
 router
-  .route("/:userId/all")
+  .route("/all/:userId")
   .get(likedSongController.getAllLikedSongsById)
   .post(
     authenController.protect,
@@ -13,15 +13,17 @@ router
     likedSongController.createLikedSongs
   );
 
-router.route("/:likedSongId").get(likedSongController.getLikedSongById);
-
 router
-  .route("/:userId/:likedSongId")
+  .route("/:likedSongId")
+  .get(likedSongController.getLikedSongById)
   .patch(
     authenController.protect,
     authenController.restrictTo("admin"),
     likedSongController.updateLikedSong
-  )
+  );
+
+router
+  .route("/:likedSongId/:userId")
   .delete(
     authenController.protect,
     authenController.restrictTo("admin"),

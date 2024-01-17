@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Button, Divider, Tooltip } from "@chakra-ui/react";
-import { faCircleChevronRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Box, Button, Tooltip } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Logout, getUser } from "../api";
 import { IoPersonOutline } from "react-icons/io5";
@@ -9,7 +7,6 @@ import { useCookies } from "react-cookie";
 import { IoMdOpen } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { back, next } from "../features/navigate/navigateSlice";
-import { current } from "@reduxjs/toolkit";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 // import { ExternalLinkIcon } from "@chakra-ui/icons";
 
@@ -110,7 +107,9 @@ export default function Header() {
     if (isLoading) getUserFunc();
   }, []);
   return (
-    <header className={"h-[70px] relative bg-[#121212] text-[#b3b3b3]"}>
+    <header
+      className={"h-[70px] sticky top-0 z-40 bg-[#121212] text-[#b3b3b3]"}
+    >
       <Box display="flex" style={{ lineHeight: "64px", padding: "0 20px " }}>
         <Tooltip label="Go back">
           <button

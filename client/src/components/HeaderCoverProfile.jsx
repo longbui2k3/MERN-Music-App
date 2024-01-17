@@ -2,9 +2,9 @@ import { faPen, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 
-export default function HeaderCoverProfile({user}) {
+export default function HeaderCoverProfile({ user }) {
   const [isHoverAvatar, setIsHoverAvatar] = useState(false);
-  
+
   return (
     <div className="w-full mx-0 my-0.5 flex items-center gap-0.5 pl-[20px] pr-[20px] p-[20px]">
       <div

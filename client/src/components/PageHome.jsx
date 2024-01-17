@@ -10,7 +10,7 @@ import { useResizeDetector } from "react-resize-detector";
 const Container = styled.div`
   position: relative;
   display: grid;
-  grid-template-rows: 88vh 12vh;
+  grid-template-rows: 88vh 11vh;
   background-color: rgb(0 0 0);
   .body {
     border-radius: 5px;
@@ -102,7 +102,7 @@ function PageHome({ children }) {
         <div className="app-frame">
           <Header />
           <div className="body h-full">
-            <div className="body_content">{children}</div>{" "}
+            <div className="body_content">{children}</div>
           </div>
         </div>
       </div>

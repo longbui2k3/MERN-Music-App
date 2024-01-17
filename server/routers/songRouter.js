@@ -12,8 +12,8 @@ router
   .route("/:id")
   .get(songController.getSong)
   .delete(
-    authenController.protect,
-    authenController.restrictTo("admin"),
+    // authenController.protect,
+    // authenController.restrictTo("admin"),
     songController.deleteSong
   )
   .patch(
