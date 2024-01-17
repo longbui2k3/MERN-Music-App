@@ -7,7 +7,7 @@ const singerRouter = require("./routers/singerRouter");
 const albumRouter = require("./routers/albumRouter");
 const playlistRouter = require("./routers/playListRouter");
 const likedSongRouter = require("./routers/likedSongRouter");
-const router = express.Router();
+const sectionRouter = require("./routers/sectionRouter");
 const cors = require("cors");
 
 const app = express();
@@ -24,11 +24,20 @@ app.use("/api/v1/singer", singerRouter);
 app.use("/api/v1/album", albumRouter);
 app.use("/api/v1/playlist", playlistRouter);
 app.use("/api/v1/likedSongs", likedSongRouter);
+app.use("/api/v1/sections", sectionRouter);
+
+app.use((req, res, next) => {
+  const error = new Error("Not Found");
+  error.status = 404;
+  next(error);
+});
 
 app.use("/", (err, req, res, next) => {
-  res.status(404).json({
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({
     status: "error",
-    error: err.message,
+    code: statusCode,
+    error: err.message || "Internal Server Error",
   });
 });
 

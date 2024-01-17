@@ -190,7 +190,7 @@ export default function Header() {
             />{" "}
           </>
         ) : (
-          <div className="float-right me-[40px] my-[10px]">
+          <div className="float-right me-[40px] -mt-[56px]">
             <Button
               className="w-[120px] py-[20px] rounded-full font-semibold hover:text-white hover:font-bold focus:outline-none"
               style={{

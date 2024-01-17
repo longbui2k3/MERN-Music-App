@@ -134,10 +134,26 @@ const signUpNormal = async (req, res) => {
   createSendToken("Sign up", user, 201, res);
 };
 const signUpAuth = async (req, res) => {
-  const { name, uid, email, gender, dateOfBirth, avatar, typeOfAccount, federatedId } =
-    req.body;
+  const {
+    name,
+    uid,
+    email,
+    gender,
+    dateOfBirth,
+    avatar,
+    typeOfAccount,
+    federatedId,
+  } = req.body;
 
-  if (!name || !email || !uid || !gender || !dateOfBirth || !typeOfAccount || (!federatedId && typeOfAccount==="facebook")) {
+  if (
+    !name ||
+    !email ||
+    !uid ||
+    !gender ||
+    !dateOfBirth ||
+    !typeOfAccount ||
+    (!federatedId && typeOfAccount === "facebook")
+  ) {
     res.status(400);
     throw new Error("Please Enter all the Feilds");
   }

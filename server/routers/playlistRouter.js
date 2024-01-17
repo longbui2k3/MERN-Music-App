@@ -10,7 +10,7 @@ router
   .get(playlistController.getAllPlaylistsById)
   .post(
     authenController.protect,
-    authenController.restrictTo("admin"),
+    authenController.restrictTo("admin", "user"),
     playlistController.createPlaylist
   );
 

@@ -13,8 +13,15 @@ const listSongsSchema = mongoose.Schema({
     type: String,
   },
   description: { type: String, default: "This is some description" },
-  singers: [{ type: mongoose.Schema.ObjectId, ref: "Singer" }],
-  songs: [{ type: mongoose.Schema.ObjectId, ref: "Song" }],
+  singers: {
+    type: [{ type: mongoose.Schema.ObjectId, ref: "Singer" }],
+    default: [],
+  },
+  songs: {
+    type: [{ type: mongoose.Schema.ObjectId, ref: "Song" }],
+    default: [],
+  },
+  user: { type: mongoose.Schema.ObjectId, ref: "User" },
 });
 const ListSongs = mongoose.model("ListSongs", listSongsSchema);
 module.exports = ListSongs;

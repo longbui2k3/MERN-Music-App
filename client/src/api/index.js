@@ -13,4 +13,4 @@ export {
   CheckExistEmail,
 } from "./AuthenticationAPI";
 export { getUser } from "./UserAPI";
-export { getAllPlaylists, getPlaylist } from "./PlaylistAPI";
+export { getAllPlaylists, getPlaylist, createPlaylist } from "./PlaylistAPI";

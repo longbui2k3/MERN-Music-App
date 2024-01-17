@@ -2,6 +2,7 @@ import {
   PageForgotPassword,
   PageHome,
   PageLogin,
+  PageNotFound,
   PageResetPassword,
   PageSignUp,
   PageStatus,
@@ -68,6 +69,7 @@ export function App() {
                 </PageHome>
               }
             />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </BrowserRouter>
       </AuthContextProvider>

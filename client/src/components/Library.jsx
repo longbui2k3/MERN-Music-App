@@ -14,6 +14,7 @@ import { useResizeDetector } from "react-resize-detector";
 import VerticalNavigateCreateLibrary from "./VerticalNavigateCreateLibrary";
 import VerticalNavigateViewModeLibrary from "./VerticalNavigateViewModeLibrary";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { RiMusic2Line } from "react-icons/ri";
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/pagination";
@@ -25,6 +26,8 @@ import { FreeMode, Navigation } from "swiper/modules";
 import { FaRegFolder } from "react-icons/fa6";
 import SearchBarLibrary from "./SearchBarLibrary";
 import ViewModeLibrary from "./ViewModeLibrary";
+import { getAllPlayListsByUserId } from "../api/PlaylistAPI";
+import { getUser } from "../api";
 function useOutsideComponents(
   searchRef,
   createBtnRef,
@@ -132,7 +135,19 @@ const Library = () => {
     setResizeStyle("2");
     document.querySelector(".app-sidebar").style = "width: 360px";
   }
-
+  const [listSongs, setListSongs] = useState([]);
+  useEffect(() => {
+    const getPlaylistByUser = async () => {
+      try {
+        const user = await getUser();
+        const res = await getAllPlayListsByUserId(user.data.data._id);
+        setListSongs(res.data.playlists);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getPlaylistByUser();
+  }, []);
   return (
     <div
       className="h-full flex flex-col"
@@ -147,6 +162,8 @@ const Library = () => {
           text1="Create playlist"
           icon2={<GoPlus className="my-auto text-[20px] me-3 text-white" />}
           text2="Create folder"
+          listSongs={listSongs}
+          setListSongs={setListSongs}
         />
       ) : (
         ""
@@ -157,6 +174,8 @@ const Library = () => {
           text1="Create a new playlist"
           icon2={<FaRegFolder className="my-auto text-[20px] me-3" />}
           text2="Create a new folder"
+          listSongs={listSongs}
+          setListSongs={setListSongs}
         />
       ) : (
         ""
@@ -411,15 +430,15 @@ const Library = () => {
                   gridAutoFlow: "row dense",
                 }}
               >
-                {[...Array(18)].map((x, i) => (
+                {listSongs.map((listSong, i) => (
                   <Tooltip
                     label={
                       <>
                         <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
-                          Chìm Sâu
+                          {listSong.name}
                         </div>
                         <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
-                          Playlists • 9 songs
+                          {listSong.type} • {listSong.songs.length} songs
                         </div>
                       </>
                     }
@@ -427,23 +446,32 @@ const Library = () => {
                     bg="rgb(40,40,40)"
                   >
                     <div
-                      className="rounded-md overflow-hidden max-w-[100px] grow"
+                      className="rounded-md overflow-hidden w-[100px] h-[100px] grow bg-[rgb(40,40,40)] flex flex-col justify-center"
                       ref={listSongRef}
                       style={{
                         minWidth: "calc(10% - 1em)",
+                        maxWidth: "100px",
+                        maxHeight: "100px",
                       }}
                     >
-                      <img
-                        src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                        alt="track"
-                      />
+                      {listSong.imageURL ? (
+                        <img src={listSong.imageURL} alt="track" />
+                      ) : (
+                        <RiMusic2Line className="text-[40px] mx-auto" />
+                      )}
                     </div>
                   </Tooltip>
                 ))}
               </div>
             ) : (
-              [...Array(9)].map((x, i) => (
-                <div class="gap-2 p-2 overflow-hidden text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] rounded-lg w-full ">
+              listSongs.map((listSong, i) => (
+                <div
+                  class={`gap-2 p-2 overflow-hidden text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
+                    listSong._id === window.location.pathname.split("/")[2]
+                      ? "rgb(35,35,35)"
+                      : "#b3b3b3"
+                  }] rounded-lg w-full `}
+                >
                   <div className="flex w-full">
                     {viewAs === "List" || resizeStyle === "1" ? (
                       <div
@@ -451,11 +479,15 @@ const Library = () => {
                           resizeStyle === "3" ? "basis-[50%]" : "grow"
                         }`}
                       >
-                        <div class="h-[45px] w-[45px] " ref={listSongRef}>
-                          <img
-                            src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-                            alt="track"
-                          />
+                        <div
+                          class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-md overflow-hidden"
+                          ref={listSongRef}
+                        >
+                          {listSong.imageURL ? (
+                            <img src={listSong.imageURL} alt="track" />
+                          ) : (
+                            <RiMusic2Line className="text-[30px] mx-auto" />
+                          )}
                         </div>
                         <div
                           class={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
@@ -468,10 +500,13 @@ const Library = () => {
                           }}
                         >
                           <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                            Chìm Sâu jdsfhjshfjsdgfahdgadhgadgfjffhg
+                            {listSong.name}
                           </span>
                           <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                            Playlists • 9 songs
+                            {listSong.type} •{" "}
+                            {listSong.user.role === "user"
+                              ? listSong.user._id
+                              : listSong.user.name}
                           </span>
                         </div>
                       </div>
