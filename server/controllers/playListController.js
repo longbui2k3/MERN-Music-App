@@ -60,14 +60,13 @@ exports.createPlaylist = async (req, res, next) => {
     const userId = req.params.userId;
     session.startTransaction();
 
-    const playlist = await ListSongs.create(
-      { ...req.body, user: userId },
-      { session }
-    );
+    const playlist = await ListSongs.create([{ ...req.body, user: userId }], {
+      session,
+    });
 
     const updatedUser = await User.updateOne(
       { _id: userId },
-      { $push: { listSongs: playlist } },
+      { $push: { listSongs: playlist[0] } },
       { session, new: true }
     );
 
@@ -79,7 +78,7 @@ exports.createPlaylist = async (req, res, next) => {
     res.status(201).json({
       status: "success",
       // updatedUser,
-      playlist,
+      playlist: playlist[0],
     });
   } catch (err) {
     await session.abortTransaction();

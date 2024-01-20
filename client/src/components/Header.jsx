@@ -8,6 +8,7 @@ import { IoMdOpen } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import { back, next } from "../features/navigate/navigateSlice";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
+import { NavigateAuth } from "../context/NavigateContext";
 // import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const VerticalNavigateAvatar = ({ navigateAvatar, user }) => {
@@ -16,10 +17,9 @@ const VerticalNavigateAvatar = ({ navigateAvatar, user }) => {
   function clickNavigateAccount() {
     navigate("#", { replace: true });
   }
-  const dispatch = useDispatch();
+  const { navigatePage } = NavigateAuth();
   function clickNavigateProfile() {
-    navigate(`/user/${user._id}`);
-    dispatch(next(`/user/${user._id}`));
+    navigatePage(`/user/${user._id}`);
   }
   async function clickLogOut() {
     try {

@@ -2,15 +2,12 @@ import { Box } from "@chakra-ui/react";
 import { faHouse, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useResizeDetector } from "react-resize-detector";
-import { useLocation, useNavigate } from "react-router-dom";
-import { next } from "../features/navigate/navigateSlice";
+import { NavigateAuth } from "../context/NavigateContext";
 
 const TopMenu = () => {
   const { width, height, ref } = useResizeDetector();
   const [resizeStyle, setResizeStyle] = useState(false);
-  const navigate = useNavigate();
   useEffect(() => {
     if (width < 223) {
       setResizeStyle(true);
@@ -18,10 +15,9 @@ const TopMenu = () => {
       setResizeStyle(false);
     }
   }, [width]);
-  const dispatch = useDispatch();
+  const { navigatePage } = NavigateAuth();
   function navigateHomeFunc() {
-    dispatch(next("/home"));
-    navigate("/home");
+    navigatePage("/home");
   }
   return (
     <div ref={ref}>

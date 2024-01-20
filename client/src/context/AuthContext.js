@@ -7,13 +7,10 @@ import {
   FacebookAuthProvider,
 } from "firebase/auth";
 import { auth } from "../config/firebase";
-import { useDispatch } from "react-redux";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const dispatch = useDispatch();
   const [userAuth, setUserAuth] = useState({});
-  const [additionalUserAuth, setAdditionalUserAuth] = useState({});
   //   const navigate = useNavigate();
   const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
@@ -43,7 +40,6 @@ export const AuthContextProvider = ({ children }) => {
         googleSignIn,
         logOut,
         userAuth,
-        additionalUserAuth,
         facebookSignIn,
       }}
     >

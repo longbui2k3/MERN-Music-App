@@ -10,14 +10,14 @@ export const getPlaylist = async (id) => {
 };
 export const getAllPlayListsByUserId = async (userId) => {
   const res = await axios.get(
-    `http://localhost:4000/api/v1/playlist/${userId}`
+    `http://localhost:4000/api/v1/playlist/all/${userId}`
   );
   return res;
 };
 
 export const createPlaylist = async (userId, data) => {
   const res = await axios.post(
-    `http://localhost:4000/api/v1/playlist/${userId}`,
+    `http://localhost:4000/api/v1/playlist/all/${userId}`,
     data
   );
   return res;

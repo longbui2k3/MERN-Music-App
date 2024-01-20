@@ -24,7 +24,13 @@ export const navigateSlice = createSlice({
       console.log(state.currentPage.prev);
       state.currentPage = state.currentPage.prev;
     },
+    link: (state, action) => {
+       const newNode = new Node(action.payload);
+       state.currentPage.next = newNode;
+       newNode.prev = state.currentPage;
+       state.currentPage = newNode;
+    }
   },
 });
-export const { next, back } = navigateSlice.actions;
+export const { next, back, link } = navigateSlice.actions;
 export default navigateSlice.reducer;

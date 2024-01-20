@@ -11,7 +11,7 @@ export default function HeaderCover() {
       setPlaylist(songsData.data.playlist);
     };
     getPlaylistFunc();
-  }, []);
+  }, [params.id]);
 
   return (
     <div className="w-full mx-0 my-0.5 flex items-center gap-0.5 pl-[20px] pr-[20px] ">

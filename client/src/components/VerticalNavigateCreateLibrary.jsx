@@ -2,6 +2,9 @@ import { TbMusicPlus } from "react-icons/tb";
 import { createPlaylist, getUser } from "../api";
 import { useNavigate } from "react-router-dom";
 import { getAllPlayListsByUserId } from "../api/PlaylistAPI";
+import { useDispatch } from "react-redux";
+import { next } from "../features/navigate/navigateSlice";
+import { NavigateAuth } from "../context/NavigateContext";
 
 export default function VerticalNavigateCreateLibrary({
   leftPos,
@@ -12,7 +15,7 @@ export default function VerticalNavigateCreateLibrary({
   listSongs,
   setListSongs,
 }) {
-  const navigate = useNavigate();
+  const { navigatePage } = NavigateAuth();
   const createNewPlaylistFunc = async () => {
     try {
       const user = await getUser();
@@ -27,7 +30,8 @@ export default function VerticalNavigateCreateLibrary({
       });
       const res2 = await getAllPlayListsByUserId(user.data.data._id);
       setListSongs(res2.data.playlists);
-      navigate(`/playlist/${res.data.playlist._id}`)
+
+      navigatePage(`/playlist/${res.data.playlist._id}`);
     } catch (error) {
       console.log(error);
     }
