@@ -15,5 +15,8 @@ router.route("/login").post(authenController.login);
 router.use(authenController.protect);
 router.route("/").get(userController.getAllUsers);
 router.route("/me").get(userController.getMe, userController.getUserById);
-
+router.route("/favorite").post(userController.addFavoriteListsong);
+router
+  .route("/favorite/:listSong")
+  .delete(userController.removeFavoriteListsong);
 module.exports = router;

@@ -3,7 +3,6 @@ const authorModel = require("../models/authorModel");
 exports.getAllAuthors = async (req, res, next) => {
   try {
     const authors = await authorModel.find();
-
     res.status(200).json({
       status: "success",
       authors,

@@ -10,7 +10,6 @@ export const NavigateContextProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const navigatePage = (path) => {
-    console.log("Navigate");
     dispatch(link(path));
     navigate(path);
   };

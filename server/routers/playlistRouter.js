@@ -6,8 +6,8 @@ const router = express.Router();
 router.route("/").get(playlistController.getAllPlaylist);
 
 router.route("/all/:userId").get(playlistController.getAllPlaylistsById).post(
-  // authenController.protect,
-  // authenController.restrictTo("admin"),
+  authenController.protect,
+  authenController.restrictTo("user"),
   playlistController.createPlaylist
 );
 router

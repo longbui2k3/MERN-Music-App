@@ -21,7 +21,6 @@ export const navigateSlice = createSlice({
     },
     back: (state, action) => {
       if (state.currentPage === null) return;
-      console.log(state.currentPage.prev);
       state.currentPage = state.currentPage.prev;
     },
     link: (state, action) => {

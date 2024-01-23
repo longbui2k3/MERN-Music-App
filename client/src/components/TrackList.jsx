@@ -32,7 +32,7 @@ export default function MusicList() {
       }
     };
     getAllSongs();
-  }, []);
+  }, [params.id]);
 
   const msToMinutesAndSeconds = (ms) => {
     const minutes = Math.floor(ms / 60000);

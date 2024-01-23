@@ -9,7 +9,7 @@ router
   .get(likedSongController.getAllLikedSongsById)
   .post(
     authenController.protect,
-    authenController.restrictTo("admin"),
+    // authenController.restrictTo("admin"),
     likedSongController.createLikedSongs
   );
 

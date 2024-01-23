@@ -1,8 +1,13 @@
-import React, { useState } from "react";
-import { AiFillPlayCircle } from "react-icons/ai";
+import React, { useEffect, useState } from "react";
+import { AiFillHeart, AiFillPlayCircle } from "react-icons/ai";
 import { IoIosMore } from "react-icons/io";
 import { CgDetailsMore } from "react-icons/cg";
 import { AiOutlineHeart } from "react-icons/ai";
+import { useParams } from "react-router-dom";
+import { addFavoriteListsong, getUser, removeFavoriteListsong } from "../api";
+import { TbRulerOff } from "react-icons/tb";
+import { useDispatch } from "react-redux";
+import { setUserGlobal } from "../features/user/userSlice";
 
 export default function ActionBar() {
   const [isHeartHover, setIsHeartHover] = useState(false);
@@ -23,6 +28,48 @@ export default function ActionBar() {
   function handleMoreHoverOut() {
     setIsMoreHover(false);
   }
+
+  let params = useParams();
+  const [user, setUser] = useState("");
+  const [liked, setLiked] = useState("");
+
+  useEffect(() => {
+    const getUserFunc = async () => {
+      try {
+        const res = await getUser();
+        setUser(res.data.data);
+        if (
+          res.data.data.listSongs.find((listSong) => listSong._id === params.id)
+        ) {
+          setLiked(true);
+        } else setLiked(false);
+      } catch (err) {
+        setUser("");
+      }
+    };
+    getUserFunc();
+  }, []);
+  const dispatch = useDispatch();
+  const addFavoriteFunc = async (e) => {
+    try {
+      await addFavoriteListsong(params.id);
+      setLiked(true);
+      const user = await getUser();
+      dispatch(setUserGlobal(user.data.data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const removeFavoriteFunc = async (e) => {
+    try {
+      await removeFavoriteListsong(params.id);
+      setLiked(false);
+      const user = await getUser();
+      dispatch(setUserGlobal(user.data.data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="flex items-center place-content-between opacity-75 z-40 bg-[#121212] pt-4">
       <div className="flex items-center justify-center gap-x-1 ml-6">
@@ -34,7 +81,19 @@ export default function ActionBar() {
           onMouseOver={handleHeartHover}
           onMouseOut={handleHeartHoverOut}
         >
-          <AiOutlineHeart size={40} color={isHeartHover ? "white" : "grey"} />
+          {liked === true ? (
+            <AiFillHeart
+              size={40}
+              color={"rgb(30,215,96)"}
+              onClick={removeFavoriteFunc}
+            />
+          ) : (
+            <AiOutlineHeart
+              size={40}
+              color={isHeartHover ? "white" : "grey"}
+              onClick={addFavoriteFunc}
+            />
+          )}
         </span>
         <span
           className="cursor-pointer"

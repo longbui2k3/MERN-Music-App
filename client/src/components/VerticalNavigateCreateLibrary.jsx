@@ -1,9 +1,6 @@
 import { TbMusicPlus } from "react-icons/tb";
 import { createPlaylist, getUser } from "../api";
-import { useNavigate } from "react-router-dom";
 import { getAllPlayListsByUserId } from "../api/PlaylistAPI";
-import { useDispatch } from "react-redux";
-import { next } from "../features/navigate/navigateSlice";
 import { NavigateAuth } from "../context/NavigateContext";
 
 export default function VerticalNavigateCreateLibrary({

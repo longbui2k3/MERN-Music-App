@@ -12,5 +12,9 @@ export {
   SignUpFacebook,
   CheckExistEmail,
 } from "./AuthenticationAPI";
-export { getUser } from "./UserAPI";
+export {
+  getUser,
+  addFavoriteListsong,
+  removeFavoriteListsong,
+} from "./UserAPI";
 export { getAllPlaylists, getPlaylist, createPlaylist } from "./PlaylistAPI";

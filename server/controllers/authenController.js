@@ -288,7 +288,7 @@ const resetPassword = async (req, res, next) => {
     });
   }
   const token = req.params.token;
-  const users = await User.find({}, { resetToken: 1 });
+  const users = await User.find({}).select("+resetToken");
   let resetedUser = null;
   for (let user of users) {
     if (user.resetToken) {
@@ -309,7 +309,7 @@ const resetPassword = async (req, res, next) => {
   resetedUser.resetToken = undefined;
   resetedUser.createAt = undefined;
   resetedUser.expireAt = undefined;
-  resetedUser.save();
+  await resetedUser.save({ validateBeforeSave: false });
   res.status(200).json({
     status: "success",
     message: "Reset password successfully!",
