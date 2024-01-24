@@ -30,15 +30,18 @@ export default function PageStatus() {
       setNavigateLogin(true);
     } catch (err) {}
   }
-  if (navigateAccountOverview) {
-    return <Navigate to="#" />;
-  }
-  if (navigateWebPlayer) {
-    return <Navigate to="/" />;
-  }
-  if (navigateLogin || !user) {
-    return <Navigate to="/login" />;
-  }
+  useEffect(() => {
+    if (navigateAccountOverview) {
+      window.location.href = "#";
+    }
+    if (navigateWebPlayer) {
+      window.location.href = "/";
+    }
+    if (navigateLogin || !user) {
+      window.location.href = "/login";
+    }
+  }, [navigateAccountOverview, navigateWebPlayer, navigateLogin, user]);
+
   return (
     <>
       <Logo />

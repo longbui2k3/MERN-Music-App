@@ -1,5 +1,5 @@
 import { Button, FormControl, FormLabel, Input, Text } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SingleButton } from "./SingleButton";
 import { Logo } from "./Logo";
 import { InfoErrorInput } from "./InfoErrorInput";
@@ -9,6 +9,7 @@ import { Navigate, useParams } from "react-router-dom";
 import { ResetPassword } from "../api";
 import { ShowNotify } from "./ShowNotify";
 import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { useCookies } from "react-cookie";
 export default function PageResetPassword() {
   const {
     handleSubmit,
@@ -23,6 +24,7 @@ export default function PageResetPassword() {
   const [message, setMessage] = useState("");
   const [isResetPwdSuccessfully, setIsResetPwdSuccessfully] = useState("");
   const [isGoToHome, setIsGoToHome] = useState(false);
+  const [cookies, setCookie] = useCookies([""]);
   const handleInputRepeatPasswordChange = (e) => {
     setInputRepeatPassword(e.target.value);
   };
@@ -49,7 +51,7 @@ export default function PageResetPassword() {
         params.userId,
         params.token
       );
-      console.log(res);
+      setCookie("jwt", res.data.token, { path: "/" });
       setIsResetPwdSuccessfully(true);
       setMessage(res.data.message);
     } catch (err) {
@@ -57,12 +59,9 @@ export default function PageResetPassword() {
       setMessage(err.response.data.message);
     }
   }
-  if (isGoToHome)
-    return (
-      <>
-        <Navigate to="/"></Navigate>
-      </>
-    );
+  useEffect(() => {
+    if (isGoToHome) window.location.href = "/";
+  }, [isGoToHome]);
   if (isResetPwdSuccessfully)
     return (
       <>

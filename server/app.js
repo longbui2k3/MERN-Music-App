@@ -8,11 +8,11 @@ const albumRouter = require("./routers/albumRouter");
 const playlistRouter = require("./routers/playListRouter");
 const likedSongRouter = require("./routers/likedSongRouter");
 const sectionRouter = require("./routers/sectionRouter");
-// const cors = require("cors");
+const cors = require("cors");
 const morgan = require("morgan");
 
 const app = express();
-// app.use(cors());
+app.use(cors());
 app.use(morgan("dev"));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());

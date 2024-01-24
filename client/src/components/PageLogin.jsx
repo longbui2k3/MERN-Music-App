@@ -15,7 +15,6 @@ import { useForm } from "react-hook-form";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { Login, LoginFacebook, LoginGoogle, getUser } from "../api";
 import { useCookies } from "react-cookie";
-import { Navigate } from "react-router";
 import { UserAuth } from "../context/AuthContext";
 import GoogleIcon from "./GoogleIcon";
 import FacebookIcon from "./FacebookIcon";
@@ -118,9 +117,11 @@ export default function PageLogin() {
       console.log(err);
     }
   };
-  if (isLoginSuccessfully || user) {
-    return <Navigate to="/" />;
-  }
+  useEffect(() => {
+    if (user || isLoginSuccessfully) {
+      window.location.href = "/";
+    }
+  }, [user, isLoginSuccessfully]);
   return (
     <>
       <div className="w-100 bg-black h-[150px] mt-[-40px] mb-[100px] py-[25px]">

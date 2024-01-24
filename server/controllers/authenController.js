@@ -310,10 +310,7 @@ const resetPassword = async (req, res, next) => {
   resetedUser.createAt = undefined;
   resetedUser.expireAt = undefined;
   await resetedUser.save({ validateBeforeSave: false });
-  res.status(200).json({
-    status: "success",
-    message: "Reset password successfully!",
-  });
+  createSendToken("Reset password", resetedUser, 200, res);
 };
 
 const login = async (req, res, next) => {

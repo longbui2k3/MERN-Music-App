@@ -71,7 +71,7 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["admin", "user"],
+      enum: ["admin", "user", "artist"],
       default: "user",
     },
     listSongs: [{ type: mongoose.Schema.ObjectId, ref: "ListSongs" }],

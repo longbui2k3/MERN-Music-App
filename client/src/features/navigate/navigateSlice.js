@@ -24,11 +24,11 @@ export const navigateSlice = createSlice({
       state.currentPage = state.currentPage.prev;
     },
     link: (state, action) => {
-       const newNode = new Node(action.payload);
-       state.currentPage.next = newNode;
-       newNode.prev = state.currentPage;
-       state.currentPage = newNode;
-    }
+      const newNode = new Node(action.payload);
+      state.currentPage.next = newNode;
+      newNode.prev = state.currentPage;
+      state.currentPage = newNode;
+    },
   },
 });
 export const { next, back, link } = navigateSlice.actions;

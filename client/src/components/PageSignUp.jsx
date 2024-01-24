@@ -216,7 +216,7 @@ export default function SignUp() {
           textAlign="center"
           color="#a7a7a7"
           fontWeight="600"
-          className="mb-[80px]"
+          className="mb-[10px]"
         >
           Already have an account?{" "}
           <a
@@ -224,6 +224,20 @@ export default function SignUp() {
             style={{ textDecoration: "underline", color: "white" }}
           >
             Log in here
+          </a>
+        </Text>
+        <Text
+          textAlign="center"
+          color="#a7a7a7"
+          fontWeight="600"
+          className="mb-[80px]"
+        >
+          You are the artist?{" "}
+          <a
+            href="/signup"
+            style={{ textDecoration: "underline", color: "#1ED760" }}
+          >
+            Sign up for artist
           </a>
         </Text>
       </Container>
