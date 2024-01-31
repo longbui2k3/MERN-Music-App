@@ -15,7 +15,22 @@ import TrackList from "./components/TrackList";
 import Album from "./components/Album";
 import Profile from "./components/Profile";
 import { NavigateContextProvider } from "./context/NavigateContext";
+import { useEffect, useState } from "react";
+import { getUser } from "./api";
+import { BodyArtist, CreateAlbum, CreateSong } from "./components/artist";
 export function App() {
+  const [user, setUser] = useState(" ");
+  useEffect(() => {
+    const getUserFunc = async () => {
+      try {
+        const res = await getUser();
+        setUser(res.data.data);
+      } catch (err) {
+        setUser("");
+      }
+    };
+    getUserFunc();
+  }, []);
   return (
     <ChakraProvider>
       <AuthContextProvider>
@@ -42,7 +57,13 @@ export function App() {
                 path="/"
                 element={
                   <PageHome>
-                    <Body />
+                    {user.role === "user" ? (
+                      <Body />
+                    ) : user.role === "artist" ? (
+                      <BodyArtist />
+                    ) : (
+                      ""
+                    )}
                   </PageHome>
                 }
               />
@@ -68,6 +89,22 @@ export function App() {
                 element={
                   <PageHome>
                     <Profile />
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/createAlbum"
+                element={
+                  <PageHome>
+                    <CreateAlbum />
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/createSong"
+                element={
+                  <PageHome>
+                    <CreateSong />
                   </PageHome>
                 }
               />

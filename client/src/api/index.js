@@ -17,4 +17,6 @@ export {
   addFavoriteListsong,
   removeFavoriteListsong,
 } from "./UserAPI";
+export { searchGenres } from "./GenreAPI";
 export { getAllPlaylists, getPlaylist, createPlaylist } from "./PlaylistAPI";
+export { createAlbum, getAlbumById } from "./AlbumAPI";

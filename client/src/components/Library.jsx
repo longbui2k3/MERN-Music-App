@@ -561,7 +561,9 @@ const Library = () => {
                         : "#b3b3b3"
                     }] rounded-lg w-full `}
                     onClick={function (e) {
-                      navigatePage(`/playlist/${listSong._id}`);
+                      navigatePage(
+                        `/${listSong.type.toLowerCase()}/${listSong._id}`
+                      );
                     }}
                   >
                     <div className="flex w-full">
@@ -598,9 +600,9 @@ const Library = () => {
                             </span>
                             <span class="whitespace-nowrap overflow-hidden text-ellipsis">
                               {listSong.type} •{" "}
-                              {listSong.user?.role === "user"
-                                ? listSong.user?._id
-                                : listSong.user?.name}
+                              {listSong.singers
+                                .map((singer) => singer.name)
+                                .join(", ")}
                             </span>
                           </div>
                         </div>

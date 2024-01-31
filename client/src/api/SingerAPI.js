@@ -6,6 +6,14 @@ const SingerAPI = {
 
     return axios.get(url);
   },
+  async getSingerByUser() {
+    const url = "http://localhost:4000/api/v1/singer/songs";
+    return await axios.get(url);
+  },
+  async searchSinger(search) {
+    const url = `http://localhost:4000/api/v1/singer?${search}`;
+    return await axios.get(url);
+  },
 };
 
 export default SingerAPI;

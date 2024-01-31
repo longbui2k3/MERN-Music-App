@@ -10,9 +10,16 @@ const songSchema = new Schema({
     type: String,
     required: true,
   },
-  releaseDate: {
+  releasedDate: {
     type: Date,
+    default: Date.now(),
     required: true,
+  },
+  writtenBy: {
+    type:String,
+  },
+  producedBy: {
+    type: String,
   },
   imageURL: {
     type: String,
@@ -32,12 +39,12 @@ const songSchema = new Schema({
       ref: "Singer",
     },
   ],
-  authors: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: "Author",
-    },
-  ],
+  // authors: [
+  //   {
+  //     type: mongoose.Schema.ObjectId,
+  //     ref: "Author",
+  //   },
+  // ],
   genres: [
     {
       type: mongoose.Schema.ObjectId,
@@ -50,9 +57,9 @@ songSchema.path("singers").validate(function (value) {
   return value.length > 0;
 }, "singers must not be empty");
 
-songSchema.path("authors").validate(function (value) {
-  return value.length > 0;
-}, "authors must not be empty");
+// songSchema.path("authors").validate(function (value) {
+//   return value.length > 0;
+// }, "authors must not be empty");
 
 songSchema.path("genres").validate(function (value) {
   return value.length > 0;

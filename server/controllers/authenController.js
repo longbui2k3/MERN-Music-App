@@ -6,14 +6,7 @@ const generateToken = require("../config/generateToken");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const admin = require("firebase-admin");
-const firebaseConfig = {
-  apiKey: "AIzaSyAz_-N20aKrjSmxtJsWJE3ylhC7dA-CX7s",
-  authDomain: "auth-music-app.firebaseapp.com",
-  projectId: "auth-music-app",
-  storageBucket: "auth-music-app.appspot.com",
-  messagingSenderId: "779072786560",
-  appId: "1:779072786560:web:633111d0463bf129c85665",
-};
+const firebaseConfig = require("../config/firebaseConfig");
 admin.initializeApp(firebaseConfig);
 const createSendToken = (type, user, statusCode, res) => {
   const token = generateToken(user._id);
@@ -68,18 +61,22 @@ const protect = async (req, res, next) => {
       message: "You are not logged in! Please log in to get access.",
     });
   }
-  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  try {
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 
-  const user = await User.findOne({ _id: decoded.id });
+    const user = await User.findOne({ _id: decoded.id });
 
-  if (!user) {
-    return res.status(401).json({
-      status: "fail",
-      message: "The user belonging to this token does no longer exist.",
-    });
+    if (!user) {
+      return res.status(401).json({
+        status: "fail",
+        message: "The user belonging to this token does no longer exist.",
+      });
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    next(err);
   }
-  req.user = user;
-  next();
 };
 const restrictTo = (...roles) => {
   return (req, res, next) => {

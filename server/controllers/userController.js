@@ -17,7 +17,7 @@ const getMe = (req, res, next) => {
 const getUserById = async (req, res, next) => {
   const id = req.params.id;
   await User.findById(id)
-    .populate({ path: "listSongs", populate: { path: "user" } })
+    .populate({ path: "listSongs", populate: { path: "singers" } })
     .then((result) => {
       res.status(200).json({
         status: "success",

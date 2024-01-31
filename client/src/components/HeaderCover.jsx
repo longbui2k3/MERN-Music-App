@@ -18,12 +18,16 @@ export default function HeaderCover() {
       <div className="image">
         <img
           className="h-60 shadow-2xl w-[128px] h-[128px] rounded-[4px] mr-[16px]"
-          src="https://misc.scdn.co/liked-songs/liked-songs-640.png"
+          src={`${playlist.imageURL}`}
           alt="Selected Playlist"
         />
       </div>
       <div className="flex flex-col gap-4 text-gray-300">
-        <span className="type">{playlist.type}</span>
+        <span className="type">
+          {playlist.type === "Album" && playlist.songs.length === 1
+            ? "Single"
+            : playlist.type}
+        </span>
         <h1 className="text-white text-6xl font-bold">{playlist.name}</h1>
         <div className="description">{playlist.description}</div>
       </div>

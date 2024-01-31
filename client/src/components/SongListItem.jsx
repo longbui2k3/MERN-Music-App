@@ -3,11 +3,12 @@ import { Image } from "@chakra-ui/react";
 import { faCirclePlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SingerAPI from "../api/SingerAPI";
+import { NavigateAuth } from "../context/NavigateContext";
 
 export default function SongListItem({ listSong }) {
   const [isHovered, setIsHovered] = useState(false);
   const [artists, setArtists] = useState([]);
-
+  const { navigatePage } = NavigateAuth();
   useEffect(() => {
     try {
       const getSingers = async () => {
@@ -31,6 +32,9 @@ export default function SongListItem({ listSong }) {
       style={{ backgroundColor: "#181818" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => {
+        navigatePage(`/album/${listSong._id}`);
+      }}
     >
       <div
         style={{

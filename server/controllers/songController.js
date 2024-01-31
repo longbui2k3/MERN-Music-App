@@ -3,13 +3,27 @@ const Author = require("../models/authorModel");
 const Singer = require("../models/singerModel");
 const Genre = require("../models/genreModel");
 const ListSongs = require("../models/listSongsModel");
-const { startSession } = require("mongoose");
+const multer = require("multer");
+const firebaseConfig = require("../config/firebaseConfig");
+const { initializeApp } = require("firebase/app");
+const {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytesResumable,
+} = require("firebase/storage");
+initializeApp(firebaseConfig);
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage();
+
+// Setting up multer as a middleware to grab photo uploads
+const upload = multer({ storage: multer.memoryStorage() });
+const { startSession, Types } = require("mongoose");
 
 const getAllSongs = async (req, res, next) => {
   try {
     const songs = await Song.find()
       .populate("album")
-      .populate("authors")
       .populate("singers")
       .populate("genres")
       .exec();
@@ -28,7 +42,6 @@ const getSong = async (req, res, next) => {
     const id = req.params.id;
     const song = await Song.findById(id)
       .populate("album")
-      .populate("authors")
       .populate("singers")
       .populate("genres")
       .exec();
@@ -41,58 +54,95 @@ const getSong = async (req, res, next) => {
     next(err);
   }
 };
+const getDownloadURLFunc = async (req, folder) => {
+  const dateTime = Date.now();
+  const file = req.files[folder == "images" ? 0 : 1];
+  const storageRef = ref(
+    storage,
+    `songs/${folder}/${dateTime}`
+  );
+  // Create file metadata including the content type
+  const metadata = {
+    contentType: file.mimetype,
+  };
 
+  // Upload the file in the bucket storage
+  const snapshot = await uploadBytesResumable(
+    storageRef,
+    file.buffer,
+    metadata
+  );
+  //by using uploadBytesResumable we can control the progress of uploading like pause, resume, cancel
+
+  // // Grab the public url
+  const downloadURL = await getDownloadURL(snapshot.ref);
+  return downloadURL;
+};
+const uploadSingle = upload.any();
 const createSong = async (req, res, next) => {
   const session = await startSession();
   try {
-    let albumId = req.body.album;
-
     session.startTransaction();
-    if (!albumId) {
-      newAlbum = await ListSongs.create(
-        [
-          {
-            name: req.body.name,
-            type: "Album",
-            imageURL: req.body.imageURL,
-            singers: req.body.singers,
-            songs: [],
-          },
-        ],
-        { session }
-      );
+    req.body.genres = req.body.genres
+      .split(",")
+      .map((genre) => new Types.ObjectId(genre));
+    req.body.singers = req.body.singers
+      .split(",")
+      .map((singer) => new Types.ObjectId(singer));
+    console.log(req.body);
+    const downloadImageURL = await getDownloadURLFunc(req, "images");
+    const downloadVideoURL = await getDownloadURLFunc(req, "videos");
 
-      albumId = newAlbum[0]._id;
-      req.body.album = newAlbum[0]._id;
-    }
+    // let albumId = req.body.album;
+    // if (!albumId) {
+    //   newAlbum = await ListSongs.create(
+    //     [
+    //       {
+    //         name: req.body.name,
+    //         description: req.body.description,
+    //         type: "Album",
+    //         imageURL: downloadImageURL,
+    //         singers: req.body.singers,
+    //         songs: [],
+    //       },
+    //     ],
+    //     { session }
+    //   );
 
-    const song = await Song.create([req.body], { session });
+    //   albumId = newAlbum[0]._id;
+    //   req.body.album = newAlbum[0]._id;
+    // }
+
+    const song = await Song.create(
+      [{ ...req.body, imageURL: downloadImageURL, songURL: downloadVideoURL }],
+      { session }
+    );
     const album = await ListSongs.findOneAndUpdate(
-      { _id: albumId },
-      { $push: { songs: song } },
+      { _id: song[0].album },
+      { $addToSet: { songs: song[0] } },
       { session }
     );
     if (!album) {
-      throw new Error(`Album with id ${albumId} not found`);
+      throw new Error(`Album with id ${song[0].album} not found`);
     }
 
-    const authors = song[0].authors;
-    for (let i = 0; i < authors.length; i++) {
-      const author = await Author.findOneAndUpdate(
-        { _id: authors[i] },
-        { $push: { songs: song } },
-        { session }
-      );
-      if (!author) {
-        throw new Error(`Author with id ${authors[i]} not found`);
-      }
-    }
+    // const authors = song[0].authors;
+    // for (let i = 0; i < authors.length; i++) {
+    //   const author = await Author.findOneAndUpdate(
+    //     { _id: authors[i] },
+    //     { $push: { songs: song } },
+    //     { session }
+    //   );
+    //   if (!author) {
+    //     throw new Error(`Author with id ${authors[i]} not found`);
+    //   }
+    // }
 
     const singers = song[0].singers;
     for (let i = 0; i < singers.length; i++) {
       const singer = await Singer.findOneAndUpdate(
         { _id: singers[i] },
-        { $push: { songs: song } },
+        { $addToSet: { songs: song[0]} },
         { session }
       );
       if (!singer) {
@@ -104,7 +154,7 @@ const createSong = async (req, res, next) => {
     for (let i = 0; i < genres.length; i++) {
       const genre = await Genre.findOneAndUpdate(
         { _id: genres[i] },
-        { $push: { songs: song } },
+        { $addToSet: { songs: song[0] } },
         { session, new: true }
       );
       if (!genre) {
@@ -122,6 +172,7 @@ const createSong = async (req, res, next) => {
   } catch (err) {
     await session.abortTransaction();
     session.endSession();
+    console.log(err);
     next(err);
   }
 };
@@ -231,4 +282,5 @@ module.exports = {
   createSong,
   deleteSong,
   updateSong,
+  uploadSingle,
 };

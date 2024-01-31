@@ -3,10 +3,10 @@ const songController = require("../controllers/songController");
 const authenController = require("../controllers/authenController");
 const router = express.Router();
 
-router
-  .route("/")
-  .get(songController.getAllSongs)
-  .post(songController.createSong);
+router.route("/").get(songController.getAllSongs).post(
+  songController.uploadSingle,
+  songController.createSong
+);
 
 router
   .route("/:id")

@@ -2,8 +2,9 @@ const asyncHandler = require("express-async-handler");
 const Genre = require("../models/genreModel");
 
 const getGenres = asyncHandler(async (req, res) => {
-  const genres = await Genre.find();
-  res.send(genres);
+  const { search } = req.query;
+  const genres = await Genre.find({ name: { $regex: search || "" } });
+  res.status(200).json(genres);
 });
 
 const createGenre = asyncHandler(async (req, res) => {

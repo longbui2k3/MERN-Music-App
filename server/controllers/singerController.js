@@ -2,7 +2,11 @@ const singerModel = require("../models/singerModel");
 
 exports.getAllSingers = async (req, res, next) => {
   try {
-    const singers = await singerModel.find();
+    const { search } = req.query;
+    const singers = await singerModel
+      .find({ name: { $regex: search || "" } })
+      .populate("songs")
+      .populate("listSongs");
 
     res.status(200).json({
       status: "success",
@@ -17,6 +21,21 @@ exports.getSinger = async (req, res, next) => {
   try {
     const singer = await singerModel.findById(req.params.id);
 
+    res.status(200).json({
+      status: "success",
+      singer,
+    });
+  } catch (err) {
+    return next(err);
+  }
+};
+
+exports.getSingerByUser = async (req, res, next) => {
+  try {
+    const singer = await singerModel
+      .findOne({ user: req.user._id })
+      .populate({ path: "songs", populate: "singers" })
+      .populate("listSongs");
     res.status(200).json({
       status: "success",
       singer,
