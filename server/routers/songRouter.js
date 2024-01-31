@@ -20,6 +20,10 @@ router
     authenController.protect,
     authenController.restrictTo("admin"),
     songController.updateSong
-  );
+  );;
+
+router
+  .route("/:name")
+  .post(songController.searchSong)
 
 module.exports = router;

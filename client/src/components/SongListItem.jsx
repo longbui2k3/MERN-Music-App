@@ -26,7 +26,7 @@ export default function SongListItem({ listSong }) {
   return (
     <div
       className={
-        "h-[270px] rounded-md w-[190px] inline-block cursor-pointer mb-[24px]"
+        "h-[270px] rounded-md w-[190px] inline-block cursor-pointer mb-[24px] "
       }
       style={{ backgroundColor: "#181818" }}
       onMouseEnter={() => setIsHovered(true)}

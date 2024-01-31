@@ -19,6 +19,10 @@ const TopMenu = () => {
   function navigateHomeFunc() {
     navigatePage("/home");
   }
+
+  function navigateSearchFunc() {
+    navigatePage("/search");
+  }
   return (
     <div ref={ref}>
       <Box
@@ -41,6 +45,7 @@ const TopMenu = () => {
         marginBottom={1}
         padding="4px 12px 4px 20px"
         className={"hover:text-white cursor-pointer"}
+        onClick={navigateSearchFunc}
       >
         <FontAwesomeIcon icon={faMagnifyingGlass} fontSize={"23"} />{" "}
         <span

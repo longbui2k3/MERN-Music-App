@@ -15,6 +15,9 @@ import TrackList from "./components/TrackList";
 import Album from "./components/Album";
 import Profile from "./components/Profile";
 import { NavigateContextProvider } from "./context/NavigateContext";
+import SearchPage from "./components/SearchPage";
+import SearchComponent from "./components/SearchComponent";
+import SearchStartPage from "./components/SearchStartPage";
 export function App() {
   return (
     <ChakraProvider>
@@ -68,6 +71,26 @@ export function App() {
                 element={
                   <PageHome>
                     <Profile />
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/search"
+                element={
+                  <PageHome>
+                    <SearchPage>
+                      <SearchStartPage />
+                    </SearchPage>
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/search/:name"
+                element={
+                  <PageHome>
+                    <SearchPage>
+                      <SearchComponent />
+                    </SearchPage>
                   </PageHome>
                 }
               />

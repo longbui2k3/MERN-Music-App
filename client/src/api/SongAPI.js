@@ -6,6 +6,11 @@ const SongAPI = {
 
     return axios.get(url);
   },
+
+  searchSong(name) {
+    const url = `http://localhost:4000/api/v1/songs/${name}`;
+    return axios.post(url);
+  },
 };
 
 export default SongAPI;
