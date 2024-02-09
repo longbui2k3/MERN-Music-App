@@ -67,5 +67,6 @@ songSchema.path("genres").validate(function (value) {
 }, "genres must not be empty");
 
 const Song = mongoose.model("Song", songSchema);
+Song.collection.createIndex({ name: 'text' }, { default_language: 'none', language_override: 'none' });
 
 module.exports = Song;

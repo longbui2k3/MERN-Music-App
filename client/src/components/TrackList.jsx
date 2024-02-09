@@ -1,13 +1,13 @@
+import { faHeart, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { AiFillClockCircle, AiOutlineHeart } from "react-icons/ai";
-import ActionBar from "./ActionBar";
-import HeaderCover from "./HeaderCover";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { IoIosMore } from "react-icons/io";
+import { useParams } from "react-router-dom";
 import { SingerAPI } from "../api";
 import { getPlaylist } from "../api/PlaylistAPI";
-import { useParams } from "react-router-dom";
+import ActionBar from "./ActionBar";
+import HeaderCover from "./HeaderCover";
 
 export default function MusicList() {
   const [songs, setSongs] = useState([]);

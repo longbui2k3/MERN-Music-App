@@ -18,6 +18,9 @@ import { NavigateContextProvider } from "./context/NavigateContext";
 import { useEffect, useState } from "react";
 import { getUser } from "./api";
 import { BodyArtist, CreateAlbum, CreateSong } from "./components/artist";
+import SearchPage from "./components/SearchPage";
+import SearchComponent from "./components/SearchComponent";
+import SearchStartPage from "./components/SearchStartPage";
 export function App() {
   const [user, setUser] = useState(" ");
   useEffect(() => {
@@ -105,6 +108,26 @@ export function App() {
                 element={
                   <PageHome>
                     <CreateSong />
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/search"
+                element={
+                  <PageHome>
+                    <SearchPage>
+                      <SearchStartPage />
+                    </SearchPage>
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/search/:name"
+                element={
+                  <PageHome>
+                    <SearchPage>
+                      <SearchComponent />
+                    </SearchPage>
                   </PageHome>
                 }
               />

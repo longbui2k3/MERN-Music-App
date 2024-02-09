@@ -268,6 +268,36 @@ const updateSong = async (req, res, next) => {
   }
 };
 
+
+const searchSong = async (req, res, next) => {
+  try {
+    const keyword = req.params.name;
+    
+
+
+    // const song = await Song.find({ $text: { $search:  keyword}  }).collation({ locale: 'en', strength: 2 })
+    //   .populate("album")
+    //   .populate("authors")
+    //   .populate("singers")
+    //   .populate("genres")
+    //   .exec();
+
+
+    const song = await Song.find({ name: { $regex: new RegExp(keyword, 'i') }  }).collation({ locale: 'en', strength: 2 })
+    .populate("album")
+    .populate("authors")
+    .populate("singers")
+    .populate("genres")
+    .exec();
+    res.status(200).json({
+      status: "success",
+      data: song,});
+
+  } catch(err) {
+    next(err);
+  }
+}
+
 module.exports = {
   getAllSongs,
   getSong,
@@ -275,4 +305,5 @@ module.exports = {
   deleteSong,
   updateSong,
   uploadSingle,
+  searchSong
 };

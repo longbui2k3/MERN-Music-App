@@ -89,3 +89,4 @@ exports.deleteSinger = async (req, res, next) => {
     return next(err);
   }
 };
+
