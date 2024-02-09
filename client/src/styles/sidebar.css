@@ -44,5 +44,5 @@
 }
 
 .app-sidebar .app-sidebar-resizer:hover {
-  width: 10px;
+  width: 0px;
 }

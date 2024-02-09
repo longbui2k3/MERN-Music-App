@@ -16,7 +16,7 @@ const songSchema = new Schema({
     required: true,
   },
   writtenBy: {
-    type:String,
+    type: String,
   },
   producedBy: {
     type: String,
@@ -29,6 +29,7 @@ const songSchema = new Schema({
     type: String,
     required: true,
   },
+  duration: { type: String, required: true },
   album: {
     type: mongoose.Schema.ObjectId,
     ref: "ListSongs",

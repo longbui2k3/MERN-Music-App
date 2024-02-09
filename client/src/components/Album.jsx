@@ -17,7 +17,7 @@ export default function Album() {
       setSongs(res.data.album.songs);
     };
     getAlbumFunc();
-  }, []);
+  }, [params.id]);
 
   const msToMinutesAndSeconds = (ms) => {
     const minutes = Math.floor(ms / 60000);
@@ -34,7 +34,7 @@ export default function Album() {
             <span>#</span>
           </div>
           <div>
-            <span>TITLE</span>
+            <span>Title</span>
           </div>
           <div className="flex justify-center items-center">
             <span>
@@ -66,7 +66,7 @@ export default function Album() {
                     </div>
                   </div>
                   <div className="flex items-center text-[#dddcdc] justify-center">
-                    <span>{msToMinutesAndSeconds(10000)}</span>
+                    <span>{duration}</span>
                   </div>
                 </div>
               );

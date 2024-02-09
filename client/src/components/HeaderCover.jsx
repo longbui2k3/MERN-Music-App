@@ -8,6 +8,7 @@ export default function HeaderCover() {
   useEffect(() => {
     const getPlaylistFunc = async () => {
       const songsData = await getPlaylist(params.id);
+      console.log(songsData.data.playlist);
       setPlaylist(songsData.data.playlist);
     };
     getPlaylistFunc();
@@ -29,7 +30,9 @@ export default function HeaderCover() {
             : playlist.type}
         </span>
         <h1 className="text-white text-6xl font-bold">{playlist.name}</h1>
-        <div className="description">{playlist.description}</div>
+        <div className="description">
+          {/* {playlist.singers.map((singer) => singer.name).join(" • ")} */}
+        </div>
       </div>
     </div>
   );

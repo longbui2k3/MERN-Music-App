@@ -4,6 +4,7 @@ const Singer = require("../models/singerModel");
 const Genre = require("../models/genreModel");
 const ListSongs = require("../models/listSongsModel");
 const multer = require("multer");
+const getVideoDuration = require("get-video-duration");
 const firebaseConfig = require("../config/firebaseConfig");
 const { initializeApp } = require("firebase/app");
 const {
@@ -57,10 +58,7 @@ const getSong = async (req, res, next) => {
 const getDownloadURLFunc = async (req, folder) => {
   const dateTime = Date.now();
   const file = req.files[folder == "images" ? 0 : 1];
-  const storageRef = ref(
-    storage,
-    `songs/${folder}/${dateTime}`
-  );
+  const storageRef = ref(storage, `songs/${folder}/${dateTime}`);
   // Create file metadata including the content type
   const metadata = {
     contentType: file.mimetype,
@@ -89,32 +87,26 @@ const createSong = async (req, res, next) => {
     req.body.singers = req.body.singers
       .split(",")
       .map((singer) => new Types.ObjectId(singer));
-    console.log(req.body);
     const downloadImageURL = await getDownloadURLFunc(req, "images");
     const downloadVideoURL = await getDownloadURLFunc(req, "videos");
 
-    // let albumId = req.body.album;
-    // if (!albumId) {
-    //   newAlbum = await ListSongs.create(
-    //     [
-    //       {
-    //         name: req.body.name,
-    //         description: req.body.description,
-    //         type: "Album",
-    //         imageURL: downloadImageURL,
-    //         singers: req.body.singers,
-    //         songs: [],
-    //       },
-    //     ],
-    //     { session }
-    //   );
-
-    //   albumId = newAlbum[0]._id;
-    //   req.body.album = newAlbum[0]._id;
-    // }
+    const duration = await getVideoDuration.getVideoDurationInSeconds(
+      downloadVideoURL
+    );
 
     const song = await Song.create(
-      [{ ...req.body, imageURL: downloadImageURL, songURL: downloadVideoURL }],
+      [
+        {
+          ...req.body,
+          imageURL: downloadImageURL,
+          songURL: downloadVideoURL,
+          duration: `${Math.floor(Math.floor(duration) / 60)}:${
+            Math.floor(duration) % 60 >= 10
+              ? Math.floor(duration) % 60
+              : "0" + (Math.floor(duration) % 60)
+          }`,
+        },
+      ],
       { session }
     );
     const album = await ListSongs.findOneAndUpdate(
@@ -142,7 +134,7 @@ const createSong = async (req, res, next) => {
     for (let i = 0; i < singers.length; i++) {
       const singer = await Singer.findOneAndUpdate(
         { _id: singers[i] },
-        { $addToSet: { songs: song[0]} },
+        { $addToSet: { songs: song[0] } },
         { session }
       );
       if (!singer) {
