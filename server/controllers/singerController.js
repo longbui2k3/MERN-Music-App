@@ -15,7 +15,11 @@ exports.getAllSingers = async (req, res, next) => {
 
 exports.getSinger = async (req, res, next) => {
   try {
-    const singer = await singerModel.findById(req.params.id);
+    const singer = await singerModel
+      .findById(req.params.id)
+      .populate("listSongs")
+      .populate("songs")
+      .exec();
 
     res.status(200).json({
       status: "success",

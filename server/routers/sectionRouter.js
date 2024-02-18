@@ -4,7 +4,7 @@ const router = express.Router();
 
 router
   .route("/")
-  .get(sectionController.getAllSection)
+  .get(sectionController.getSectionOfAdmin)
   .post(sectionController.createSection);
 
 router

@@ -15,6 +15,7 @@ import TrackList from "./components/TrackList";
 import Album from "./components/Album";
 import Profile from "./components/Profile";
 import { NavigateContextProvider } from "./context/NavigateContext";
+import Artist from "./components/Artist";
 export function App() {
   return (
     <ChakraProvider>
@@ -68,6 +69,14 @@ export function App() {
                 element={
                   <PageHome>
                     <Profile />
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/artist/:id"
+                element={
+                  <PageHome>
+                    <Artist />
                   </PageHome>
                 }
               />

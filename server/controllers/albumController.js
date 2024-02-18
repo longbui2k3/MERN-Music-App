@@ -21,7 +21,11 @@ exports.getAllAlbums = async (req, res, next) => {
 exports.getAllAlbumsById = async (req, res, next) => {
   try {
     const userId = req.params.userId;
-    const user = await User.findById(userId).populate("listSongs").exec();
+    const user = await Singer.findById(userId)
+      .populate("listSongs")
+      .populate("singers")
+      .populate("genres")
+      .exec();
     if (!user) throw new Error(`User with id: ${userId} not found`);
 
     const albums = user.listSongs.filter((item) => item.type === "Album");
@@ -39,7 +43,8 @@ exports.getAlbumById = async (req, res, next) => {
   try {
     const albumId = req.params.albumId;
 
-    const album = await ListSongs.findById(albumId);
+    const album = await ListSongs.findById(albumId).populate("songs").exec();
+
     if (!album) throw new Error(`Album with id: ${albumId} not found`);
 
     res.status(200).json({
@@ -64,7 +69,8 @@ exports.createAlbum = async (req, res, next) => {
       { $push: { albums: album } },
       { session, new: true }
     );
-    if (!updatedSinger) throw new Error(`Singer with id: ${singerId} not found`);
+    if (!updatedSinger)
+      throw new Error(`Singer with id: ${singerId} not found`);
 
     await session.commitTransaction();
     session.endSession();

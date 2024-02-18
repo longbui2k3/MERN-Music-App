@@ -4,9 +4,31 @@ exports.getAllSection = async (req, res, next) => {
   try {
     const sections = await Section.find().populate("listSongs").exec();
 
+    console.log(sections);
+
     res.status(200).json({
       status: "success",
       sections,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getSectionOfAdmin = async (req, res, next) => {
+  try {
+    const sections = await Section.find()
+      .populate("listSongs")
+      .populate("user")
+      .exec();
+
+    const sectionOfAdmin = sections.filter(
+      (section) => section.user && section.user.role == "admin"
+    );
+
+    res.status(200).json({
+      status: "success",
+      sections: sectionOfAdmin,
     });
   } catch (err) {
     next(err);
