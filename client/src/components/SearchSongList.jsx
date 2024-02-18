@@ -19,9 +19,7 @@ const SearchSongList = () => {
     const searchSong = async () => {
       try {
         const searchingSong = await SongAPI.searchSong(params.name);
-        console.log(searchingSong.data.data);
-
-        setSongs(searchingSong.data.data);
+        setSongs(searchingSong.data.metadata.songs);
       } catch (error) {
         console.log(error);
       }

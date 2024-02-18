@@ -5,16 +5,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SingerAPI from "../api/SingerAPI";
 import { NavigateAuth } from "../context/NavigateContext";
 
-export default function SongListItem({ listSong }) {
+export default function SongListItem({ musicList }) {
   const [isHovered, setIsHovered] = useState(false);
   const [artists, setArtists] = useState([]);
   const { navigatePage } = NavigateAuth();
   useEffect(() => {
     try {
       const getSingers = async () => {
-        for (let i = 0; i < listSong.singers.length; i++) {
-          const singerData = await SingerAPI.getSingerById(listSong.singers[i]);
-          setArtists((preData) => [...preData, singerData.data.singer.name]);
+        for (let i = 0; i < musicList.musiclist_attributes.singers.length; i++) {
+          const singerData = await SingerAPI.getSingerById(
+            musicList.musiclist_attributes.singers[i]
+          );
+          setArtists((preData) => [...preData, singerData.data.metadata.singer.name]);
         }
       };
 
@@ -33,7 +35,7 @@ export default function SongListItem({ listSong }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => {
-        navigatePage(`/album/${listSong._id}`);
+        navigatePage(`/album/${musicList._id}`);
       }}
     >
       <div
@@ -56,8 +58,8 @@ export default function SongListItem({ listSong }) {
           <Image
             boxSize="160px"
             objectFit="cover"
-            src={listSong.imageURL}
-            alt={listSong.name}
+            src={musicList.imageURL}
+            alt={musicList.name}
             className={"rounded-md"}
             style={{
               position: "absolute",
@@ -99,7 +101,7 @@ export default function SongListItem({ listSong }) {
                 position: "absolute",
               }}
             >
-              {listSong.name}
+              {musicList.name}
             </span>
             <br />
             <span

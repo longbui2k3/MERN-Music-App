@@ -38,7 +38,7 @@ export default function PageLogin() {
     const getUserFunc = async () => {
       try {
         const res = await getUser();
-        setUser(res.data.data);
+        setUser(res.data.metadata);
       } catch (err) {
         setUser("");
       }
@@ -68,12 +68,13 @@ export default function PageLogin() {
   async function onSubmit(values) {
     try {
       const res = await Login(values.email, values.password);
-      if (res.data.status === "success") {
+      console.log(res);
+      if (res.status === 200) {
         const email = document.getElementById("email");
         setIsLoginSuccessfully(true);
         setMessage(res.data.message);
         setCookie("remember", isChecked ? email.value : "", {});
-        setCookie("jwt", res.data.token, {
+        setCookie("jwt", res.data.metadata.token, {
           path: "/",
         });
         // console.log(res.data.data);
@@ -92,10 +93,11 @@ export default function PageLogin() {
         credential.user.email,
         credential.user.accessToken
       );
-      setCookie("jwt", res.data.token, {
+      setCookie("jwt", res.data.metadata.token, {
         path: "/",
       });
-      if (res) setIsLoginSuccessfully(true);
+      setIsLoginSuccessfully(true);
+      setMessage(res.data.message);
     } catch (err) {
       setIsNoAccountGoogle(true);
       console.log(err);
@@ -108,10 +110,11 @@ export default function PageLogin() {
         credential.user.accessToken,
         credential.user.providerData[0].uid
       );
-      setCookie("jwt", res.data.token, {
+      setCookie("jwt", res.data.metadata.token, {
         path: "/",
       });
-      if (res) setIsLoginSuccessfully(true);
+      setIsLoginSuccessfully(true);
+      setMessage(res.data.message);
     } catch (err) {
       setIsNoAccountFacebook(true);
       console.log(err);

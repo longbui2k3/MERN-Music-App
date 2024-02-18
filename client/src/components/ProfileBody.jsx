@@ -2,7 +2,7 @@ import { Image } from "@chakra-ui/react";
 import { faCirclePlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { getAllPlayListsByUserId } from "../api/PlaylistAPI";
+import { getMusicListsByUserId } from "../api";
 import { IoIosMore } from "react-icons/io";
 
 const MenuForMoreOptions = ({ isClickOnMoreIcon }) => {
@@ -34,9 +34,9 @@ const ProfileBody = ({ user }) => {
   useEffect(() => {
     const getAllPlaylistsOfUser = async () => {
       try {
-        const playlistsData = await getAllPlayListsByUserId(user._id);
+        const playlistsData = await getMusicListsByUserId({musiclist_type: "Playlist"});
         console.log(playlistsData);
-        setPlaylists(playlistsData.data.playlists);
+        setPlaylists(playlistsData.data.metadata.musicLists);
       } catch {}
     };
     getAllPlaylistsOfUser();
@@ -58,11 +58,11 @@ const ProfileBody = ({ user }) => {
       <div className="text-[24px] text-white font-semibold	">
         Public Playlists
       </div>
-      {/* <div>
-        {playlists.map((playlist, playlistIndex) => (
+      <div>
+        {playlists?.map((playlist, playlistIndex) => (
           <PlayListItem playlist={playlist} user={user} />
         ))}
-      </div> */}
+      </div>
     </div>
   );
 };
@@ -99,8 +99,8 @@ const PlayListItem = ({ playlist, user }) => {
           <Image
             boxSize="160px"
             objectFit="cover"
-            src="https://misc.scdn.co/liked-songs/liked-songs-640.png"
-            alt={playlist.name}
+            src={playlist.musicList.imageURL}
+            alt={playlist.musicList.name}
             className={"rounded-md"}
             style={{
               position: "absolute",
@@ -142,7 +142,7 @@ const PlayListItem = ({ playlist, user }) => {
                 position: "absolute",
               }}
             >
-              {playlist.name}
+              {playlist.musicList.name}
             </span>
             <br />
             <span
@@ -156,7 +156,7 @@ const PlayListItem = ({ playlist, user }) => {
                 margin: "-36px 0",
               }}
             >
-              By {user.name}
+              By {user._id}
             </span>
           </div>
         </div>

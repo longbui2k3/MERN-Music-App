@@ -22,17 +22,16 @@ const BodyArtist = () => {
     const getSingerByUserFunc = async () => {
       try {
         const res = await SingerAPI.getSingerByUser();
-        console.log(res.data.singer.songs);
-        console.log(res.data.singer.listSongs);
-        setSongs(res.data.singer.songs);
+        console.log(res.data.metadata.singer.musicLists);
+        setSongs(res.data.metadata.singer.songs);
         const types = ["Album", "Playlist"];
         setSections(
           types.map(function (type) {
             return {
               title: type,
-              listSongs: res.data.singer.listSongs
-                .slice(0, 9)
-                .filter((listSong) => listSong.type === type),
+              musicLists: res.data.metadata.singer.musicLists
+                ?.slice(0, 9)
+                .filter((musicList) => musicList.type === type),
               create: true,
             };
           })
@@ -103,7 +102,7 @@ const BodyArtist = () => {
 
           {/* Song list */}
           <div className="flex flex-col pb-10 mt-[8px] h-[400px] overflow-y-scroll">
-            {songs.map(
+            {songs?.map(
               (
                 { id, name, imageURL, singers, duration, album, releasedDate },
                 index
@@ -165,7 +164,7 @@ const BodyArtist = () => {
                           {name}
                         </span>
                         <span className="whitespace-nowrap overflow-hidden text-ellipsis leading-7">
-                          {singers.map((item) => item.name + " ")}
+                          {singers?.map((item) => item.name + " ")}
                         </span>
                       </div>
                     </div>

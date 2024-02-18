@@ -37,9 +37,9 @@ export default function CreateSong() {
       try {
         const res = await SingerAPI.getSingerByUser();
         console.log(res);
-        setAlbums(res.data.singer.listSongs);
-        setInputAlbum(res.data.singer.listSongs[0]);
-        setInputSingers([res.data.singer]);
+        setAlbums(res.data.metadata.singer.musicLists);
+        setInputAlbum(res.data.metadata.singer.musicLists[0]);
+        setInputSingers([res.data.metadata.singer]);
       } catch (err) {}
     };
     getSingerByUserFunc();
@@ -338,7 +338,7 @@ export default function CreateSong() {
                       try {
                         if (e.target.value !== "") {
                           const res = await searchGenres(e.target.value);
-                          setGenres(res.data);
+                          setGenres(res.data.metadata.genres);
                         } else setGenres("");
                       } catch (err) {
                         console.log(err);
@@ -433,7 +433,7 @@ export default function CreateSong() {
                           const res = await SingerAPI.searchSinger(
                             e.target.value
                           );
-                          setSingers(res.data.singers);
+                          setSingers(res.data.metadata.singers);
                         } else setSingers("");
                       } catch (err) {
                         console.log(err);

@@ -4,7 +4,7 @@ import { IoIosMore } from "react-icons/io";
 import { CgDetailsMore } from "react-icons/cg";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useParams } from "react-router-dom";
-import { addFavoriteListsong, getUser, removeFavoriteListsong } from "../api";
+import { addFavoriteMusicList, getUser, removeFavoriteMusicList } from "../api";
 import { TbRulerOff } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import { setUserGlobal } from "../features/user/userSlice";
@@ -37,9 +37,10 @@ export default function ActionBar() {
     const getUserFunc = async () => {
       try {
         const res = await getUser();
-        setUser(res.data.data);
         if (
-          res.data.data.listSongs.find((listSong) => listSong._id === params.id)
+          res.data.metadata.user.musicLists.find(
+            (musicList) => musicList.musicList._id === params.id
+          )
         ) {
           setLiked(true);
         } else setLiked(false);
@@ -52,20 +53,20 @@ export default function ActionBar() {
   const dispatch = useDispatch();
   const addFavoriteFunc = async (e) => {
     try {
-      await addFavoriteListsong(params.id);
+      await addFavoriteMusicList(params.id);
       setLiked(true);
       const user = await getUser();
-      dispatch(setUserGlobal(user.data.data));
+      dispatch(setUserGlobal(user.data.metadata.user));
     } catch (err) {
       console.log(err);
     }
   };
   const removeFavoriteFunc = async (e) => {
     try {
-      await removeFavoriteListsong(params.id);
+      await removeFavoriteMusicList(params.id);
       setLiked(false);
       const user = await getUser();
-      dispatch(setUserGlobal(user.data.data));
+      dispatch(setUserGlobal(user.data.metadata.user));
     } catch (err) {
       console.log(err);
     }

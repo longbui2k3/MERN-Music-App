@@ -1,6 +1,33 @@
 import { Tooltip } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { getMusicListsByUserId } from "../api";
 
-export default function SearchBarLibrary({ searchRef }) {
+export default function SearchBarLibrary({
+  searchRef,
+  setMusicLists,
+  inputSearch,
+  setInputSearch,
+  typeSearch,
+}) {
+  const handleInputSearch = (e) => {
+    setInputSearch(e.target.value);
+  };
+  useEffect(() => {
+    const getMusicListsBySearch = async () => {
+      try {
+        const res = await getMusicListsByUserId({
+          search: inputSearch,
+          musiclist_type: typeSearch.newType,
+        });
+        if (res.data.status === 200) {
+          setMusicLists(res.data.metadata.musicLists);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    getMusicListsBySearch();
+  }, [inputSearch, typeSearch.newType]);
   const openSearchBar = (event) => {
     document.querySelector(".search-input").style = "width: 160px;";
     console.log("long");
@@ -49,6 +76,7 @@ export default function SearchBarLibrary({ searchRef }) {
         style={{
           transition: "width 0.1s ease-in-out",
         }}
+        onChange={handleInputSearch}
       />
     </div>
   );

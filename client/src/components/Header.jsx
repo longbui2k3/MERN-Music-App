@@ -98,7 +98,7 @@ export default function Header() {
         setIsLoading(true);
         const res = await getUser();
         setIsLoading(false);
-        setUser(res.data.data);
+        setUser(res.data.metadata.user);
       } catch (err) {
         setIsLoading(false);
         setUser("");

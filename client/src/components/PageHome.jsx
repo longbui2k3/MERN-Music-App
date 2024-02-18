@@ -73,7 +73,6 @@ function PageHome({ children }) {
   const { width, height, ref } = useResizeDetector();
   const [resizeStyle, setResizeStyle] = useState(false);
   useEffect(() => {
-    console.log(width);
     if (width < 223) {
       setResizeStyle(true);
     } else {
@@ -85,7 +84,7 @@ function PageHome({ children }) {
       <div className="app-container h-full">
         <div
           ref={sidebarRef}
-          className={"app-sidebar"}
+          className={"app-sidebar w-[360px]"}
           style={{ width: sidebarWidth < 290 ? 93 : sidebarWidth }}
         >
           <div className={"app-sidebar-content flex flex-col "}>

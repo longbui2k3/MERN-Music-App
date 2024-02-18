@@ -47,8 +47,8 @@ export default function Section({ section }) {
         ) : (
           ""
         )}
-        {section.listSongs.map((item, index) => (
-          <SongListItem key={index} listSong={item} />
+        {section.musicLists?.map((item, index) => (
+          <SongListItem key={index} musicList={item} />
         ))}
       </div>
     </section>

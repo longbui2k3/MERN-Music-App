@@ -37,7 +37,8 @@ export default function CreateAlbum() {
     async function getSingerByUserFunc() {
       try {
         const res = await SingerAPI.getSingerByUser();
-        setInputSingers([res.data.singer]);
+        console.log(res.data);
+        setInputSingers([res.data.metadata.singer]);
       } catch (err) {
         console.log(err);
       }
@@ -49,6 +50,7 @@ export default function CreateAlbum() {
     console.log(inputGenres.map((genre) => genre._id));
     console.log(inputDescription);
     console.log(inputFile);
+    console.log(inputSingers.map((singer) => singer._id));
     try {
       const res = await createAlbum(
         inputName,
@@ -249,7 +251,7 @@ export default function CreateAlbum() {
                             const res = await SingerAPI.searchSinger(
                               e.target.value
                             );
-                            setSingers(res.data.singers);
+                            setSingers(res.data.metadata.singers);
                           } else setSingers("");
                         } catch (err) {
                           console.log(err);
@@ -263,7 +265,7 @@ export default function CreateAlbum() {
                   <div className="flex gap-2 mt-3 mb-1">
                     {inputSingers.map((singer, i) => (
                       <div className="flex gap-2 justify-between px-2 py-1 bg-[rgb(35,35,35)] rounded-lg">
-                        <div>{singer.name}</div>
+                        <div>{singer?.name}</div>
                         <HiMiniXMark
                           className="my-auto"
                           onClick={function (e) {
@@ -344,7 +346,7 @@ export default function CreateAlbum() {
                         try {
                           if (e.target.value !== "") {
                             const res = await searchGenres(e.target.value);
-                            setGenres(res.data);
+                            setGenres(res.data.metadata.genres);
                           } else setGenres("");
                         } catch (err) {
                           console.log(err);
@@ -411,7 +413,7 @@ export default function CreateAlbum() {
           {inputName}
         </div>
         <div className="main-name text-[18px] text-center mx-auto mt-2">
-          {inputSingers.map((singer) => singer.name).join(", ")}
+          {inputSingers.map((singer) => singer?.name).join(", ")}
         </div>
         <div className="flex flex-col">
           <FormLabel className={"text-white my-[20px] font-[500] mx-3"}>

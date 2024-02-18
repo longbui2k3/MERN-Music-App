@@ -9,7 +9,8 @@ const Body = () => {
     const getAllSection = async () => {
       try {
         const sectionData = await SectionAPI.getAllSection();
-        setSections(sectionData.data.sections);
+        console.log(sectionData);
+        setSections(sectionData.data.metadata.sections);
       } catch (error) {
         console.log(error);
       }

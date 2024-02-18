@@ -27,7 +27,7 @@ export function App() {
     const getUserFunc = async () => {
       try {
         const res = await getUser();
-        setUser(res.data.data);
+        setUser(res.data.metadata.user);
       } catch (err) {
         setUser("");
       }
@@ -44,7 +44,13 @@ export function App() {
                 path="/home"
                 element={
                   <PageHome>
-                    <Body />
+                    {user.role === "user" ? (
+                      <Body />
+                    ) : user.role === "artist" ? (
+                      <BodyArtist />
+                    ) : (
+                      ""
+                    )}
                   </PageHome>
                 }
               />

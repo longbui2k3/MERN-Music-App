@@ -16,9 +16,10 @@ export default function PageStatus() {
     const getUserFunc = async () => {
       try {
         const res = await getUser();
-        setUser(res.data.data);
+        setUser(res.data.metadata.user);
       } catch (err) {
-        setUser("");
+        console.log(err);
+        setUser(" ");
       }
     };
     getUserFunc();

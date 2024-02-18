@@ -1,7 +1,7 @@
 import axios from "./axiosConfig";
 
 export const Login = async (email, password) => {
-  const res = await axios.post("http://localhost:4000/api/v1/user/login", {
+  const res = await axios.post("http://localhost:4000/api/v1/login", {
     email,
     password,
   });
@@ -10,7 +10,7 @@ export const Login = async (email, password) => {
 
 export const LoginGoogle = async (email, authentication) => {
   const res = await axios.post(
-    "http://localhost:4000/api/v1/user/login?type=google",
+    "http://localhost:4000/api/v1/login?type=google",
     {
       email,
       authentication,
@@ -21,7 +21,7 @@ export const LoginGoogle = async (email, authentication) => {
 // http://localhost:4000/api/v1/user/login?type=facebook
 export const LoginFacebook = async (authentication, federatedId) => {
   const res = await axios.post(
-    "http://localhost:4000/api/v1/user/login?type=facebook",
+    "http://localhost:4000/api/v1/login?type=facebook",
     {
       authentication,
       federatedId,
@@ -31,13 +31,13 @@ export const LoginFacebook = async (authentication, federatedId) => {
 };
 
 export const Logout = async () => {
-  const res = await axios.get("http://localhost:4000/api/v1/user/logout");
+  const res = await axios.get("http://localhost:4000/api/v1/logout");
   return res;
 };
 
 export const ForgotPassword = async (email) => {
   const res = await axios.post(
-    "http://localhost:4000/api/v1/user/forgotPassword",
+    "http://localhost:4000/api/v1/forgotPassword",
     { email }
   );
   return res;
@@ -50,14 +50,14 @@ export const ResetPassword = async (
   token
 ) => {
   const res = await axios.patch(
-    `http://localhost:4000/api/v1/user/resetPassword/${userId}/${token}`,
+    `http://localhost:4000/api/v1/resetPassword/${token}`,
     { password, passwordConfirm }
   );
   return res;
 };
 
 export const SignUp = async (email, password, name, dateOfBirth, gender) => {
-  const res = await axios.post("http://localhost:4000/api/v1/user/signup", {
+  const res = await axios.post("http://localhost:4000/api/v1/signup", {
     email,
     password,
     name,
@@ -76,7 +76,7 @@ export const SignUpGoogle = async (
   gender,
   avatar
 ) => {
-  const res = await axios.post("http://localhost:4000/api/v1/user/signup", {
+  const res = await axios.post("http://localhost:4000/api/v1/signup", {
     email,
     uid,
     name,
@@ -97,7 +97,7 @@ export const SignUpFacebook = async (
   avatar,
   federatedId
 ) => {
-  const res = await axios.post("http://localhost:4000/api/v1/user/signup", {
+  const res = await axios.post("http://localhost:4000/api/v1/signup", {
     email,
     uid,
     name,
@@ -111,7 +111,7 @@ export const SignUpFacebook = async (
 };
 export const CheckExistEmail = async (email) => {
   const res = await axios.post(
-    "http://localhost:4000/api/v1/user/checkExistEmail",
+    "http://localhost:4000/api/v1/checkExistEmail",
     {
       email,
     }

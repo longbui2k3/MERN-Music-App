@@ -26,9 +26,10 @@ import { FreeMode, Navigation } from "swiper/modules";
 import { FaRegFolder } from "react-icons/fa6";
 import SearchBarLibrary from "./SearchBarLibrary";
 import ViewModeLibrary from "./ViewModeLibrary";
-import { getUser } from "../api";
+import { getMusicListsByUserId, getUser } from "../api";
 import { NavigateAuth } from "../context/NavigateContext";
 import { useSelector } from "react-redux";
+import { dateDistance } from "../config";
 function useOutsideComponents(
   searchRef,
   createBtnRef,
@@ -104,7 +105,7 @@ const Library = () => {
   const [sortBy, setSortBy] = useState("Recents");
   const [viewAs, setViewAs] = useState("List");
 
-  const headerListSongsRef = useRef(null);
+  const headerMusicListRef = useRef(null);
   const listSongRef = useRef(null);
 
   const [isOpenVNCreate, setIsOpenVNCreate] = useState(false);
@@ -136,30 +137,85 @@ const Library = () => {
     setResizeStyle("2");
     document.querySelector(".app-sidebar").style = "width: 360px";
   }
-  const [listSongs, setListSongs] = useState(false);
+  const [musicLists, setMusicLists] = useState(false);
+  const [types, setTypes] = useState([]);
+  const [inputSearch, setInputSearch] = useState("");
+  const [typeSearch, setTypeSearch] = useState({
+    oldType: "",
+    oldIndex: -1,
+    newType: "",
+    newIndex: -1,
+  });
+  useEffect(() => {
+    const getMusicListsByType = async () => {
+      try {
+        const res = await getMusicListsByUserId({
+          musiclist_type: typeSearch.newType,
+          search: inputSearch,
+        });
+        if (res.data.status === 200) {
+          setMusicLists(res.data.metadata.musicLists);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    if (document.querySelectorAll(".swiper__slide").length !== 0) {
+      if (typeSearch.oldIndex !== -1) {
+        document.querySelectorAll(".swiper__slide")[
+          typeSearch.oldIndex
+        ].style.background = "rgb(35,35,35)";
+        document.querySelectorAll(".swiper__slide")[
+          typeSearch.oldIndex
+        ].style.color = "white";
+      }
+      if (typeSearch.newIndex !== -1) {
+        document.querySelectorAll(".swiper__slide")[
+          typeSearch.newIndex
+        ].style.background = "white";
+        document.querySelectorAll(".swiper__slide")[
+          typeSearch.newIndex
+        ].style.color = "rgb(35,35,35)";
+      }
+
+      getMusicListsByType();
+    }
+  }, [typeSearch]);
   const userGlobal = useSelector((state) => state.user.user);
   useEffect(() => {
-    if (userGlobal) setListSongs(userGlobal.listSongs);
+    if (userGlobal) setMusicLists(userGlobal.musicLists);
   }, [userGlobal]);
   useEffect(() => {
-    const getListSongsByUser = async () => {
+    const getMusicListByUser = async () => {
       try {
-        const user = await getUser();
-        if (user.response?.data.status === "fail") setListSongs([]);
-        else setListSongs(user.data.data.listSongs);
+        const res = await getUser();
+        console.log(res.data.metadata.user);
+        if (res.data.status === 200) {
+          const lists = res.data.metadata.user.musicLists;
+          setMusicLists(lists);
+          setTypes(
+            lists
+              .map((list) => list.musicList.type)
+              .filter(
+                (value, index) =>
+                  lists.map((list) => list.musicList.type).indexOf(value) ===
+                  index
+              )
+          );
+        } else setMusicLists([]);
       } catch (error) {
         console.log(error);
       }
     };
-    getListSongsByUser();
+    getMusicListByUser();
   }, []);
   useEffect(() => {
-    if (listSongs.length === 0) {
-      document.querySelector(".app-sidebar").style = "min-width:340px;";
+    if (musicLists.length === 0) {
+      document.querySelector(".app-sidebar").style.minWidth = "340px;";
     } else {
-      document.querySelector(".app-sidebar").style = "min-width:90px;";
+      document.querySelector(".app-sidebar").style.minWidth = "90px;";
     }
-  }, [listSongs]);
+  }, [musicLists]);
 
   const { navigatePage } = NavigateAuth();
 
@@ -177,8 +233,8 @@ const Library = () => {
           text1="Create playlist"
           icon2={<GoPlus className="my-auto text-[20px] me-3 text-white" />}
           text2="Create folder"
-          listSongs={listSongs}
-          setListSongs={setListSongs}
+          musicLists={musicLists}
+          setMusicLists={setMusicLists}
         />
       ) : (
         ""
@@ -189,8 +245,8 @@ const Library = () => {
           text1="Create a new playlist"
           icon2={<FaRegFolder className="my-auto text-[20px] me-3" />}
           text2="Create a new folder"
-          listSongs={listSongs}
-          setListSongs={setListSongs}
+          musicLists={musicLists}
+          setMusicLists={setMusicLists}
         />
       ) : (
         ""
@@ -206,7 +262,7 @@ const Library = () => {
       />
       <div
         className={`relative overflow-x-hidden ${
-          listSongs.length !== 0
+          musicLists.length !== 0
             ? resizeStyle === "1"
               ? "h-[50px]"
               : resizeStyle === "3"
@@ -319,7 +375,7 @@ const Library = () => {
             )}
           </div>
         </div>
-        {listSongs.length !== 0 ? (
+        {musicLists.length !== 0 ? (
           <>
             <div className="flex justify-between">
               <div
@@ -347,40 +403,49 @@ const Library = () => {
                     disabledClass: "swiper-button-disabled",
                   }}
                 >
-                  <SwiperSlide
-                    className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center text-[14px] font-semibold rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
-                    style={{
-                      width: "fit-content",
-                    }}
-                  >
-                    Playlists
-                  </SwiperSlide>
-                  <SwiperSlide
-                    className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center text-[14px] font-semibold rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
-                    style={{
-                      width: "fit-content",
-                    }}
-                  >
-                    Albums
-                  </SwiperSlide>
-                  <SwiperSlide
-                    className="bg-[rgb(35,35,35)] py-1 px-3 text-white text-center text-[14px] font-semibold rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
-                    style={{
-                      width: "fit-content",
-                    }}
-                  >
-                    Podcasts & Shows
-                  </SwiperSlide>
+                  {types.map((type, i) => (
+                    <SwiperSlide
+                      className="swiper__slide bg-[rgb(35,35,35)] py-1 px-3 text-white text-center text-[14px] font-semibold rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
+                      style={{
+                        width: "fit-content",
+                      }}
+                      onClick={function (e) {
+                        if (typeSearch.newType !== type)
+                          setTypeSearch({
+                            oldType: typeSearch.newType,
+                            oldIndex: typeSearch.newIndex,
+                            newType: type,
+                            newIndex: i,
+                          });
+                        else {
+                          setTypeSearch({
+                            oldType: typeSearch.newType,
+                            oldIndex: typeSearch.newIndex,
+                            newType: "",
+                            newIndex: -1,
+                          });
+                        }
+                      }}
+                    >
+                      {type}
+                    </SwiperSlide>
+                  ))}
                 </Swiper>
               </div>
               <div
                 className={`flex mt-3 ms-2 me-3 h-[40px] ${
                   !(resizeStyle === "3") ? "hidden" : ""
                 }`}
-                ref={headerListSongsRef}
+                ref={headerMusicListRef}
               >
                 {resizeStyle === "3" ? (
-                  <SearchBarLibrary searchRef={searchRef} />
+                  <SearchBarLibrary
+                    searchRef={searchRef}
+                    setMusicLists={setMusicLists}
+                    inputSearch={inputSearch}
+                    setInputSearch={setInputSearch}
+                    typeSearch={typeSearch}
+                  />
                 ) : (
                   ""
                 )}
@@ -406,14 +471,14 @@ const Library = () => {
                 <li className="basis-[40%]">Date Added</li>
                 <li className="basis-[10%]">Played</li>
               </ul>
-              <div className="mt-3 h-[1px] w-[100%] border-t-[1px] border-[rgb(40,40,40)]"></div>
+              <div className="mt-2 h-[1px] w-[100%] border-t-[1px] border-[rgb(40,40,40)]"></div>
             </div>
           </>
         ) : (
           ""
         )}
       </div>
-      {listSongs.length === 0 ? (
+      {musicLists.length === 0 && (!inputSearch || !typeSearch) ? (
         <>
           <div className="h-[300px] min-w-[300px] bg-[rgb(40,40,40)] rounded-md ms-1 me-3 text-white pt-5 ps-5 mb-5">
             <p className="font-semibold text-[17px] mb-2">
@@ -465,16 +530,22 @@ const Library = () => {
           height: "100%",
         }}
       >
-        <div className={`listsongs h-[100%] w-full absolute overflow-y-scroll`}>
-          {listSongs.length !== 0 ? (
+        <div className={`MusicList h-[100%] w-full absolute overflow-y-scroll`}>
+          {musicLists.length !== 0 || (inputSearch && typeSearch) ? (
             <div
               className={`flex justify-between ms-2 me-3 h-[40px] ${
                 resizeStyle !== "2" ? "hidden" : ""
               }`}
-              ref={headerListSongsRef}
+              ref={headerMusicListRef}
             >
               {resizeStyle === "2" ? (
-                <SearchBarLibrary searchRef={searchRef} />
+                <SearchBarLibrary
+                  searchRef={searchRef}
+                  setMusicLists={setMusicLists}
+                  inputSearch={inputSearch}
+                  setInputSearch={setInputSearch}
+                  typeSearch={typeSearch}
+                />
               ) : (
                 ""
               )}
@@ -502,16 +573,17 @@ const Library = () => {
                   gridAutoFlow: "row dense",
                 }}
               >
-                {listSongs
-                  ? listSongs.map((listSong, i) => (
+                {musicLists
+                  ? musicLists.map((musicList, i) => (
                       <Tooltip
                         label={
                           <>
                             <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
-                              {listSong.name}
+                              {musicList.musicList.name}
                             </div>
                             <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
-                              {listSong.type} • {listSong.songs.length} songs
+                              {musicList.musicList.type} •{" "}
+                              {musicList.musicList.songs.length} songs
                             </div>
                           </>
                         }
@@ -527,8 +599,11 @@ const Library = () => {
                             maxHeight: "100px",
                           }}
                         >
-                          {listSong.imageURL ? (
-                            <img src={listSong.imageURL} alt="track" />
+                          {musicList.musicList.imageURL ? (
+                            <img
+                              src={musicList.musicList.imageURL}
+                              alt="track"
+                            />
                           ) : (
                             <RiMusic2Line className="text-[40px] mx-auto" />
                           )}
@@ -537,16 +612,17 @@ const Library = () => {
                     ))
                   : ""}
               </div>
-            ) : listSongs ? (
-              listSongs.map((listSong, i) => (
+            ) : musicLists ? (
+              musicLists.map((musicList, i) => (
                 <Tooltip
                   label={
                     <>
                       <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
-                        {listSong.name}
+                        {musicList.musicList.name}
                       </div>
                       <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
-                        {listSong.type} • {listSong.songs.length} songs
+                        {musicList.musicList.type} •{" "}
+                        {musicList.musicList.songs?.length} songs
                       </div>
                     </>
                   }
@@ -556,13 +632,18 @@ const Library = () => {
                 >
                   <div
                     class={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
-                      listSong._id === window.location.pathname.split("/")[2]
+                      musicList.musicList._id ===
+                      window.location.pathname.split("/")[2]
                         ? "rgb(35,35,35)"
                         : "#b3b3b3"
                     }] rounded-lg w-full `}
                     onClick={function (e) {
                       navigatePage(
-                        `/${listSong.type.toLowerCase()}/${listSong._id}`
+                        `/${
+                          musicList.musicList.type !== "LikedSongs"
+                            ? musicList.musicList.type.toLowerCase()
+                            : "playlist"
+                        }/${musicList.musicList._id}`
                       );
                     }}
                   >
@@ -579,8 +660,11 @@ const Library = () => {
                             class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-md overflow-hidden"
                             ref={listSongRef}
                           >
-                            {listSong.imageURL ? (
-                              <img src={listSong.imageURL} alt="track" />
+                            {musicList.musicList.imageURL ? (
+                              <img
+                                src={musicList.musicList.imageURL}
+                                alt="track"
+                              />
                             ) : (
                               <RiMusic2Line className="text-[30px] mx-auto" />
                             )}
@@ -596,13 +680,16 @@ const Library = () => {
                             }}
                           >
                             <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                              {listSong.name}
+                              {musicList.musicList.name}
                             </span>
                             <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                              {listSong.type} •{" "}
-                              {listSong.singers
-                                .map((singer) => singer.name)
-                                .join(", ")}
+                              {musicList.musicList.type} •{" "}
+                              {musicList.musicList.type === "Album"
+                                ? musicList.musicList.musiclist_attributes.singers
+                                    ?.map((singer) => singer.name)
+                                    .join(", ")
+                                : musicList.musicList.musiclist_attributes?.user
+                                    ._id}
                             </span>
                           </div>
                         </div>
@@ -624,10 +711,10 @@ const Library = () => {
                             }}
                           >
                             <span class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
-                              {listSong.name}
+                              {musicList.musicList.name}
                             </span>
                             <span class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
-                              • {listSong.type}
+                              • {musicList.musicList.type}
                             </span>
                           </div>
                         </div>
@@ -640,14 +727,14 @@ const Library = () => {
                           resizeStyle !== "3" ? "hidden" : ""
                         }`}
                       >
-                        3 minutes ago
+                        {dateDistance(musicList.dateAdded)}
                       </div>
                       <div
                         className={`my-auto w-[92px] basis-[26%] text-right ${
                           resizeStyle !== "3" ? "hidden" : ""
                         }`}
                       >
-                        3 minutes ago
+                        {dateDistance(musicList.datePlayed)}
                       </div>
                     </div>
                   </div>

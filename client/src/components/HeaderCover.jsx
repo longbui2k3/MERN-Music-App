@@ -1,37 +1,59 @@
 import React, { useEffect, useState } from "react";
 import { getPlaylist } from "../api";
+import { getAlbumById } from "../api";
 import { useParams } from "react-router-dom";
+import { RiMusic2Line } from "react-icons/ri";
 
-export default function HeaderCover() {
-  const [playlist, setPlaylist] = useState({});
+export default function HeaderCover({ type }) {
+  const [musiclist, setMusiclist] = useState({});
   let params = useParams();
   useEffect(() => {
-    const getPlaylistFunc = async () => {
-      const songsData = await getPlaylist(params.id);
-      console.log(songsData.data.playlist);
-      setPlaylist(songsData.data.playlist);
+    const getMusiclistFunc = async () => {
+      try {
+        let res;
+        if (params.id)
+          if (type === "Album") {
+            res = await getAlbumById(params.id);
+            setMusiclist(res.data.metadata.album);
+          } else if (type === "Playlist") {
+            res = await getPlaylist(params.id);
+            setMusiclist(res.data.metadata.playlist);
+          }
+      } catch (err) {
+        console.log(err);
+      }
     };
-    getPlaylistFunc();
+    getMusiclistFunc();
   }, [params.id]);
 
   return (
     <div className="w-full mx-0 my-0.5 flex items-center gap-0.5 pl-[20px] pr-[20px] ">
       <div className="image">
-        <img
-          className="h-60 shadow-2xl w-[128px] h-[128px] rounded-[4px] mr-[16px]"
-          src={`${playlist.imageURL}`}
-          alt="Selected Playlist"
-        />
+        {musiclist.imageURL ? (
+          <img
+            className="shadow-2xl w-[128px] h-[128px] rounded-[4px] mr-[16px]"
+            src={`${musiclist.imageURL}`}
+            alt="Selected Musiclist"
+          />
+        ) : (
+          <div className="flex flex-col justify-center w-[128px] h-[128px] bg-[rgb(40,40,40)] rounded-[4px] mr-[16px]">
+            <RiMusic2Line className="text-[50px] mx-auto" />
+          </div>
+        )}
       </div>
       <div className="flex flex-col gap-4 text-gray-300">
         <span className="type">
-          {playlist.type === "Album" && playlist.songs.length === 1
+          {musiclist.type === "Album" && musiclist.songs.length === 1
             ? "Single"
-            : playlist.type}
+            : musiclist.type}
         </span>
-        <h1 className="text-white text-6xl font-bold">{playlist.name}</h1>
+        <h1 className="text-white text-6xl font-bold">{musiclist.name}</h1>
         <div className="description">
-          {/* {playlist.singers.map((singer) => singer.name).join(" • ")} */}
+          {musiclist.type === "Album"
+            ? musiclist.musiclist_attributes?.singers
+                ?.map((singer) => singer.name)
+                .join(" • ")
+            : musiclist.musiclist_attributes?.user?._id}
         </div>
       </div>
     </div>

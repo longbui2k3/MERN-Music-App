@@ -11,9 +11,8 @@ const SearchComponent = () => {
     const searchSong = async () => {
       try {
         const searchingSong = await SongAPI.searchSong(params.name);
-        console.log(searchingSong.data.data);
-        setSongs(searchingSong.data.data[0]);
-        console.log(searchingSong.data.data[0]);
+        console.log(searchingSong.data.metadata.songs);
+        setSongs(searchingSong.data.metadata.songs[0]);
       } catch (error) {
         console.log(error);
       }

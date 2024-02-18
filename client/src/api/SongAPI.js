@@ -2,14 +2,14 @@ import axios from "./axiosConfig";
 
 const SongAPI = {
   getAllSong() {
-    const url = "http://localhost:4000/api/v1/songs";
+    const url = "http://localhost:4000/api/v1/song";
 
     return axios.get(url);
   },
 
-  searchSong(name) {
-    const url = `http://localhost:4000/api/v1/songs/${name}`;
-    return axios.post(url);
+  searchSong(name = "") {
+    const url = `http://localhost:4000/api/v1/song?search=${name}`;
+    return axios.get(url);
   },
   async createSong(name, description, image, video, genres, singers, releasedDate, producedBy, writtenBy, album) {
     const formData = new FormData();
@@ -24,7 +24,7 @@ const SongAPI = {
     formData.append("description", description);
     formData.append("album", album);
     const res = await axios.post(
-      `http://localhost:4000/api/v1/songs`,
+      `http://localhost:4000/api/v1/song`,
       formData
     );
 

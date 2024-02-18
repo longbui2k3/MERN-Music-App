@@ -7,11 +7,11 @@ const SingerAPI = {
     return axios.get(url);
   },
   async getSingerByUser() {
-    const url = "http://localhost:4000/api/v1/singer/songs";
+    const url = "http://localhost:4000/api/v1/singer/songs/all";
     return await axios.get(url);
   },
-  async searchSinger(search) {
-    const url = `http://localhost:4000/api/v1/singer?${search}`;
+  async searchSinger(search = "") {
+    const url = `http://localhost:4000/api/v1/singer?search=${search}`;
     return await axios.get(url);
   },
 };
