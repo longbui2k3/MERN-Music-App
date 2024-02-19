@@ -17,10 +17,11 @@ import Profile from "./components/Profile";
 import { NavigateContextProvider } from "./context/NavigateContext";
 import { useEffect, useState } from "react";
 import { getUser } from "./api";
-import { BodyArtist, CreateAlbum, CreateSong } from "./components/artist";
+import { BodyArtist, CreateAlbum, CreateSong } from "./components/artistRole";
 import SearchPage from "./components/SearchPage";
 import SearchComponent from "./components/SearchComponent";
 import SearchStartPage from "./components/SearchStartPage";
+import Artist from "./components/Artist";
 export function App() {
   const [user, setUser] = useState(" ");
   useEffect(() => {
@@ -134,6 +135,14 @@ export function App() {
                     <SearchPage>
                       <SearchComponent />
                     </SearchPage>
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/artist/:id"
+                element={
+                  <PageHome>
+                    <Artist />
                   </PageHome>
                 }
               />

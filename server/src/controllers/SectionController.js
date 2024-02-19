@@ -22,6 +22,16 @@ class SectionController {
       },
     }).send(res);
   };
+  static getSectionOfAdmin = async (req, res, next) => {
+    const sections = await SectionService.getSectionOfAdmin();
+
+    new OK({
+      message: "Get section of admin successfully!",
+      metadata: {
+        sections,
+      },
+    }).send(res);
+  };
   static createSection = async (req, res, next) => {
     const section = await SectionService.createSection(req.body);
     new CREATED({

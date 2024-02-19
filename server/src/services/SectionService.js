@@ -23,6 +23,18 @@ class SectionService {
 
     return section;
   }
+
+  async getSectionOfAdmin() {
+    const sections = await Section.find()
+      .populate("musicLists")
+      .populate("user")
+      .exec();
+
+    const sectionOfAdmin = sections.filter(
+      (section) => section.user && section.user.role == "admin"
+    );
+    return sectionOfAdmin;
+  }
   async createSection({ title, user }) {
     const section = await Section.create({ title, user });
     if (!section) {

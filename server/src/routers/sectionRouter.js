@@ -5,7 +5,10 @@ const { protect } = require("../auth/authUtils");
 
 const router = express.Router();
 
-router.route("/").get(asyncHandler(SectionController.getAllSection));
+router
+  .route("/")
+  // .get(asyncHandler(SectionController.getSectionOfAdmin))
+  .get(asyncHandler(SectionController.getAllSection));
 router.route("/:sectionId").get(asyncHandler(SectionController.getSectionById));
 
 router.use(protect);

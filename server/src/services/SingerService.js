@@ -10,7 +10,10 @@ class SingerService {
   }
 
   async getSinger({ id }) {
-    const singer = await Singer.findById(id);
+    const singer = await Singer.findById(id)
+      .populate("musicLists")
+      .populate({ path: "songs", populate: "singers", strictPopulate: false })
+      .exec();
     if (!singer) {
       throw new BadRequestError("Singer with this id is not found!");
     }

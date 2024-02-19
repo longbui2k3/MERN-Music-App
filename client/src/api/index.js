@@ -20,5 +20,5 @@ export {
 } from "./UserAPI";
 export { searchGenres } from "./GenreAPI";
 export { getAllPlaylists, getPlaylist, createPlaylist } from "./PlaylistAPI";
-export { createAlbum, getAlbumById } from "./AlbumAPI";
+export { createAlbum, getAlbumById, getAllAlbums } from "./AlbumAPI";
 export { getLikedSongsByUser, addSongToLikedSongs } from "./LikedSongsAPI";
