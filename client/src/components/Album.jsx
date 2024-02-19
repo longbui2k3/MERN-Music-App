@@ -66,6 +66,7 @@ export default function Album() {
             </span>
           </div>
         </div>
+        
         {/* Song list */}
         <div className="mx-[2rem] flex flex-col pb-10">
           {songs.map((song, index) => (
