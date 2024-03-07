@@ -618,11 +618,11 @@ const Library = () => {
                   label={
                     <>
                       <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
-                        {musicList.musicList.name}
+                        {musicList?.musicList.name}
                       </div>
                       <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
                         {musicList.musicList.type} •{" "}
-                        {musicList.musicList.songs?.length} songs
+                        {musicList.musicList.songs.length} songs
                       </div>
                     </>
                   }

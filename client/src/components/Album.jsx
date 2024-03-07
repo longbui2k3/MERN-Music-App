@@ -1,24 +1,19 @@
 import React, { useEffect, useState } from "react";
 import HeaderCover from "./HeaderCover";
 import ActionBar from "./ActionBar";
-import SongAPI from "../api/SongAPI";
-import { AiFillClockCircle, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { getAlbumById } from "../api";
+import { AiFillClockCircle } from "react-icons/ai";
+import { getAlbumById, getAllAlbums } from "../api";
 import { useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
-import { IoIosMore } from "react-icons/io";
 import SongItem from "./SongItem";
+import SongListItem from "./SongListItem";
 
 export default function Album() {
   let params = useParams();
   const [album, setAlbum] = useState({});
   const [songs, setSongs] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [playingIndex, setPlayingIndex] = useState(null);
-  const [likedSong, setLikedSong] = useState(null);
-  const [isHoveredHeartIcon, setIsHoveredHeartIcon] = useState(null);
+  const [likedSongs, setLikedSongs] = useState(null);
+  const [moreAlbums, setMoreAlbums] = useState([]);
 
   useEffect(() => {
     const getAlbumFunc = async () => {
@@ -33,17 +28,20 @@ export default function Album() {
     };
     getAlbumFunc();
   }, [params.id]);
+  useEffect(() => {
+    const getAllAlbumsFunc = async () => {
+      if (album.musiclist_attributes) {
+        const res2 = await getAllAlbums({
+          singer: album?.musiclist_attributes?.singers[0]._id,
+        });
+        console.log(res2);
+        setMoreAlbums(res2.data.metadata.albums);
+      }
+    };
+    getAllAlbumsFunc();
+  }, [album]);
 
-  const msToMinutesAndSeconds = (ms) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(0);
-    return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-  };
-
-  const handleClickOnRow = (index) => {
-    setSelectedRow(index === selectedRow ? null : index);
-  };
-
+  const [currentMoreOptions, setCurrentMoreOptions] = useState(null);
   return (
     <>
       <HeaderCover
@@ -51,7 +49,7 @@ export default function Album() {
         name={album.type}
         description={album.description}
       />
-      <div className="opacity-95 z-40 bg-[#121212]">
+      <div className="relative opacity-95 z-40 bg-[#121212]">
         <ActionBar />
         <div className="mx-8 mb-3 grid grid-cols-[0.1fr_3.2fr_0.4fr] text-gray-400 top-0 bg-[#121212] py-4 px-2.5 transition duration-300 ease-in-out border-b border-current">
           <div>
@@ -66,12 +64,46 @@ export default function Album() {
             </span>
           </div>
         </div>
-        
+
         {/* Song list */}
-        <div className="mx-[2rem] flex flex-col pb-10">
+        <div className="relative mx-[2rem] flex flex-col pb-10">
           {songs.map((song, index) => (
-            <SongItem key={song._id} song={song} index={index} />
+            <SongItem
+              key={song._id}
+              song={song}
+              index={index}
+              likedSongs={likedSongs}
+              setLikedSongs={setLikedSongs}
+              setCurrentMoreOptions={setCurrentMoreOptions}
+              currentMoreOptions={currentMoreOptions}
+            />
           ))}
+        </div>
+      </div>
+      <div
+        style={{
+          lineHeight: "64px",
+          padding: "0 0px",
+          maxHeight: "80%",
+          overflow: "none",
+        }}
+      >
+        <div className="mx-8 mb-3 text-[#FFFFFF] font-bold text-[24px] flex justify-between items-center">
+          <h2 className="cursor-pointer hover:underline">
+            More of {album?.musiclist_attributes?.singers[0].name}
+          </h2>
+          <div className="text-[#B3B3B3] text-[14px] cursor-pointer hover:underline">
+            See discography
+          </div>
+        </div>
+        <div className="mx-8 mb-3 flex gap-4 flex-wrap overflow-hidden">
+          {moreAlbums?.map((item, index) =>
+            item && item._id !== album._id ? (
+              <SongListItem key={index} musicList={item} />
+            ) : (
+              ""
+            )
+          )}
         </div>
       </div>
     </>

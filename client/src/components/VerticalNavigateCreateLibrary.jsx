@@ -26,7 +26,6 @@ export default function VerticalNavigateCreateLibrary({
         type: "Playlist",
       });
       const res2 = await getMusicListsByUserId({});
-      console.log(res2.data.metadata.musicLists);
       setMusicLists(res2.data.metadata.musicLists);
 
       navigatePage(`/playlist/${res.data.metadata.playlist._id}`);

@@ -13,3 +13,11 @@ export const addSongToLikedSongs = async (song) => {
 
   return res;
 };
+
+export const removeSongFromLikedSongs = async (song) => {
+  const res = await axios.delete(
+    `http://localhost:4000/api/v1/likedsongs/songs/${song}`
+  );
+
+  return res;
+};

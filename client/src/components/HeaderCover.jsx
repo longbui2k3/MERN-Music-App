@@ -6,6 +6,7 @@ import { RiMusic2Line } from "react-icons/ri";
 
 export default function HeaderCover({ type }) {
   const [musiclist, setMusiclist] = useState({});
+  const [duration, setDuration] = useState("");
   let params = useParams();
   useEffect(() => {
     const getMusiclistFunc = async () => {
@@ -15,6 +16,21 @@ export default function HeaderCover({ type }) {
           if (type === "Album") {
             res = await getAlbumById(params.id);
             setMusiclist(res.data.metadata.album);
+            const totalSeconds = res.data.metadata.album.songs
+              .map((song) => {
+                const [minutes, seconds] = song.duration
+                  .split(":")
+                  .map((value) => value - 0);
+
+                const totalSeconds = minutes * 60 + seconds;
+                return totalSeconds;
+              })
+              .reduce((total, value) => {
+                return total + value;
+              }, 0);
+            setDuration(
+              `${Math.floor(totalSeconds / 60)} min ${totalSeconds % 60} sec`
+            );
           } else if (type === "Playlist") {
             res = await getPlaylist(params.id);
             setMusiclist(res.data.metadata.playlist);
@@ -25,7 +41,9 @@ export default function HeaderCover({ type }) {
     };
     getMusiclistFunc();
   }, [params.id]);
-
+  useEffect(() => {
+    if (musiclist.name) document.title = `${musiclist.name}`;
+  }, [musiclist]);
   return (
     <div className="w-full mx-0 my-0.5 flex items-center gap-0.5 pl-[20px] pr-[20px] ">
       <div className="image">
@@ -52,7 +70,11 @@ export default function HeaderCover({ type }) {
           {musiclist.type === "Album"
             ? musiclist.musiclist_attributes?.singers
                 ?.map((singer) => singer.name)
-                .join(" • ")
+                .join(" • ") +
+              " • " +
+              `${musiclist.songs.length} songs` +
+              " • " +
+              `${duration}`
             : musiclist.musiclist_attributes?.user?._id}
         </div>
       </div>
