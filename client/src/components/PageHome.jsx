@@ -7,6 +7,7 @@ import Header from "./Header";
 import MusicPlayer from "./MusicPlayer";
 import { styled } from "styled-components";
 import { useResizeDetector } from "react-resize-detector";
+import Footer from "./Footer";
 const Container = styled.div`
   position: relative;
   display: grid;
@@ -102,6 +103,9 @@ function PageHome({ children }) {
           <Header />
           <div className="body h-full">
             <div className="body_content">{children}</div>
+            <div>
+              <Footer />
+            </div>
           </div>
         </div>
       </div>
