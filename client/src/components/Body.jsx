@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import SectionAPI from "../api/SectionAPI";
 import Section from "./Section";
+import Footer from "./Footer";
 
 const Body = () => {
   const [sections, setSections] = useState([]);
