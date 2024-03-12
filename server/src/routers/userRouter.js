@@ -9,6 +9,7 @@ router.use(protect);
 router
   .route("/musiclists")
   .get(asyncHandler(UserController.getMusicListsByUserId));
+router.route("/items").get(asyncHandler(UserController.getItemsByUserId));
 router.route("/me").get(getMe, asyncHandler(UserController.getUserById));
 // router
 //   .route("/likedsongs")
@@ -19,4 +20,8 @@ router
 router
   .route("/favorite/:musicList")
   .delete(asyncHandler(UserController.removeFavoriteMusicList));
+router.route("/follow").post(asyncHandler(UserController.followSinger));
+router
+  .route("/follow/:singer")
+  .delete(asyncHandler(UserController.unfollowSinger));
 module.exports = router;

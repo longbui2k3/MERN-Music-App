@@ -17,10 +17,6 @@ import SongItemPlaylist from "./SongItemPlaylist";
 
 export default function MusicList() {
   const [songs, setSongs] = useState([]);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [playingIndex, setPlayingIndex] = useState(null);
-  const [isHoveredHeartIcon, setIsHoveredHeartIcon] = useState(null);
   const [likedSongs, setLikedSongs] = useState(null);
   const [currentMoreOptions, setCurrentMoreOptions] = useState(null);
   let params = useParams();
@@ -36,53 +32,6 @@ export default function MusicList() {
     getAllSongs();
   }, [params.id, likedSongs?.length]);
 
-  const getLikedSongsByUserFunc = async () => {
-    try {
-      const res = await getLikedSongsByUser();
-      setLikedSongs(
-        res.data.metadata.likedSongs.songs.map((song) => song.song)
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const addSongToLikedSongsFunc = async (song) => {
-    try {
-      const res = await addSongToLikedSongs(song);
-      setLikedSongs(
-        res.data.metadata.likedSongs.songs.map((song) => song.song)
-      );
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const removeSongFromLikedSongsFunc = async (song) => {
-    try {
-      const res = await removeSongFromLikedSongs(song);
-      setLikedSongs(
-        res.data.metadata.likedSongs.songs.map((song) => song.song)
-      );
-      console.log(res);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  useEffect(() => {
-    getLikedSongsByUserFunc();
-  }, [likedSongs]);
-
-  // const msToMinutesAndSeconds = (ms) => {
-  //   const minutes = Math.floor(ms / 60000);
-  //   const seconds = ((ms % 60000) / 1000).toFixed(0);
-  //   return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-  // };
-
-  const handleClickOnRow = (index) => {
-    setSelectedRow(index === selectedRow ? null : index);
-  };
 
   return (
     <>

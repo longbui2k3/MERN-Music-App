@@ -7,11 +7,12 @@ const sectionSchema = Schema(
       type: String,
       required: true,
     },
-    musicLists: {
+    type: { type: String, enum: ["MusicList"] },
+    lists: {
       type: [
         {
           type: Schema.ObjectId,
-          ref: DOCUMENT_NAME.MUSICLIST,
+          // ref: DOCUMENT_NAME.MUSICLIST,
         },
       ],
       default: [],
@@ -24,7 +25,20 @@ const sectionSchema = Schema(
   {
     collection: COLLECTION_NAME.SECTION,
     timestamps: true,
+    toJSON: { virtuals: true },
   }
 );
+
+sectionSchema.virtual("musiclists", {
+  ref: DOCUMENT_NAME.MUSICLIST,
+  localField: "lists",
+  foreignField: "_id",
+});
+
+sectionSchema.virtual("singers", {
+  ref: DOCUMENT_NAME.SINGER,
+  localField: "lists",
+  foreignField: "_id",
+});
 
 module.exports = model(DOCUMENT_NAME.SECTION, sectionSchema);

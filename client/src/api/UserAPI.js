@@ -21,9 +21,38 @@ export const removeFavoriteMusicList = async (musicList) => {
   return res;
 };
 
-export const getMusicListsByUserId = async ({ musiclist_type = "", search = "" }) => {
+export const getMusicListsByUserId = async ({
+  musiclist_type = "",
+  search = "",
+}) => {
   const res = await axios.get(
     `http://localhost:4000/api/v1/user/musiclists?musiclist_type=${musiclist_type}&search=${search}`
   );
+  return res;
+};
+
+export const getItemsByUserId = async ({
+  musiclist_type = "",
+  search = "",
+}) => {
+  const res = await axios.get(
+    `http://localhost:4000/api/v1/user/items?musiclist_type=${musiclist_type}&search=${search}`
+  );
+  return res;
+};
+
+export const followSinger = async (singer) => {
+  const res = await axios.post(`http://localhost:4000/api/v1/user/follow`, {
+    singer,
+  });
+
+  return res;
+};
+
+export const unfollowSinger = async (singer) => {
+  const res = await axios.delete(
+    `http://localhost:4000/api/v1/user/follow/${singer}`
+  );
+
   return res;
 };

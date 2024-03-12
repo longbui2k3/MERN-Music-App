@@ -53,7 +53,42 @@ class UserController {
       },
     }).send(res);
   };
-
-  
+  static getItemsByUserId = async (req, res, next) => {
+    const items = await UserService.getItemsByUserId({
+      userId: req.user.id,
+      musiclist_type: req.query.musiclist_type,
+      search: req.query.search,
+    });
+    new OK({
+      message: `Get items successfully!`,
+      metadata: {
+        items,
+      },
+    }).send(res);
+  };
+  static followSinger = async (req, res, next) => {
+    const user = await UserService.followSinger({
+      user: req.user,
+      singerId: req.body.singer,
+    });
+    new CREATED({
+      message: "Follow to singer successfully!",
+      metadata: {
+        user,
+      },
+    }).send(res);
+  };
+  static unfollowSinger = async (req, res, next) => {
+    const user = await UserService.unfollowSinger({
+      user: req.user,
+      singerId: req.params.singer,
+    });
+    new OK({
+      message: "Unfollow to singer successfully!",
+      metadata: {
+        user,
+      },
+    }).send(res);
+  };
 }
 module.exports = UserController;

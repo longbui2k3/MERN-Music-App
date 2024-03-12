@@ -99,7 +99,7 @@ class MusicListService {
     imageURL,
     description,
     musiclist_attributes,
-    songs,
+    songs = [],
     genres,
   }) {
     this.name = name;
@@ -116,7 +116,7 @@ class MusicListService {
   async createMusicList(id, session, file = {}) {
     this.genres = this.genres
       ?.split(",")
-      .map((genre) => new Types.ObjectId(genre));
+      ?.map((genre) => new Types.ObjectId(genre));
     const dateTime = Date.now();
 
     if (file.mimetype && file.buffer) {

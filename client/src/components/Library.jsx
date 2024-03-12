@@ -26,7 +26,7 @@ import { FreeMode, Navigation } from "swiper/modules";
 import { FaRegFolder } from "react-icons/fa6";
 import SearchBarLibrary from "./SearchBarLibrary";
 import ViewModeLibrary from "./ViewModeLibrary";
-import { getMusicListsByUserId, getUser } from "../api";
+import { getMusicListsByUserId, getUser, getItemsByUserId } from "../api";
 import { NavigateAuth } from "../context/NavigateContext";
 import { useSelector } from "react-redux";
 import { dateDistance } from "../config";
@@ -137,7 +137,7 @@ const Library = () => {
     setResizeStyle("2");
     document.querySelector(".app-sidebar").style = "width: 360px";
   }
-  const [musicLists, setMusicLists] = useState(false);
+  const [items, setItems] = useState(false);
   const [types, setTypes] = useState([]);
   const [inputSearch, setInputSearch] = useState("");
   const [typeSearch, setTypeSearch] = useState({
@@ -147,14 +147,14 @@ const Library = () => {
     newIndex: -1,
   });
   useEffect(() => {
-    const getMusicListsByType = async () => {
+    const getItemsByType = async () => {
       try {
-        const res = await getMusicListsByUserId({
+        const res = await getItemsByUserId({
           musiclist_type: typeSearch.newType,
           search: inputSearch,
         });
         if (res.data.status === 200) {
-          setMusicLists(res.data.metadata.musicLists);
+          setItems(res.data.metadata.items);
         }
       } catch (err) {
         console.log(err);
@@ -178,21 +178,22 @@ const Library = () => {
         ].style.color = "rgb(35,35,35)";
       }
 
-      getMusicListsByType();
+      getItemsByType();
     }
   }, [typeSearch]);
   const userGlobal = useSelector((state) => state.user.user);
   useEffect(() => {
-    if (userGlobal) setMusicLists(userGlobal.musicLists);
+    if (userGlobal) setItems(userGlobal.items);
   }, [userGlobal]);
   useEffect(() => {
-    const getMusicListByUser = async () => {
+    const getItemsByUser = async () => {
       try {
         const res = await getUser();
         console.log(res.data.metadata.user);
         if (res.data.status === 200) {
           const lists = res.data.metadata.user.musicLists;
-          setMusicLists(lists);
+          const items = res.data.metadata.user.items;
+          setItems(items);
           setTypes(
             lists
               .map((list) => list.musicList.type)
@@ -202,21 +203,26 @@ const Library = () => {
                   index
               )
           );
-        } else setMusicLists([]);
+        } else {
+          setItems([]);
+        }
       } catch (error) {
         console.log(error);
       }
     };
-    getMusicListByUser();
+    getItemsByUser();
   }, []);
   useEffect(() => {
-    if (musicLists.length === 0) {
+    if (items.length === 0) {
       document.querySelector(".app-sidebar").style.minWidth = "340px;";
     } else {
       document.querySelector(".app-sidebar").style.minWidth = "90px;";
     }
-  }, [musicLists]);
+  }, [items]);
 
+  useEffect(() => {
+    console.log(items);
+  }, [items]);
   const { navigatePage } = NavigateAuth();
 
   return (
@@ -233,8 +239,8 @@ const Library = () => {
           text1="Create playlist"
           icon2={<GoPlus className="my-auto text-[20px] me-3 text-white" />}
           text2="Create folder"
-          musicLists={musicLists}
-          setMusicLists={setMusicLists}
+          items={items}
+          setItems={setItems}
         />
       ) : (
         ""
@@ -245,8 +251,8 @@ const Library = () => {
           text1="Create a new playlist"
           icon2={<FaRegFolder className="my-auto text-[20px] me-3" />}
           text2="Create a new folder"
-          musicLists={musicLists}
-          setMusicLists={setMusicLists}
+          items={items}
+          setItems={setItems}
         />
       ) : (
         ""
@@ -262,7 +268,7 @@ const Library = () => {
       />
       <div
         className={`relative overflow-x-hidden ${
-          musicLists.length !== 0
+          items.length !== 0
             ? resizeStyle === "1"
               ? "h-[50px]"
               : resizeStyle === "3"
@@ -375,7 +381,7 @@ const Library = () => {
             )}
           </div>
         </div>
-        {musicLists.length !== 0 ? (
+        {items.length !== 0 ? (
           <>
             <div className="flex justify-between">
               <div
@@ -441,7 +447,7 @@ const Library = () => {
                 {resizeStyle === "3" ? (
                   <SearchBarLibrary
                     searchRef={searchRef}
-                    setMusicLists={setMusicLists}
+                    setItems={setItems}
                     inputSearch={inputSearch}
                     setInputSearch={setInputSearch}
                     typeSearch={typeSearch}
@@ -478,7 +484,7 @@ const Library = () => {
           ""
         )}
       </div>
-      {musicLists.length === 0 && (!inputSearch || !typeSearch) ? (
+      {items.length === 0 && (!inputSearch || !typeSearch) ? (
         <>
           <div className="h-[300px] min-w-[300px] bg-[rgb(40,40,40)] rounded-md ms-1 me-3 text-white pt-5 ps-5 mb-5">
             <p className="font-semibold text-[17px] mb-2">
@@ -531,7 +537,7 @@ const Library = () => {
         }}
       >
         <div className={`MusicList h-[100%] w-full absolute overflow-y-scroll`}>
-          {musicLists.length !== 0 || (inputSearch && typeSearch) ? (
+          {items.length !== 0 || (inputSearch && typeSearch) ? (
             <div
               className={`flex justify-between ms-2 me-3 h-[40px] ${
                 resizeStyle !== "2" ? "hidden" : ""
@@ -541,7 +547,7 @@ const Library = () => {
               {resizeStyle === "2" ? (
                 <SearchBarLibrary
                   searchRef={searchRef}
-                  setMusicLists={setMusicLists}
+                  setItems={setItems}
                   inputSearch={inputSearch}
                   setInputSearch={setInputSearch}
                   typeSearch={typeSearch}
@@ -573,173 +579,321 @@ const Library = () => {
                   gridAutoFlow: "row dense",
                 }}
               >
-                {musicLists
-                  ? musicLists.map((musicList, i) => (
-                      <Tooltip
-                        label={
-                          <>
-                            <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
-                              {musicList.musicList.name}
-                            </div>
-                            <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
-                              {musicList.musicList.type} •{" "}
-                              {musicList.musicList.songs.length} songs
-                            </div>
-                          </>
-                        }
-                        placement="right"
-                        bg="rgb(40,40,40)"
-                      >
-                        <div
-                          className="rounded-md overflow-hidden w-[100px] h-[100px] grow bg-[rgb(40,40,40)] flex flex-col justify-center"
-                          ref={listSongRef}
-                          style={{
-                            minWidth: "calc(10% - 1em)",
-                            maxWidth: "100px",
-                            maxHeight: "100px",
-                          }}
-                        >
-                          {musicList.musicList.imageURL ? (
-                            <img
-                              src={musicList.musicList.imageURL}
-                              alt="track"
-                            />
-                          ) : (
-                            <RiMusic2Line className="text-[40px] mx-auto" />
-                          )}
-                        </div>
-                      </Tooltip>
-                    ))
-                  : ""}
-              </div>
-            ) : musicLists ? (
-              musicLists.map((musicList, i) => (
-                <Tooltip
-                  label={
-                    <>
-                      <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
-                        {musicList?.musicList.name}
-                      </div>
-                      <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
-                        {musicList.musicList.type} •{" "}
-                        {musicList.musicList.songs.length} songs
-                      </div>
-                    </>
-                  }
-                  placement="right"
-                  bg="rgb(40,40,40)"
-                  isDisabled={resizeStyle === "1" ? false : true}
-                >
-                  <div
-                    class={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
-                      musicList.musicList._id ===
-                      window.location.pathname.split("/")[2]
-                        ? "rgb(35,35,35)"
-                        : "#b3b3b3"
-                    }] rounded-lg w-full `}
-                    onClick={function (e) {
-                      navigatePage(
-                        `/${
-                          musicList.musicList.type !== "LikedSongs"
-                            ? musicList.musicList.type.toLowerCase()
-                            : "playlist"
-                        }/${musicList.musicList._id}`
-                      );
-                    }}
-                  >
-                    <div className="flex w-full">
-                      {viewAs === "List" || resizeStyle === "1" ? (
-                        <div
-                          className={`flex ${
-                            resizeStyle === "1" ? "justify-center" : ""
-                          } w-full ${
-                            resizeStyle === "3" ? "basis-[50%]" : "grow"
-                          }`}
+                {items
+                  ? items.map((item, i) =>
+                      item.musicList ? (
+                        <Tooltip
+                          label={
+                            <>
+                              <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                                {item.musicList.name}
+                              </div>
+                              <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                                {item.musicList.type} •{" "}
+                                {item.musicList.songs.length} songs
+                              </div>
+                            </>
+                          }
+                          placement="right"
+                          bg="rgb(40,40,40)"
                         >
                           <div
-                            class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-md overflow-hidden"
+                            className="rounded-md overflow-hidden w-[100px] h-[100px] grow bg-[rgb(40,40,40)] flex flex-col justify-center"
                             ref={listSongRef}
+                            style={{
+                              minWidth: "calc(10% - 1em)",
+                              maxWidth: "100px",
+                              maxHeight: "100px",
+                            }}
                           >
-                            {musicList.musicList.imageURL ? (
-                              <img
-                                src={musicList.musicList.imageURL}
-                                alt="track"
-                              />
+                            {item.musicList.imageURL ? (
+                              <img src={item.musicList.imageURL} alt="track" />
                             ) : (
-                              <RiMusic2Line className="text-[30px] mx-auto" />
+                              <RiMusic2Line className="text-[40px] mx-auto" />
                             )}
                           </div>
-                          <div
-                            class={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
-                              resizeStyle === "1" ? "hidden" : ""
-                            }`}
-                            style={{
-                              maxWidth: `${
-                                resizeStyle === "3" ? "200px" : "100%"
-                              }`,
-                            }}
-                          >
-                            <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                              {musicList.musicList.name}
-                            </span>
-                            <span class="whitespace-nowrap overflow-hidden text-ellipsis">
-                              {musicList.musicList.type} •{" "}
-                              {musicList.musicList.type === "Album"
-                                ? musicList.musicList.musiclist_attributes.singers
-                                    ?.map((singer) => singer.name)
-                                    .join(", ")
-                                : musicList.musicList.musiclist_attributes?.user
-                                    ._id}
-                            </span>
-                          </div>
-                        </div>
-                      ) : viewAs === "Compact" &&
-                        (resizeStyle === "2" || resizeStyle === "3") ? (
-                        <div
-                          className={`w-full ${
-                            resizeStyle === "3" ? "basis-[50%]" : "grow"
-                          }`}
+                        </Tooltip>
+                      ) : (
+                        <Tooltip
+                          label={
+                            <>
+                              <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                                {item.singer.name}
+                              </div>
+                              <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                                Artist
+                              </div>
+                            </>
+                          }
+                          placement="right"
+                          bg="rgb(40,40,40)"
                         >
                           <div
-                            class={`listsong-info grow flex overflow-hidden ${
-                              resizeStyle === "1" ? "hidden" : ""
-                            }`}
+                            className="rounded-[50%] overflow-hidden w-[100px] h-[100px] grow bg-[rgb(40,40,40)] flex flex-col justify-center"
+                            ref={listSongRef}
                             style={{
-                              maxWidth: `${
-                                resizeStyle === "3" ? "200px" : "100%"
-                              }`,
+                              minWidth: "calc(10% - 1em)",
+                              maxWidth: "100px",
+                              maxHeight: "100px",
                             }}
                           >
-                            <span class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
-                              {musicList.musicList.name}
-                            </span>
-                            <span class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
-                              • {musicList.musicList.type}
-                            </span>
+                            {item.singer.imageURL ? (
+                              <img src={item.singer.imageURL} alt="track" />
+                            ) : (
+                              <RiMusic2Line className="text-[40px] mx-auto" />
+                            )}
                           </div>
+                        </Tooltip>
+                      )
+                    )
+                  : ""}
+              </div>
+            ) : items ? (
+              items.map((item, i) =>
+                item.musicList ? (
+                  <Tooltip
+                    label={
+                      <>
+                        <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                          {item?.musicList?.name}
                         </div>
-                      ) : (
-                        ""
-                      )}
+                        <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                          {item.musicList?.type} •{" "}
+                          {item.musicList?.songs.length} songs
+                        </div>
+                      </>
+                    }
+                    placement="right"
+                    bg="rgb(40,40,40)"
+                    isDisabled={resizeStyle === "1" ? false : true}
+                  >
+                    <div
+                      class={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
+                        item.musicList?._id ===
+                        window.location.pathname.split("/")[2]
+                          ? "rgb(35,35,35)"
+                          : "#b3b3b3"
+                      }] rounded-lg w-full `}
+                      onClick={function (e) {
+                        navigatePage(
+                          `/${
+                            item.musicList.type !== "LikedSongs"
+                              ? item.musicList.type.toLowerCase()
+                              : "playlist"
+                          }/${item.musicList._id}`
+                        );
+                      }}
+                    >
+                      <div className="flex w-full">
+                        {viewAs === "List" || resizeStyle === "1" ? (
+                          <div
+                            className={`flex ${
+                              resizeStyle === "1" ? "justify-center" : ""
+                            } w-full ${
+                              resizeStyle === "3" ? "basis-[50%]" : "grow"
+                            }`}
+                          >
+                            <div
+                              class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-md overflow-hidden"
+                              ref={listSongRef}
+                            >
+                              {item?.musicList?.imageURL ? (
+                                <img
+                                  src={item.musicList.imageURL}
+                                  alt="track"
+                                />
+                              ) : (
+                                <RiMusic2Line className="text-[30px] mx-auto" />
+                              )}
+                            </div>
+                            <div
+                              class={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
+                                resizeStyle === "1" ? "hidden" : ""
+                              }`}
+                              style={{
+                                maxWidth: `${
+                                  resizeStyle === "3" ? "200px" : "100%"
+                                }`,
+                              }}
+                            >
+                              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                                {item.musicList.name}
+                              </span>
+                              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                                {item.musicList.type} •{" "}
+                                {item.musicList.type === "Album"
+                                  ? item.musicList.musiclist_attributes.singers
+                                      ?.map((singer) => singer.name)
+                                      .join(", ")
+                                  : item.musicList.musiclist_attributes?.user
+                                      ._id}
+                              </span>
+                            </div>
+                          </div>
+                        ) : viewAs === "Compact" &&
+                          (resizeStyle === "2" || resizeStyle === "3") ? (
+                          <div
+                            className={`w-full ${
+                              resizeStyle === "3" ? "basis-[50%]" : "grow"
+                            }`}
+                          >
+                            <div
+                              class={`listsong-info grow flex overflow-hidden ${
+                                resizeStyle === "1" ? "hidden" : ""
+                              }`}
+                              style={{
+                                maxWidth: `${
+                                  resizeStyle === "3" ? "200px" : "100%"
+                                }`,
+                              }}
+                            >
+                              <span class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                                {item.musicList.name}
+                              </span>
+                              <span class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
+                                • {item.musicList.type}
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
 
-                      <div
-                        className={`my-auto w-[92px] basis-[22%] ${
-                          resizeStyle !== "3" ? "hidden" : ""
-                        }`}
-                      >
-                        {dateDistance(musicList.dateAdded)}
-                      </div>
-                      <div
-                        className={`my-auto w-[92px] basis-[26%] text-right ${
-                          resizeStyle !== "3" ? "hidden" : ""
-                        }`}
-                      >
-                        {dateDistance(musicList.datePlayed)}
+                        <div
+                          className={`my-auto w-[92px] basis-[22%] ${
+                            resizeStyle !== "3" ? "hidden" : ""
+                          }`}
+                        >
+                          {dateDistance(item.dateAdded)}
+                        </div>
+                        <div
+                          className={`my-auto w-[92px] basis-[26%] text-right ${
+                            resizeStyle !== "3" ? "hidden" : ""
+                          }`}
+                        >
+                          {dateDistance(item.datePlayed)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Tooltip>
-              ))
+                  </Tooltip>
+                ) : (
+                  <Tooltip
+                    label={
+                      <>
+                        <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                          {item?.singer?.name}
+                        </div>
+                        <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                          Artist
+                        </div>
+                      </>
+                    }
+                    placement="right"
+                    bg="rgb(40,40,40)"
+                    isDisabled={resizeStyle === "1" ? false : true}
+                  >
+                    {/* $
+                    {item.musicList?._id ===
+                    window.location.pathname.split("/")[2]
+                      ? "rgb(35,35,35)"
+                      : "#b3b3b3"} */}
+                    <div
+                      class={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[] rounded-lg w-full `}
+                      onClick={function (e) {
+                        // navigatePage(
+                        //   `/${
+                        //     item.musicList.type !== "LikedSongs"
+                        //       ? item.musicList.type.toLowerCase()
+                        //       : "playlist"
+                        //   }/${item.musicList._id}`
+                        // );
+                      }}
+                    >
+                      <div className="flex w-full">
+                        {viewAs === "List" || resizeStyle === "1" ? (
+                          <div
+                            className={`flex ${
+                              resizeStyle === "1" ? "justify-center" : ""
+                            } w-full ${
+                              resizeStyle === "3" ? "basis-[50%]" : "grow"
+                            }`}
+                          >
+                            <div
+                              class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-[50%] overflow-hidden "
+                              ref={listSongRef}
+                            >
+                              {item?.singer?.imageURL ? (
+                                <img src={item.singer.imageURL} alt="track" />
+                              ) : (
+                                <RiMusic2Line className="text-[30px] mx-auto" />
+                              )}
+                            </div>
+                            <div
+                              class={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
+                                resizeStyle === "1" ? "hidden" : ""
+                              }`}
+                              style={{
+                                maxWidth: `${
+                                  resizeStyle === "3" ? "200px" : "100%"
+                                }`,
+                              }}
+                            >
+                              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                                {item.singer.name}
+                              </span>
+                              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                                Artist
+                              </span>
+                            </div>
+                          </div>
+                        ) : viewAs === "Compact" &&
+                          (resizeStyle === "2" || resizeStyle === "3") ? (
+                          <div
+                            className={`w-full ${
+                              resizeStyle === "3" ? "basis-[50%]" : "grow"
+                            }`}
+                          >
+                            <div
+                              class={`listsong-info grow flex overflow-hidden ${
+                                resizeStyle === "1" ? "hidden" : ""
+                              }`}
+                              style={{
+                                maxWidth: `${
+                                  resizeStyle === "3" ? "200px" : "100%"
+                                }`,
+                              }}
+                            >
+                              <span class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                                {item.singer.name}
+                              </span>
+                              <span class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
+                                • Artist
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+
+                        <div
+                          className={`my-auto w-[92px] basis-[22%] ${
+                            resizeStyle !== "3" ? "hidden" : ""
+                          }`}
+                        >
+                          {dateDistance(item.dateAdded)}
+                        </div>
+                        <div
+                          className={`my-auto w-[92px] basis-[26%] text-right ${
+                            resizeStyle !== "3" ? "hidden" : ""
+                          }`}
+                        >
+                          {dateDistance(item.datePlayed)}
+                        </div>
+                      </div>
+                    </div>
+                  </Tooltip>
+                )
+              )
             ) : (
               ""
             )}

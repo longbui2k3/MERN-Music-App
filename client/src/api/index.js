@@ -17,6 +17,9 @@ export {
   addFavoriteMusicList,
   removeFavoriteMusicList,
   getMusicListsByUserId,
+  getItemsByUserId,
+  followSinger,
+  unfollowSinger,
 } from "./UserAPI";
 export { searchGenres } from "./GenreAPI";
 export {

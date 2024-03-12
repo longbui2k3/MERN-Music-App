@@ -4,6 +4,7 @@ const { COLLECTION_NAME, DOCUMENT_NAME } = require("../configs");
 const singerSchema = new Schema(
   {
     name: { type: String, required: true },
+    imageURL: { type: String },
     stageName: { type: String, required: true },
     birthDate: { type: Date, required: true },
     nation: { type: String, required: true },
