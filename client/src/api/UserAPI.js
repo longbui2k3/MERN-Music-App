@@ -32,11 +32,11 @@ export const getMusicListsByUserId = async ({
 };
 
 export const getItemsByUserId = async ({
-  musiclist_type = "",
+  type = "",
   search = "",
 }) => {
   const res = await axios.get(
-    `http://localhost:4000/api/v1/user/items?musiclist_type=${musiclist_type}&search=${search}`
+    `http://localhost:4000/api/v1/user/items?type=${type}&search=${search}`
   );
   return res;
 };

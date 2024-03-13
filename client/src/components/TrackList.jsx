@@ -1,18 +1,9 @@
-import { faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
-import { AiFillClockCircle, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { IoIosMore } from "react-icons/io";
+import { AiFillClockCircle } from "react-icons/ai";
 import { useParams } from "react-router-dom";
-import {
-  addSongToLikedSongs,
-  getLikedSongsByUser,
-  removeSongFromLikedSongs,
-} from "../api";
 import { getPlaylist } from "../api/PlaylistAPI";
 import ActionBar from "./ActionBar";
 import HeaderCover from "./HeaderCover";
-import { dateDistance } from "../config";
 import SongItemPlaylist from "./SongItemPlaylist";
 
 export default function MusicList() {
@@ -31,7 +22,6 @@ export default function MusicList() {
     };
     getAllSongs();
   }, [params.id, likedSongs?.length]);
-
 
   return (
     <>

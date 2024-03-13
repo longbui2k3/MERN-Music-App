@@ -56,7 +56,7 @@ class UserController {
   static getItemsByUserId = async (req, res, next) => {
     const items = await UserService.getItemsByUserId({
       userId: req.user.id,
-      musiclist_type: req.query.musiclist_type,
+      type: req.query.type,
       search: req.query.search,
     });
     new OK({

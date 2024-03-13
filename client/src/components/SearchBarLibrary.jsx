@@ -17,7 +17,7 @@ export default function SearchBarLibrary({
       try {
         const res = await getItemsByUserId({
           search: inputSearch,
-          musiclist_type: typeSearch.newType,
+          type: typeSearch.newType,
         });
         if (res.data.status === 200) {
           setItems(res.data.metadata.items);

@@ -26,7 +26,7 @@ import { FreeMode, Navigation } from "swiper/modules";
 import { FaRegFolder } from "react-icons/fa6";
 import SearchBarLibrary from "./SearchBarLibrary";
 import ViewModeLibrary from "./ViewModeLibrary";
-import { getMusicListsByUserId, getUser, getItemsByUserId } from "../api";
+import { getUser, getItemsByUserId } from "../api";
 import { NavigateAuth } from "../context/NavigateContext";
 import { useSelector } from "react-redux";
 import { dateDistance } from "../config";
@@ -150,7 +150,7 @@ const Library = () => {
     const getItemsByType = async () => {
       try {
         const res = await getItemsByUserId({
-          musiclist_type: typeSearch.newType,
+          type: typeSearch.newType,
           search: inputSearch,
         });
         if (res.data.status === 200) {
@@ -191,17 +191,19 @@ const Library = () => {
         const res = await getUser();
         console.log(res.data.metadata.user);
         if (res.data.status === 200) {
-          const lists = res.data.metadata.user.musicLists;
           const items = res.data.metadata.user.items;
           setItems(items);
+          const types = items.map((item) => {
+            if (item.musicList) {
+              if (item.musicList.type === "LikedSongs") return "Playlist";
+              return item.musicList.type;
+            } else if (item.singer) {
+              return "Artist";
+            }
+            return item;
+          });
           setTypes(
-            lists
-              .map((list) => list.musicList.type)
-              .filter(
-                (value, index) =>
-                  lists.map((list) => list.musicList.type).indexOf(value) ===
-                  index
-              )
+            types.filter((type, index) => types.indexOf(type) === index)
           );
         } else {
           setItems([]);
@@ -220,9 +222,6 @@ const Library = () => {
     }
   }, [items]);
 
-  useEffect(() => {
-    console.log(items);
-  }, [items]);
   const { navigatePage } = NavigateAuth();
 
   return (
@@ -792,21 +791,15 @@ const Library = () => {
                     bg="rgb(40,40,40)"
                     isDisabled={resizeStyle === "1" ? false : true}
                   >
-                    {/* $
-                    {item.musicList?._id ===
-                    window.location.pathname.split("/")[2]
-                      ? "rgb(35,35,35)"
-                      : "#b3b3b3"} */}
                     <div
-                      class={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[] rounded-lg w-full `}
+                      class={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
+                        item.singer?._id ===
+                        window.location.pathname.split("/")[2]
+                          ? "rgb(35,35,35)"
+                          : "#b3b3b3"
+                      }] rounded-lg w-full `}
                       onClick={function (e) {
-                        // navigatePage(
-                        //   `/${
-                        //     item.musicList.type !== "LikedSongs"
-                        //       ? item.musicList.type.toLowerCase()
-                        //       : "playlist"
-                        //   }/${item.musicList._id}`
-                        // );
+                        navigatePage(`/artist/${item.singer._id}`);
                       }}
                     >
                       <div className="flex w-full">

@@ -229,7 +229,7 @@ class UserService {
 
     return types.includes(musiclist_type) ? musiclists : user[0].musicLists;
   };
-  getItemsByUserId = async ({ userId, musiclist_type, search }) => {
+  getItemsByUserId = async ({ userId, type, search }) => {
     const user = await User.aggregate([
       {
         $match: {
@@ -359,7 +359,7 @@ class UserService {
       {
         $group: {
           _id: "$_id",
-          musicLists: { $push: "$musicLists" },
+          musicLists: { $addToSet: "$musicLists" },
           singers: { $addToSet: "$singers" },
         },
       },
@@ -372,13 +372,19 @@ class UserService {
     if (!user) {
       throw new BadRequestError(`User with id: ${userId} not found`);
     }
-    const types = ["Album", "Playlist", "LikedSongs"];
+
+    // if (musiclist_type === "")
+
+    const types = ["Album", "Playlist"];
     if (!user[0]) return [];
     const items = user[0].items.filter(
-      (item) => item?.musicList?.type === musiclist_type
+      (item) => item?.musicList?.type === type
     );
 
-    return types.includes(musiclist_type) ? items : user[0].items;
+    if (type === "Artist") {
+      return user[0].items.filter((item) => item.singer);
+    }
+    return types.includes(type) ? items : user[0].items;
   };
 
   followSinger = async ({ user, singerId }) => {
