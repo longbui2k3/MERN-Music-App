@@ -87,6 +87,18 @@ const userSchema = Schema(
       ],
       default: [],
     },
+    singers: {
+      type: [
+        {
+          type: {
+            singer: { type: Schema.ObjectId, ref: DOCUMENT_NAME.SINGER },
+            dateAdded: { type: Date, required: true, default: Date.now() },
+            datePlayed: { type: Date, required: true, default: Date.now() },
+          },
+        },
+      ],
+      default: [],
+    },
   },
   { collection: COLLECTION_NAME.USER, timestamps: true }
 );

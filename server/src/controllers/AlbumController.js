@@ -1,7 +1,10 @@
 "use strict";
 
 const { CREATED, OK } = require("../core/successResponse");
-const { MusicListFactory } = require("../services/MusicListService");
+const {
+  MusicListFactory,
+  AlbumFactory,
+} = require("../services/MusicListService");
 
 class AlbumController {
   static createAlbum = async (req, res, next) => {
@@ -28,6 +31,20 @@ class AlbumController {
       message: "Get album by id successfully!",
       metadata: {
         album: musiclist,
+      },
+    }).send(res);
+  };
+  static findAllAlbums = async (req, res, next) => {
+    const { singer, limit } = req.query;
+    const musiclists = await MusicListFactory.findAllMusicLists({
+      type: "Album",
+      filter: { singer },
+      limit,
+    });
+    new OK({
+      message: "Get all albums by singer successfully!",
+      metadata: {
+        albums: musiclists,
       },
     }).send(res);
   };

@@ -1,5 +1,5 @@
 import { TbMusicPlus } from "react-icons/tb";
-import { createPlaylist, getMusicListsByUserId, getUser } from "../api";
+import { createPlaylist, getItemsByUserId, getUser } from "../api";
 import { NavigateAuth } from "../context/NavigateContext";
 
 export default function VerticalNavigateCreateLibrary({
@@ -8,26 +8,26 @@ export default function VerticalNavigateCreateLibrary({
   text1,
   icon2,
   text2,
-  musicLists,
-  setMusicLists,
+  items,
+  setItems,
 }) {
   const { navigatePage } = NavigateAuth();
   const createNewPlaylistFunc = async () => {
     try {
       const user = await getUser();
-      const myPlaylistLength = musicLists.filter(
-        (musicList) =>
-          musicList.musicList.type === "Playlist" &&
-          musicList.musicList.musiclist_attributes.user._id ===
+      console.log(items);
+      const myPlaylistLength = items.filter(
+        (item) =>
+          item?.musicList?.type === "Playlist" &&
+          item?.musicList?.musiclist_attributes?.user._id ===
             user.data.metadata.user._id
       ).length;
       const res = await createPlaylist({
         name: `My Playlist #${myPlaylistLength + 1}`,
         type: "Playlist",
       });
-      const res2 = await getMusicListsByUserId({});
-      console.log(res2.data.metadata.musicLists);
-      setMusicLists(res2.data.metadata.musicLists);
+      const res2 = await getItemsByUserId({});
+      setItems(res2.data.metadata.items);
 
       navigatePage(`/playlist/${res.data.metadata.playlist._id}`);
     } catch (error) {

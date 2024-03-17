@@ -32,6 +32,19 @@ class PlaylistController {
       },
     }).send(res);
   };
+  static addSongToMusicList = async (req, res, next) => {
+    const updatedPlaylist = await MusicListFactory.addSongToMusicList({
+      type: "Playlist",
+      song: req.body.song,
+      id: req.body.playlist
+    });
+    new CREATED({
+      message: "Add to liked songs successfully!",
+      metadata: {
+        playlist: updatedPlaylist,
+      },
+    }).send(res);
+  }
 }
 
 module.exports = PlaylistController;

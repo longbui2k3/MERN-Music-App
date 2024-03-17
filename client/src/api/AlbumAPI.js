@@ -17,7 +17,21 @@ export const getAlbumById = async (id) => {
   return res;
 };
 
-export const getAllAlbums = async () => {
-  const res = await axios.get(`http://localhost:4000/api/v1/album`);
+export const getAllAlbums = async (filter, limit) => {
+  // const {singer, song, genre} = filter;
+  console.log(limit);
+  console.log(limit === undefined);
+  const queryString =
+    Object.keys(filter)
+      .map((key) => {
+        if (filter[key]) {
+          return `${key}=${filter[key]}`;
+        }
+        return "";
+      })
+      .join("&") + (limit !== undefined ? `&limit=${limit}` : "");
+  const res = await axios.get(
+    `http://localhost:4000/api/v1/album?${queryString}`
+  );
   return res;
 };

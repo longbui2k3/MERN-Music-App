@@ -22,13 +22,17 @@ import SearchPage from "./components/SearchPage";
 import SearchComponent from "./components/SearchComponent";
 import SearchStartPage from "./components/SearchStartPage";
 import Artist from "./components/Artist";
+import { useDispatch } from "react-redux";
+import { setUserGlobal } from "./features/user/userSlice";
 export function App() {
+  const dispatch = useDispatch();
   const [user, setUser] = useState(" ");
   useEffect(() => {
     const getUserFunc = async () => {
       try {
         const res = await getUser();
         setUser(res.data.metadata.user);
+        dispatch(setUserGlobal(res.data.metadata.user));
       } catch (err) {
         setUser("");
       }

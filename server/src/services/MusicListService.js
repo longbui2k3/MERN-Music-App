@@ -26,9 +26,9 @@ const Singer = require("../models/singerModel");
 const User = require("../models/userModel");
 const Song = require("../models/songModel");
 const { LIKEDSONGS_IMAGE_URL } = require("../configs");
+const { removeUndefinedInObject } = require("../utils");
 initializeApp(firebaseConfig);
 const storage = getStorage();
-const upload = multer({ storage: multer.memoryStorage() });
 
 class MusicListFactory {
   static musicListRegistry = {};
@@ -51,23 +51,30 @@ class MusicListFactory {
     return new musicListClass({}).getMusicListById(id);
   }
 
-  static async addSongToMusicList({ type, song, userId }) {
+  static async addSongToMusicList({ type, song, userId, id }) {
     const musicListClass = MusicListFactory.musicListRegistry[type];
     if (!musicListClass) {
       throw new BadRequestError(`Invalid Musiclist type ${type}`);
     }
-    return new musicListClass({}).addSongToMusicList({ song, userId });
+    return new musicListClass({}).addSongToMusicList({ song, userId, id });
   }
 
-  static async removeSongFromMusicList({ type, playlistsong_id, userId }) {
+  static async removeSongFromMusicList({ type, song, userId }) {
     const musicListClass = MusicListFactory.musicListRegistry[type];
     if (!musicListClass) {
       throw new BadRequestError(`Invalid Musiclist type ${type}`);
     }
     return new musicListClass({}).removeSongFromMusicList({
-      playlistsong_id,
+      song,
       userId,
     });
+  }
+  static async findAllMusicLists({ type, filter, limit }) {
+    const musicListClass = MusicListFactory.musicListRegistry[type];
+    if (!musicListClass) {
+      throw new BadRequestError(`Invalid Musiclist type ${type}`);
+    }
+    return new musicListClass({}).findAllMusicLists({ filter, limit });
   }
 }
 class PlaylistFactory {
@@ -84,6 +91,7 @@ class PlaylistFactory {
     return new playlistClass({}).getPlaylistByUser({ user });
   }
 }
+
 class MusicListService {
   constructor({
     name,
@@ -91,7 +99,7 @@ class MusicListService {
     imageURL,
     description,
     musiclist_attributes,
-    songs,
+    songs = [],
     genres,
   }) {
     this.name = name;
@@ -108,7 +116,7 @@ class MusicListService {
   async createMusicList(id, session, file = {}) {
     this.genres = this.genres
       ?.split(",")
-      .map((genre) => new Types.ObjectId(genre));
+      ?.map((genre) => new Types.ObjectId(genre));
     const dateTime = Date.now();
 
     if (file.mimetype && file.buffer) {
@@ -126,6 +134,19 @@ class MusicListService {
 
       const downloadURL = await getDownloadURL(snapshot.ref);
       this.imageURL = downloadURL;
+    }
+    if (this.type === "Playlist") {
+      this.songs = await Promise.all(
+        this.songs.map(async (song) => {
+          const newPlaylistSong = await PlaylistSong.create({
+            song,
+          });
+          if (!newPlaylistSong) {
+            throw new BadRequestError("Create playlist unsuccessfully!");
+          }
+          return newPlaylistSong._id;
+        })
+      );
     }
     const newMusicList = await MusicList.create(
       [
@@ -273,6 +294,40 @@ class AlbumService extends MusicListService {
     session.endSession();
     return newMusicList[0];
   }
+
+  async findAllMusicLists({ filter, limit = 20 }) {
+    const { song, genre, singer } = filter;
+
+    let musiclists;
+    if (singer) {
+      const albums = await Album.find({
+        singers: singer,
+      });
+
+      musiclists = await Promise.all(
+        albums.map(async (album) => {
+          const queryObject = removeUndefinedInObject({
+            musiclist_attributes: album._id,
+            song,
+            genre,
+          });
+          const musiclist = await MusicList.findOne(queryObject).populate(
+            "musiclist_attributes"
+          );
+          return musiclist;
+        })
+      );
+      return musiclists.slice(0, limit);
+    }
+    const queryObject = removeUndefinedInObject({
+      song,
+      genre,
+    });
+    musiclists = await MusicList.find(queryObject)
+      .populate("musiclist_attributes")
+      .limit(limit);
+    return musiclists;
+  }
 }
 
 class PlaylistService extends MusicListService {
@@ -341,6 +396,63 @@ class PlaylistService extends MusicListService {
     session.endSession();
 
     return newMusicList[0];
+  }
+
+  async addSongToMusicList({ song, id }) {
+    const session = await startSession();
+    session.startTransaction();
+
+    const playlist = await MusicList.findById(id);
+
+    if (!playlist) {
+      throw new BadRequestError(`Playlist with id ${id} does not exist!`);
+    }
+
+    const existedSong = await Song.findById(song);
+    if (!existedSong) {
+      throw new BadRequestError(`Song with id ${song} does not exist!`);
+    }
+
+    const existedMusicList = await MusicList.findById(id).populate({
+      path: "songs",
+      match: {
+        song,
+      },
+    });
+
+    if (existedMusicList.songs[0])
+      throw new BadRequestError("This song is already in your Liked Song List");
+
+    const playlistSong = await PlaylistSong.create(
+      [
+        {
+          song,
+          dateAdded: Date.now(),
+        },
+      ],
+      { session }
+    );
+    if (!playlistSong[0]) {
+      throw new BadRequestError("Add song unsuccessfully!");
+    }
+    const musicList = await MusicList.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: {
+          songs: playlistSong[0],
+        },
+      },
+      { session, new: true }
+    ).populate("songs");
+
+    if (!musicList) {
+      throw new BadRequestError("Add to Playlist unsuccessfully!");
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return musicList;
   }
 }
 
@@ -418,17 +530,19 @@ class LikedSongsService extends MusicListService {
   }
 
   async addSongToMusicList({ song, userId }) {
+    const session = await startSession();
+    session.startTransaction();
     const likedSongs = await LikedSongs.findOne({
       user: userId,
     });
 
     if (!likedSongs) {
-      throw new BadRequestError("The user has no Liked Songs list!");
+      throw new BadRequestError("The user doesn't have Liked Songs list!");
     }
 
     const existedSong = await Song.findById(song);
     if (!existedSong) {
-      throw new BadRequestError(`Song with id ${song} is not existed!`);
+      throw new BadRequestError(`Song with id ${song} does not exist!`);
     }
 
     const existedMusicList = await MusicList.findOne({
@@ -443,11 +557,16 @@ class LikedSongsService extends MusicListService {
     if (existedMusicList.songs[0])
       throw new BadRequestError("This song is already in your Liked Song List");
 
-    const playlistSong = await PlaylistSong.create({
-      song,
-      dateAdded: Date.now(),
-    });
-    if (!playlistSong) {
+    const playlistSong = await PlaylistSong.create(
+      [
+        {
+          song,
+          dateAdded: Date.now(),
+        },
+      ],
+      { session }
+    );
+    if (!playlistSong[0]) {
       throw new BadRequestError("Add song unsuccessfully!");
     }
     const musicList = await MusicList.findOneAndUpdate(
@@ -456,20 +575,24 @@ class LikedSongsService extends MusicListService {
       },
       {
         $addToSet: {
-          songs: playlistSong,
+          songs: playlistSong[0],
         },
       },
-      { new: true }
-    );
+      { session, new: true }
+    ).populate("songs");
 
     if (!musicList) {
       throw new BadRequestError("Add to Liked Songs unsuccessfully!");
     }
-
+    await session.commitTransaction();
+    session.endSession();
     return musicList;
   }
 
-  async removeSongFromMusicList({ playlistsong_id, userId }) {
+  async removeSongFromMusicList({ song, userId }) {
+    const session = await startSession();
+    session.startTransaction();
+
     const likedSongs = await LikedSongs.findOne({
       user: userId,
     });
@@ -478,24 +601,45 @@ class LikedSongsService extends MusicListService {
       throw new BadRequestError("The user has no Liked Songs list!");
     }
 
-    const existedPlaylistSong = await PlaylistSong.findById(playlistsong_id);
-    if (!existedPlaylistSong) {
-      throw new BadRequestError(
-        `Playlistsong with id ${playlistsong_id} is not existed!`
-      );
-    }
-
     const existedMusicList = await MusicList.findOne({
       musiclist_attributes: likedSongs._id,
     }).populate({
       path: "songs",
       match: {
-        _id: playlistsong_id,
+        song,
       },
     });
 
     if (!existedMusicList.songs[0])
       throw new BadRequestError("This song is not in your Liked Song List");
+
+    const existedPlaylistSong = await PlaylistSong.findById(
+      existedMusicList.songs[0]._id
+    );
+    if (!existedPlaylistSong) {
+      throw new BadRequestError(
+        `Playlistsong with id ${existedMusicList.songs[0]._id} is not existed!`
+      );
+    }
+
+    const updatedMusicList = await MusicList.findOneAndUpdate(
+      { musiclist_attributes: likedSongs._id },
+      {
+        $pull: { songs: existedPlaylistSong._id },
+      },
+      { session, new: true }
+    ).populate("songs");
+
+    if (!updatedMusicList) {
+      throw new BadRequestError("Remove failed, please try again later!");
+    }
+
+    await PlaylistSong.findByIdAndDelete(existedPlaylistSong._id, { session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return updatedMusicList;
   }
 
   async getPlaylistByUser({ user }) {

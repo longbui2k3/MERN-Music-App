@@ -3,16 +3,30 @@ const { BadRequestError } = require("../core/errorResponse");
 const Section = require("../models/sectionModel");
 class SectionService {
   async getAllSection() {
-    const sections = await Section.find()
+    let sections = await Section.find()
       .populate({
-        path: "musicLists",
+        path: "musiclists",
         populate: {
           path: "musiclist_attributes",
           strictPopulate: false,
         },
         strictPopulate: false,
       })
-      .exec();
+      .populate({
+        path: "singers",
+        populate: {
+          path: "musiclist_attributes",
+          strictPopulate: false,
+        },
+        strictPopulate: false,
+      })
+      .lean();
+    sections = sections.map((section) => {
+      section["lists"] = [...section["musiclists"], ...section["singers"]];
+      delete section["musiclists"];
+      delete section["singers"];
+      return section;
+    });
     return sections;
   }
   async getSectionById(id) {

@@ -7,6 +7,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
 
 router.route("/:albumId").get(asyncHandler(AlbumController.getAlbumById));
+router.route("/").get(asyncHandler(AlbumController.findAllAlbums));
 router.use(protect);
 
 router

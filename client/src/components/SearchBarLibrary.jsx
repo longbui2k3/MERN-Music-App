@@ -1,10 +1,10 @@
 import { Tooltip } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { getMusicListsByUserId } from "../api";
+import { useEffect } from "react";
+import { getItemsByUserId } from "../api";
 
 export default function SearchBarLibrary({
   searchRef,
-  setMusicLists,
+  setItems,
   inputSearch,
   setInputSearch,
   typeSearch,
@@ -15,12 +15,12 @@ export default function SearchBarLibrary({
   useEffect(() => {
     const getMusicListsBySearch = async () => {
       try {
-        const res = await getMusicListsByUserId({
+        const res = await getItemsByUserId({
           search: inputSearch,
-          musiclist_type: typeSearch.newType,
+          type: typeSearch.newType,
         });
         if (res.data.status === 200) {
-          setMusicLists(res.data.metadata.musicLists);
+          setItems(res.data.metadata.items);
         }
       } catch (err) {
         console.log(err);

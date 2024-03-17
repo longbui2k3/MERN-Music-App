@@ -17,8 +17,20 @@ export {
   addFavoriteMusicList,
   removeFavoriteMusicList,
   getMusicListsByUserId,
+  getItemsByUserId,
+  followSinger,
+  unfollowSinger,
 } from "./UserAPI";
 export { searchGenres } from "./GenreAPI";
-export { getAllPlaylists, getPlaylist, createPlaylist } from "./PlaylistAPI";
+export {
+  getAllPlaylists,
+  getPlaylist,
+  createPlaylist,
+  addSongToPlaylist,
+} from "./PlaylistAPI";
 export { createAlbum, getAlbumById, getAllAlbums } from "./AlbumAPI";
-export { getLikedSongsByUser, addSongToLikedSongs } from "./LikedSongsAPI";
+export {
+  getLikedSongsByUser,
+  addSongToLikedSongs,
+  removeSongFromLikedSongs,
+} from "./LikedSongsAPI";

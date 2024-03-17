@@ -16,20 +16,21 @@ class LikedSongsController {
     new CREATED({
       message: "Add to liked songs successfully!",
       metadata: {
-        likedsongs: updatedLikedSongs,
+        likedSongs: updatedLikedSongs,
       },
     }).send(res);
   };
 
   static removeSongFromMusicList = async (req, res, next) => {
-    await MusicListFactory.removeSongFromMusicList({
+    const updatedLikedSongs = await MusicListFactory.removeSongFromMusicList({
       type: "LikedSongs",
-      playlistsong_id: req.params.playlistsong_id,
+      song: req.params.songId,
       userId: req.user.id,
     });
 
     new OK({
       message: "Remove from liked songs successfully!",
+      metadata: { likedSongs: updatedLikedSongs },
     }).send(res);
   };
 
@@ -49,4 +50,3 @@ class LikedSongsController {
 }
 
 module.exports = LikedSongsController;
-

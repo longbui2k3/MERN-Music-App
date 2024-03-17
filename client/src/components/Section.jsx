@@ -3,6 +3,7 @@ import SongListItem from "./SongListItem";
 import { GoPlus } from "react-icons/go";
 import { Tooltip } from "@chakra-ui/react";
 import { NavigateAuth } from "../context/NavigateContext";
+import ArtistItem from "./ArtistItem";
 
 export default function Section({ section }) {
   const { navigatePage } = NavigateAuth();
@@ -47,9 +48,13 @@ export default function Section({ section }) {
         ) : (
           ""
         )}
-        {section.musicLists?.map((item, index) => (
-          <SongListItem key={index} musicList={item} />
-        ))}
+        {section.lists?.map((item, index) =>
+          item.type ? (
+            <SongListItem key={index} musicList={item} />
+          ) : (
+            <ArtistItem singer={item} />
+          )
+        )}
       </div>
     </section>
   );

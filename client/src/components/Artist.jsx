@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { SingerAPI } from "../api";
 import HeaderCoverArtist from "./HeaderCoverArtist";
 import { useParams } from "react-router-dom";
-import { AiFillPlayCircle } from "react-icons/ai";
 import ActionBarArtist from "./ActionBarArtist";
 import SongListItem from "./SongListItem";
 import SongItem from "./SongItem";
@@ -22,6 +21,12 @@ export default function Artist() {
     };
     getArtistFunc();
   }, [params.id]);
+
+  useEffect(() => {
+    if (artist?.name) {
+      document.title = artist.name;
+    }
+  }, [artist]);
 
   function handleClickMore() {
     setShowAll((preState) => !preState);

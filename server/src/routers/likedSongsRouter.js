@@ -1,7 +1,7 @@
 "use strict";
 
 const express = require("express");
-const LikedSongsController = require("../controllers/LikedsongsController");
+const LikedSongsController = require("../controllers/LikedSongsController");
 const asyncHandler = require("../helpers/asyncHandler");
 const { protect } = require("../auth/authUtils");
 const router = express.Router();
@@ -11,7 +11,7 @@ router
   .route("/songs")
   .post(asyncHandler(LikedSongsController.addSongToMusicList));
 router
-  .route("/songs/:playlistsong_id")
+  .route("/songs/:songId")
   .delete(asyncHandler(LikedSongsController.removeSongFromMusicList));
 router.route("/user").get(asyncHandler(LikedSongsController.getPlaylistByUser));
 
