@@ -18,10 +18,12 @@ const DisplayTrack = ({
   const [url, setUrl] = useState("");
   useEffect(() => {
     async function getUrl() {
-      const downloadedUrl = await getDownloadURL(
-        ref(getStorage, "songs/" + currentTrack.songURL)
-      );
-      setUrl(downloadedUrl);
+      if (currentTrack) {
+        const downloadedUrl = await getDownloadURL(
+          ref(getStorage, "songs/" + currentTrack.songURL)
+        );
+        setUrl(downloadedUrl);
+      }
     }
     getUrl();
   }, []);

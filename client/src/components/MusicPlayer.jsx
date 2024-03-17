@@ -1,17 +1,33 @@
-import React, { useRef, useState } from "react";
-import { tracks } from "../data/tracks.js";
+import React, { useEffect, useRef, useState } from "react";
+// import { tracks } from "../data/tracks.js";
 import Controls from "./Controls";
 import OtherControls from "./OtherControls.jsx";
 import ProgressBar from "./ProgressBar.jsx";
 import ShortInfo from "./ShortInfo";
+import SongAPI from "../api/SongAPI.js";
 const MusicPlayer = () => {
   const [trackIndex, setTrackIndex] = useState(0);
-  const [currentTrack, setCurrentTrack] = useState(tracks[trackIndex]);
+  const [currentTrack, setCurrentTrack] = useState(null);
   const [timeProgress, setTimeProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-
+  const [tracks, setTracks] = useState(null);
   // reference
 
+  useEffect(() => {
+    // goi api
+    const songFunc = async () => {
+      try {
+        const res = await SongAPI.getAllSong();
+        setTracks(res.data.metadata.songs);
+      } catch (err) {
+        console.log("Error: ", err);
+      }
+    };
+    songFunc();
+  }, []);
+  useEffect(() => {
+    if (tracks) setCurrentTrack(tracks[trackIndex]);
+  }, [tracks]);
   const audioRef = useRef();
   const progressBarRef = useRef();
 
