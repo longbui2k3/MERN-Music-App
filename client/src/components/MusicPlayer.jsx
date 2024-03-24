@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-// import { tracks } from "../data/tracks.js";
 import Controls from "./Controls";
 import OtherControls from "./OtherControls.jsx";
 import ProgressBar from "./ProgressBar.jsx";
@@ -11,10 +10,8 @@ const MusicPlayer = () => {
   const [timeProgress, setTimeProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [tracks, setTracks] = useState(null);
-  // reference
 
   useEffect(() => {
-    // goi api
     const songFunc = async () => {
       try {
         const res = await SongAPI.getAllSong();

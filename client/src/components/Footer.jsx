@@ -91,7 +91,7 @@ const Footer = () => {
           </div>
         </div>
         <div>
-          <div className="text-[14px]">© 2024 Spotify AB</div>
+          <div className="text-[14px]">© 2024 Spotifree</div>
         </div>
       </div>
     </div>

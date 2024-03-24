@@ -14,23 +14,10 @@ const DisplayTrack = ({
     setDuration(seconds);
     progressBarRef.current.max = seconds;
   };
-  const getStorage = storage;
-  const [url, setUrl] = useState("");
-  useEffect(() => {
-    async function getUrl() {
-      if (currentTrack) {
-        const downloadedUrl = await getDownloadURL(
-          ref(getStorage, "songs/" + currentTrack.songURL)
-        );
-        setUrl(downloadedUrl);
-      }
-    }
-    getUrl();
-  }, []);
   return (
     <div>
       <audio
-        src={url}
+        src={currentTrack?.songURL}
         ref={audioRef}
         onLoadedMetadata={onLoadedMetadata}
         onEnded={handleNext}

@@ -1,7 +1,7 @@
 import { Image } from "@chakra-ui/react";
 import React from "react";
 
-const ShortInfo = ({currentTrack}) => {
+const ShortInfo = ({ currentTrack }) => {
   return (
     <>
       <div className="flex flex-row gap-[15px]">
