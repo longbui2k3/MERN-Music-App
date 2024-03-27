@@ -10,7 +10,7 @@ import { useDispatch } from "react-redux";
 import { setUserGlobal } from "../features/user/userSlice";
 import VerticalNavigateMoreOptionsMusicList from "./VerticalNavigateMoreOptionMusicList";
 
-export default function ActionBar() {
+export default function ActionBar({album}) {
   const [isHeartHover, setIsHeartHover] = useState(false);
   const [isMoreHover, setIsMoreHover] = useState(false);
   const [isOpenVNMoreOptions, setIsOpenVNMoreOptions] = useState(false);
@@ -77,16 +77,17 @@ export default function ActionBar() {
   };
   return (
     <>
-      <div className="flex items-center place-content-between opacity-75 z-40 bg-[#121212] pt-4">
-        {isOpenVNMoreOptions ? (
-          <VerticalNavigateMoreOptionsMusicList
-            isLibrary={liked}
-            addFavoriteFunc={addFavoriteFunc}
-            removeFavoriteFunc={removeFavoriteFunc}
-          />
-        ) : (
-          ""
-        )}
+      {isOpenVNMoreOptions && album ? (
+        <VerticalNavigateMoreOptionsMusicList
+          isLibrary={liked}
+          addFavoriteFunc={addFavoriteFunc}
+          removeFavoriteFunc={removeFavoriteFunc}
+          album={album}
+        />
+      ) : (
+        ""
+      )}
+      <div className="flex items-center place-content-between opacity-75 z-[1000] bg-[#121212] pt-4">
         <div className="flex items-center justify-center gap-x-1 ml-6">
           <span className="transition ease-in-out delay-15 hover:-translate-y-1 hover:scale-110 duration-300 cursor-pointer">
             <AiFillPlayCircle color="#1ED760" size={65} />

@@ -36,15 +36,28 @@ class PlaylistController {
     const updatedPlaylist = await MusicListFactory.addSongToMusicList({
       type: "Playlist",
       song: req.body.song,
-      id: req.body.playlist
+      id: req.body.playlist,
     });
     new CREATED({
-      message: "Add to liked songs successfully!",
+      message: "Add to playlist successfully!",
       metadata: {
         playlist: updatedPlaylist,
       },
     }).send(res);
-  }
+  };
+  static addSongsToMusicList = async (req, res, next) => {
+    const updatedPlaylist = await MusicListFactory.addSongsToMusicList({
+      type: "Playlist",
+      albumId: req.body.album,
+      id: req.body.playlist,
+    });
+    new CREATED({
+      message: "Add to playlist successfully!",
+      metadata: {
+        playlist: updatedPlaylist,
+      },
+    }).send(res);
+  };
 }
 
 module.exports = PlaylistController;

@@ -9,6 +9,9 @@ const router = express.Router();
 router.route("/:playlistId").get(asyncHandler(PlaylistController.getPlaylistById));
 router.use(protect);
 router
+  .route("/songs/multiple")
+  .post(asyncHandler(PlaylistController.addSongsToMusicList));
+router
   .route("/songs")
   .post(asyncHandler(PlaylistController.addSongToMusicList));
 router

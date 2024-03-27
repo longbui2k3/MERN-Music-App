@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { GoPlus } from "react-icons/go";
 import {
   addSongToPlaylist,
+  addSongsToPlaylist,
   createPlaylist,
   getMusicListsByUserId,
   getUser,
@@ -13,6 +14,7 @@ import { NavigateAuth } from "../context/NavigateContext";
 export default function VerticalNavigateFavoritePlaylist({
   setIsOpenVNFavoritePlaylistNew,
   song,
+  album,
 }) {
   const [playlists, setPlaylists] = useState(null);
   const dispatch = useDispatch();
@@ -27,12 +29,22 @@ export default function VerticalNavigateFavoritePlaylist({
   }, []);
   const createNewPlaylistFunc = async () => {
     try {
-      const res = await createPlaylist({
-        name: `${song.name}`,
-        type: "Playlist",
-        imageURL: `${song.imageURL}`,
-        songs: [`${song._id}`],
-      });
+      let res;
+      if (song) {
+        res = await createPlaylist({
+          name: `${song.name}`,
+          type: "Playlist",
+          imageURL: `${song.imageURL}`,
+          songs: [`${song._id}`],
+        });
+      } else if (album) {
+        res = await createPlaylist({
+          name: `${album.name}`,
+          type: "Playlist",
+          imageURL: `${album.imageURL}`,
+          songs: album.songs,
+        });
+      }
       const res2 = await getUser();
       dispatch(setUserGlobal(res2.data.metadata.user));
       navigatePage(`/playlist/${res.data.metadata.playlist._id}`);
@@ -43,6 +55,17 @@ export default function VerticalNavigateFavoritePlaylist({
   const addSongToMusicListFunc = async (playlist) => {
     try {
       const res = await addSongToPlaylist({ song: song._id, playlist });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const addSongsToMusicListFunc = async (playlist) => {
+    try {
+      const res = await addSongsToPlaylist({
+        album: album._id,
+        playlist,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -76,7 +99,11 @@ export default function VerticalNavigateFavoritePlaylist({
             setIsOpenVNFavoritePlaylistNew(true);
           }}
           onClick={function (e) {
-            addSongToMusicListFunc(playlist.musicList._id);
+            if (song) addSongToMusicListFunc(playlist.musicList._id);
+            else if (album) {
+              addSongsToMusicListFunc(playlist.musicList._id);
+            }
+
             setIsOpenVNFavoritePlaylistNew(false);
           }}
         >

@@ -27,6 +27,7 @@ export {
   getPlaylist,
   createPlaylist,
   addSongToPlaylist,
+  addSongsToPlaylist
 } from "./PlaylistAPI";
 export { createAlbum, getAlbumById, getAllAlbums } from "./AlbumAPI";
 export {

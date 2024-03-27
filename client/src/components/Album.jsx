@@ -50,7 +50,7 @@ export default function Album() {
         description={album.description}
       />
       <div className="relative opacity-95 z-40 bg-[#121212]">
-        <ActionBar />
+        <ActionBar album={album} />
         <div className="mx-8 mb-3 grid grid-cols-[0.1fr_3.2fr_0.4fr] text-gray-400 top-0 bg-[#121212] py-4 px-2.5 transition duration-300 ease-in-out border-b border-current">
           <div>
             <span className="px-[6px]">#</span>

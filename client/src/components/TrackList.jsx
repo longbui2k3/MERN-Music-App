@@ -29,7 +29,7 @@ export default function MusicList() {
         <HeaderCover type="Playlist" />
         <div className="opacity-95 z-40">
           <ActionBar />
-          <div className="mx-8 px-4 grid grid-cols-[0.2fr_2.6fr_1.9fr_1.6fr_1fr] text-gray-400 sticky top-[64px] bg-[#121212] py-4 transition duration-300 ease-in-out border-b border-current">
+          <div className="mx-8 px-4 grid grid-cols-[0.2fr_2.6fr_1.9fr_1.6fr_1fr] text-gray-400 top-[64px] bg-[#121212] py-4 transition duration-300 ease-in-out border-b border-current">
             <div>
               <span>#</span>
             </div>

@@ -21,3 +21,11 @@ export const addSongToPlaylist = async ({ song, playlist }) => {
   });
   return res;
 };
+
+export const addSongsToPlaylist = async ({album, playlist}) => {
+  const res = await axios.post(`http://localhost:4000/api/v1/playlist/songs/multiple`, {
+    album,
+    playlist,
+  });
+  return res;
+}

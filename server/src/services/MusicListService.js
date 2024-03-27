@@ -20,7 +20,7 @@ const {
   uploadBytesResumable,
 } = require("firebase/storage");
 const firebaseConfig = require("../configs/firebase");
-const { startSession, Types } = require("mongoose");
+const { startSession, Types, trusted } = require("mongoose");
 const Genre = require("../models/genreModel");
 const Singer = require("../models/singerModel");
 const User = require("../models/userModel");
@@ -57,6 +57,17 @@ class MusicListFactory {
       throw new BadRequestError(`Invalid Musiclist type ${type}`);
     }
     return new musicListClass({}).addSongToMusicList({ song, userId, id });
+  }
+
+  static async addSongsToMusicList({ type, albumId, id }) {
+    const musicListClass = MusicListFactory.musicListRegistry[type];
+    if (!musicListClass) {
+      throw new BadRequestError(`Invalid Musiclist type ${type}`);
+    }
+    return new musicListClass({}).addSongsToMusicList({
+      albumId,
+      id,
+    });
   }
 
   static async removeSongFromMusicList({ type, song, userId }) {
@@ -453,6 +464,66 @@ class PlaylistService extends MusicListService {
     session.endSession();
 
     return musicList;
+  }
+
+  async addSongsToMusicList({ albumId, id }) {
+    const session = await startSession();
+    session.startTransaction();
+
+    const album = await MusicList.findById(albumId);
+    if (!album) {
+      throw new BadRequestError(
+        `Selected musiclist with id ${albumId} is not found!`
+      );
+    }
+    if (album.type !== "Album") {
+      throw new BadRequestError(`Selected musiclist must be album!`);
+    }
+
+    const musiclist = await MusicList.findById(id);
+    if (!musiclist) {
+      throw new BadRequestError(`Musiclist with id ${id} is not found!`);
+    }
+
+    const addedMusicListIds = [];
+    for (const song of album.songs) {
+      const checkSongExisted = await MusicList.findById(id).populate({
+        path: "songs",
+        match: { song },
+      });
+      if (!checkSongExisted.songs[0]) {
+        addedMusicListIds.push(song);
+      }
+    }
+
+    const playlistSongIds = await Promise.all(
+      addedMusicListIds.map(async (id) => {
+        const playlistSong = new PlaylistSong({
+          song: id,
+          dateAdded: Date.now(),
+        });
+        playlistSong.save();
+        if (!playlistSong) {
+          throw new BadRequestError("Add song unsuccessfully!");
+        }
+        return playlistSong._id;
+      })
+    );
+
+    const updatedMusiclist = await MusicList.findByIdAndUpdate(
+      id,
+      {
+        $addToSet: {
+          songs: playlistSongIds,
+        },
+      },
+      { new: true }
+    );
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return updatedMusiclist;
   }
 }
 

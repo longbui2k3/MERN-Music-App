@@ -380,7 +380,7 @@ const Library = () => {
             )}
           </div>
         </div>
-        {items.length !== 0 ? (
+        {items.length !== 0 && userGlobal ? (
           <>
             <div className="flex justify-between">
               <div
@@ -483,7 +483,7 @@ const Library = () => {
           ""
         )}
       </div>
-      {items.length === 0 && (!inputSearch || !typeSearch) ? (
+      {(items.length === 0 && (!inputSearch || !typeSearch)) || !userGlobal ? (
         <>
           <div className="h-[300px] min-w-[300px] bg-[rgb(40,40,40)] rounded-md ms-1 me-3 text-white pt-5 ps-5 mb-5">
             <p className="font-semibold text-[17px] mb-2">
@@ -536,7 +536,7 @@ const Library = () => {
         }}
       >
         <div className={`MusicList h-[100%] w-full absolute overflow-y-scroll`}>
-          {items.length !== 0 || (inputSearch && typeSearch) ? (
+          {(items.length !== 0 || (inputSearch && typeSearch)) && userGlobal ? (
             <div
               className={`flex justify-between ms-2 me-3 h-[40px] ${
                 resizeStyle !== "2" ? "hidden" : ""
