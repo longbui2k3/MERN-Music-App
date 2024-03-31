@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, Tooltip } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Logout, getUser } from "../api";
-import { IoPersonOutline } from "react-icons/io5";
+import { IoNotificationsOutline, IoPersonOutline } from "react-icons/io5";
 import { useCookies } from "react-cookie";
 import { IoMdOpen } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
@@ -72,6 +72,9 @@ export default function Header() {
   const [user, setUser] = useState("");
   function avatarClick() {
     setNavigateAvatar(!navigateAvatar);
+  }
+  function notificationClick() {
+    navigate("/content-feed");
   }
   function navigateLogInClick() {
     navigate("/logIn");
@@ -160,6 +163,17 @@ export default function Header() {
       {!isLoading ? (
         user ? (
           <>
+            <Tooltip label="What's new">
+              <div
+                className="w-[100px] h-[100px] scale-[0.35] rounded-full -mt-4 me-1 absolute top-0 right-[50px] bg-black"
+                onClick={notificationClick}
+              >
+                <IoNotificationsOutline
+                  className={"hover:text-white cursor-pointer mx-auto mt-3"}
+                  fontSize={"65px"}
+                />
+              </div>
+            </Tooltip>
             <Tooltip label={user.name}>
               {user.avatar ? (
                 <div
