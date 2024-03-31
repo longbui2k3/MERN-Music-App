@@ -51,7 +51,13 @@ export function App() {
                 path="/home"
                 element={
                   <PageHome>
-                    {user.role === "artist" ? <BodyArtist /> : <Body />}
+                    {user.role === "user" ? (
+                      <Body />
+                    ) : user.role === "artist" ? (
+                      <BodyArtist />
+                    ) : (
+                      ""
+                    )}
                   </PageHome>
                 }
               />
@@ -67,7 +73,13 @@ export function App() {
                 path="/"
                 element={
                   <PageHome>
-                    {user.role === "artist" ? <BodyArtist /> : <Body />}
+                    {user.role === "user" ? (
+                      <Body />
+                    ) : user.role === "artist" ? (
+                      <BodyArtist />
+                    ) : (
+                      ""
+                    )}
                   </PageHome>
                 }
               />

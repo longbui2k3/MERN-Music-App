@@ -10,8 +10,20 @@ export default function Section({ section }) {
   return (
     <section aria-label={section.title}>
       <div className="text-[#FFFFFF] font-bold text-[24px] flex justify-between items-center">
-        <h2 className="cursor-pointer hover:underline">{section.title}</h2>
-        <div className="text-[#B3B3B3] text-[14px] cursor-pointer hover:underline">
+        <h2
+          className="cursor-pointer hover:underline"
+          onClick={function (e) {
+            navigatePage(`/section/${section._id}`);
+          }}
+        >
+          {section.title}
+        </h2>
+        <div
+          className="text-[#B3B3B3] text-[14px] cursor-pointer hover:underline"
+          onClick={function (e) {
+            navigatePage(`/section/${section._id}`);
+          }}
+        >
           Show All
         </div>
       </div>
