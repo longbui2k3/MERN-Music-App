@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, Tooltip } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { Logout, getUser } from "../api";
-import { IoNotificationsOutline, IoPersonOutline } from "react-icons/io5";
+import {
+  IoNotifications,
+  IoNotificationsOutline,
+  IoPersonOutline,
+} from "react-icons/io5";
 import { useCookies } from "react-cookie";
 import { IoMdOpen } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,23 +16,23 @@ import { NavigateAuth } from "../context/NavigateContext";
 // import { ExternalLinkIcon } from "@chakra-ui/icons";
 
 const VerticalNavigateAvatar = ({ navigateAvatar, user }) => {
-  let navigate = useNavigate();
   const [cookies, setCookie] = useCookies([""]);
-  function clickNavigateAccount() {
-    navigate("#", { replace: true });
-  }
+
   const { navigatePage } = NavigateAuth();
   function clickNavigateProfile() {
     navigatePage(`/user/${user._id}`);
+  }
+  function clickNavigateAccount() {
+    navigatePage("#", { replace: true });
   }
   async function clickLogOut() {
     try {
       await Logout();
       setCookie("jwt", "", {});
       localStorage.setItem("user", "");
-      navigate(0);
+      navigatePage(0);
     } catch (err) {
-      navigate(0);
+      navigatePage(0);
     }
   }
   return (
@@ -66,7 +70,8 @@ const VerticalNavigateAvatar = ({ navigateAvatar, user }) => {
 };
 
 export default function Header() {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const { navigatePage } = NavigateAuth();
   const [navigateAvatar, setNavigateAvatar] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState("");
@@ -74,13 +79,15 @@ export default function Header() {
     setNavigateAvatar(!navigateAvatar);
   }
   function notificationClick() {
-    navigate("/content-feed");
+    if (!window.location.href.includes("content-feed"))
+      navigatePage("/content-feed");
+    else dispatch(back());
   }
   function navigateLogInClick() {
-    navigate("/logIn");
+    navigatePage("/logIn");
   }
   function navigateSignUpClick() {
-    navigate("/signUp");
+    navigatePage("/signUp");
   }
 
   const dispatch = useDispatch();
@@ -118,7 +125,7 @@ export default function Header() {
           <button
             disabled={!currentPage.prev}
             className="flex flex-col justify-center bg-black my-[17px] w-[32px] h-[32px] rounded-full disabled:opacity-60"
-            onMouseDown={goBackFunc}
+            onClick={goBackFunc}
           >
             <GoChevronLeft
               size="25px"
@@ -132,7 +139,7 @@ export default function Header() {
             disabled={!currentPage.next}
             className="flex flex-col justify-center bg-black my-[17px] w-[32px] h-[32px] rounded-full disabled:opacity-60"
             style={{ marginLeft: "10px" }}
-            onMouseDown={goForwardFunc}
+            onClick={goForwardFunc}
           >
             <GoChevronRight
               size="25px"
@@ -163,17 +170,31 @@ export default function Header() {
       {!isLoading ? (
         user ? (
           <>
-            <Tooltip label="What's new">
-              <div
-                className="w-[100px] h-[100px] scale-[0.35] rounded-full -mt-4 me-1 absolute top-0 right-[50px] bg-black"
-                onClick={notificationClick}
-              >
-                <IoNotificationsOutline
-                  className={"hover:text-white cursor-pointer mx-auto mt-3"}
-                  fontSize={"65px"}
-                />
-              </div>
-            </Tooltip>
+            {window.location.href.includes("content-feed") ? (
+              <Tooltip label="What's new">
+                <div
+                  className="w-[100px] h-[100px] scale-[0.35] rounded-full -mt-4 me-1 absolute top-0 right-[50px] bg-black"
+                  onClick={notificationClick}
+                >
+                  <IoNotifications
+                    className={"hover:text-white cursor-pointer mx-auto mt-3"}
+                    fontSize={"65px"}
+                  />
+                </div>
+              </Tooltip>
+            ) : (
+              <Tooltip label="What's new">
+                <div
+                  className="w-[100px] h-[100px] scale-[0.35] rounded-full -mt-4 me-1 absolute top-0 right-[50px] bg-black"
+                  onClick={notificationClick}
+                >
+                  <IoNotificationsOutline
+                    className={"hover:text-white cursor-pointer mx-auto mt-3"}
+                    fontSize={"65px"}
+                  />
+                </div>
+              </Tooltip>
+            )}
             <Tooltip label={user.name}>
               {user.avatar ? (
                 <div
