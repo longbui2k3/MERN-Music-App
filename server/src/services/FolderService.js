@@ -6,6 +6,8 @@ class FolderService {
     const folder = new Folder({
       parentId,
       user: userId,
+      dateAdded: Date.now(),
+      datePlayed: Date.now(),
     });
     let rightValue;
     if (!parentId) {

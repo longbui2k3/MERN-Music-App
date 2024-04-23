@@ -2,7 +2,7 @@ import { Tooltip } from "@chakra-ui/react";
 import { FaRegFolder } from "react-icons/fa6";
 import { GoTriangleDown, GoTriangleLeft } from "react-icons/go";
 import { dateDistance } from "../config";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getChildOfFolder } from "../api";
 
 export default function Folder({
@@ -27,7 +27,7 @@ export default function Folder({
   };
   useEffect(() => {
     getChildOfFolderFunc();
-  }, []);
+  }, [childs]);
 
   useEffect(() => {
     if (
@@ -40,7 +40,15 @@ export default function Folder({
       setSelectedFolder(null);
     }
   }, [selectedChilds]);
-
+  const textRef = useRef();
+  useEffect(() => {
+    const spanNames = document.querySelectorAll(".span-name");
+    const listsonginfo = document.querySelector(".listsong-info");
+    spanNames.forEach((spanName) => {
+      const width = textRef.current.offsetWidth - 100;
+      spanName.style.width = `${width}px`;
+    });
+  }, [textRef.current?.offsetWidth]);
   return (
     <>
       <Tooltip
@@ -78,7 +86,7 @@ export default function Folder({
                   resizeStyle === "1" ? "justify-center" : ""
                 } grow`}
               >
-                <div className="flex">
+                <div className="flex grow" ref={textRef}>
                   <div
                     class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] overflow-hidden rounded-lg"
                     ref={listSongRef}
@@ -87,17 +95,19 @@ export default function Folder({
                   </div>
 
                   <div
-                    class={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
+                    className={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
                       resizeStyle === "1" ? "hidden" : ""
                     }`}
                     style={{
-                      maxWidth: `${resizeStyle === "3" ? `200px` : "100%"}`,
+                      maxWidth: `${resizeStyle === "3" ? `100%` : "100%"}`,
+                      // minWidth: `0px`,
                     }}
                   >
-                    <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                    <span className="span-name truncate text-white">
                       {item?.name}
+                      {item._id}
                     </span>
-                    <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                    <span className="truncate" style={{ minWidth: "0px" }}>
                       {childs.length} folder
                     </span>
                   </div>

@@ -46,10 +46,10 @@ export default function VerticalNavigateCreateLibrary({
   const createFolderFunc = async () => {
     try {
       const res = await createFolder(parentFolder);
-      console.log(res);
       const res2 = await getItemsByUserId({});
+      console.log(res2);
       setItems(res2.data.metadata.items);
-      
+
       await getChildOfFolderFunc();
     } catch (err) {
       console.log(err);
