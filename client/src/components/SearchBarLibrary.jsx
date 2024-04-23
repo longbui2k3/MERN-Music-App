@@ -19,6 +19,7 @@ export default function SearchBarLibrary({
           search: inputSearch,
           type: typeSearch.newType,
         });
+        console.log(res);
         if (res.data.status === 200) {
           setItems(res.data.metadata.items);
         }

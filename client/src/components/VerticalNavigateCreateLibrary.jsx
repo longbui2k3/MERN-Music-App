@@ -1,6 +1,13 @@
 import { TbMusicPlus } from "react-icons/tb";
-import { createPlaylist, getItemsByUserId, getUser } from "../api";
+import {
+  createFolder,
+  createPlaylist,
+  getChildOfFolder,
+  getItemsByUserId,
+  getUser,
+} from "../api";
 import { NavigateAuth } from "../context/NavigateContext";
+import { useEffect } from "react";
 
 export default function VerticalNavigateCreateLibrary({
   leftPos,
@@ -10,12 +17,14 @@ export default function VerticalNavigateCreateLibrary({
   text2,
   items,
   setItems,
+  parentFolder,
+  setSelectedChilds,
+  setSelectedFolder,
 }) {
   const { navigatePage } = NavigateAuth();
   const createNewPlaylistFunc = async () => {
     try {
       const user = await getUser();
-      console.log(items);
       const myPlaylistLength = items.filter(
         (item) =>
           item?.musicList?.type === "Playlist" &&
@@ -34,9 +43,29 @@ export default function VerticalNavigateCreateLibrary({
       console.log(error);
     }
   };
+  const createFolderFunc = async () => {
+    try {
+      const res = await createFolder(parentFolder);
+      console.log(res);
+      const res2 = await getItemsByUserId({});
+      setItems(res2.data.metadata.items);
+      
+      await getChildOfFolderFunc();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const getChildOfFolderFunc = async () => {
+    try {
+      const res = await getChildOfFolder(parentFolder);
+      setSelectedChilds(res.data.metadata.childs);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <nav
-      className={`navigate-create absolute top-[189px] z-[1000] w-[200px] bg-[rgb(40,40,40)] rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)] overflow-hidden`}
+      className={`navigate-create absolute top-[189px] z-[10000] w-[200px] bg-[rgb(40,40,40)] rounded-md shadow-md text-[14px] font-medium text-[rgb(230,230,230)] overflow-hidden`}
       style={{ left: `${leftPos}px`, top: `${topPos}px` }}
     >
       <ul>
@@ -49,7 +78,7 @@ export default function VerticalNavigateCreateLibrary({
         </li>
         <li
           className="flex px-[14px] py-[10px] hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer "
-          onClick={""}
+          onMouseDown={createFolderFunc}
         >
           {icon2}
           {text2}

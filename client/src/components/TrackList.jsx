@@ -5,16 +5,20 @@ import { getPlaylist } from "../api/PlaylistAPI";
 import ActionBar from "./ActionBar";
 import HeaderCover from "./HeaderCover";
 import SongItemPlaylist from "./SongItemPlaylist";
+import SearchBarSong from "./SearchBarSong";
 
 export default function MusicList() {
   const [songs, setSongs] = useState([]);
   const [likedSongs, setLikedSongs] = useState(null);
   const [currentMoreOptions, setCurrentMoreOptions] = useState(null);
+  const [inputSearch, setInputSearch] = useState("");
+
   let params = useParams();
   useEffect(() => {
     const getAllSongs = async () => {
       try {
         const songsData = await getPlaylist(params.id);
+
         setSongs(songsData.data.metadata.playlist.songs);
       } catch (err) {
         console.log(err);
@@ -50,7 +54,7 @@ export default function MusicList() {
           </div>
 
           {/* Song list */}
-          <div className="mx-[2rem] flex flex-col pb-10 mt-[8px]">
+          <div className="mx-[2rem] flex flex-col pb-10 mt-[8px] text-gray-400 border-b border-current">
             {songs.map((playlistsong, index) => (
               <SongItemPlaylist
                 playlistsong={playlistsong}
@@ -61,6 +65,19 @@ export default function MusicList() {
                 currentMoreOptions={currentMoreOptions}
               />
             ))}
+          </div>
+          <div className="mx-[2rem] mt-[1rem]">
+            <div className="text-[20px] text-white font-bold">
+              Let's find something for your playlist
+            </div>
+            <div className="mt-3">
+              <SearchBarSong
+                inputSearch={inputSearch}
+                setInputSearch={setInputSearch}
+                playlist={params.id}
+                setSongs={setSongs}
+              />
+            </div>
           </div>
         </div>
       </main>

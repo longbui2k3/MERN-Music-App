@@ -58,6 +58,21 @@ class PlaylistController {
       },
     }).send(res);
   };
+  static updateMusicList = async (req, res, next) => {
+    const updatedPlaylist = await MusicListFactory.updateMusicList({
+      type: "Playlist",
+      name: req.body.name,
+      description: req.body.description,
+      file: req.file,
+      id: req.body.playlist,
+    });
+    new OK({
+      message: "Update playlist successfully!",
+      metadata: {
+        playlist: updatedPlaylist,
+      },
+    }).send(res);
+  };
 }
 
 module.exports = PlaylistController;

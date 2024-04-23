@@ -19,15 +19,51 @@ const storage = getStorage();
 initializeApp(firebaseConfig);
 
 class SongService {
-  async getAllSongs({search}) {
-    return await Song.find({ name: { $regex: new RegExp(search || "", "i") } })
-      .collation({ locale: "en", strength: 2 })
-      .populate("album")
-      .populate("singers")
-      .populate("genres")
-      .exec();
+  async getAllSongs({ search }) {
+    const agg = [
+      {
+        $lookup: {
+          from: "musiclists",
+          localField: "album",
+          foreignField: "_id",
+          as: "album",
+        },
+      },
+      {
+        $unwind: "$album",
+      },
+      {
+        $lookup: {
+          from: "singers",
+          localField: "singers",
+          foreignField: "_id",
+          as: "singers",
+        },
+      },
+      {
+        $lookup: {
+          from: "genres",
+          localField: "genres",
+          foreignField: "_id",
+          as: "genres",
+        },
+      },
+    ];
+    if (search !== undefined) {
+      agg.unshift({
+        $search: {
+          index: "default",
+          autocomplete: {
+            query: search || " ",
+            path: "name",
+            fuzzy: { maxEdits: 1 },
+          },
+        },
+      });
+    }
+    return await Song.aggregate(agg);
   }
-  
+
   async getSong(id) {
     const song = await Song.findById(id)
       .populate("album")

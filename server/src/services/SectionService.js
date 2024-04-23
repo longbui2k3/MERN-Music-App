@@ -1,6 +1,8 @@
 "use strict";
 const { BadRequestError } = require("../core/errorResponse");
 const Section = require("../models/sectionModel");
+const { MusicList } = require("../models/musicListModel");
+const Singer = require("../models/singerModel");
 class SectionService {
   async getAllSection() {
     let sections = await Section.find()
@@ -30,11 +32,29 @@ class SectionService {
     return sections;
   }
   async getSectionById(id) {
-    const section = await Section.findById(id)
-      .populate({ path: "musicLists", strictPopulate: false })
-      .exec();
-    if (!section) throw new BadRequestError(`Section with id: ${id} not found`);
+    let section = await Section.findById(id)
+      .populate({
+        path: "musiclists",
+        populate: {
+          path: "musiclist_attributes",
+          strictPopulate: false,
+        },
+        strictPopulate: false,
+      })
+      .populate({
+        path: "singers",
+        populate: {
+          path: "musiclist_attributes",
+          strictPopulate: false,
+        },
+        strictPopulate: false,
+      })
+      .lean();
 
+    if (!section) throw new BadRequestError(`Section with id: ${id} not found`);
+    section["lists"] = [...section["musiclists"], ...section["singers"]];
+    delete section["musiclists"];
+    delete section["singers"];
     return section;
   }
 
@@ -73,6 +93,45 @@ class SectionService {
 
   async deleteSection(id) {
     await Section.findByIdAndDelete(id);
+  }
+  async addMusiclistToLists({ musiclist_id, section_id }) {
+    const musiclist = await MusicList.findById(musiclist_id);
+    if (!musiclist) {
+      throw new BadRequestError(
+        `Musiclist with id ${musiclist_id} is not found!`
+      );
+    }
+    const section = await Section.findById(section_id);
+    if (!section)
+      throw new BadRequestError(`Section with id: ${section_id} not found`);
+
+    const updatedSection = await Section.findByIdAndUpdate(
+      section_id,
+      {
+        $addToSet: { lists: musiclist_id },
+      },
+      { new: true }
+    );
+    return updatedSection;
+  }
+  async addSingerToLists({ singer_id, section_id }) {
+    const singer = await Singer.findById(singer_id);
+    if (!singer) {
+      throw new BadRequestError(`singer with id ${singer_id} is not found!`);
+    }
+
+    const section = await Section.findById(section_id);
+    if (!section)
+      throw new BadRequestError(`Section with id: ${section_id} not found`);
+
+    const updatedSection = await Section.findByIdAndUpdate(
+      section_id,
+      {
+        $addToSet: { lists: singer_id },
+      },
+      { new: true }
+    );
+    return updatedSection;
   }
 }
 

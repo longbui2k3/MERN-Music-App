@@ -11,7 +11,9 @@ const DOCUMENT_NAME = {
   ALBUM: "Album",
   PLAYLIST: "Playlist",
   LIKEDSONGS: "LikedSongs",
-  PLAYLISTSONG: "PlaylistSong"
+  PLAYLISTSONG: "PlaylistSong",
+  FOLDER: "Folder",
+  FOLDERMUSICLIST: "FolderMusiclist",
 };
 
 const COLLECTION_NAME = {
@@ -25,6 +27,8 @@ const COLLECTION_NAME = {
   PLAYLIST: "playlists",
   LIKEDSONGS: "likedsongs",
   PLAYLISTSONG: "playlistsongs",
+  FOLDER: "folders",
+  FOLDERMUSICLIST: "foldermusiclists"
 };
 
 const LIKEDSONGS_IMAGE_URL =

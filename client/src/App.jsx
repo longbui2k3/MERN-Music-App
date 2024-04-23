@@ -26,6 +26,8 @@ import { useDispatch } from "react-redux";
 import { setUserGlobal } from "./features/user/userSlice";
 import SectionDetail from "./components/SectionDetail";
 import ContentFeed from "./components/ContentFeed";
+import Genre from "./components/Genre";
+import BodyAdmin from "./components/adminRole/BodyAdmin";
 export function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState(" ");
@@ -33,10 +35,12 @@ export function App() {
     const getUserFunc = async () => {
       try {
         const res = await getUser();
+        console.log(res);
         setUser(res.data.metadata.user);
         dispatch(setUserGlobal(res.data.metadata.user));
       } catch (err) {
         setUser("");
+        console.log(err);
       }
     };
     getUserFunc();
@@ -51,7 +55,13 @@ export function App() {
                 path="/home"
                 element={
                   <PageHome>
-                    {user.role === "artist" ? <BodyArtist /> : <Body />}
+                    {user.role === "admin" ? (
+                      <BodyAdmin />
+                    ) : user.role === "artist" ? (
+                      <BodyArtist />
+                    ) : (
+                      <Body />
+                    )}
                   </PageHome>
                 }
               />
@@ -67,7 +77,13 @@ export function App() {
                 path="/"
                 element={
                   <PageHome>
-                    {user.role === "artist" ? <BodyArtist /> : <Body />}
+                    {user.role === "admin" ? (
+                      <BodyAdmin />
+                    ) : user.role === "artist" ? (
+                      <BodyArtist />
+                    ) : (
+                      <Body />
+                    )}
                   </PageHome>
                 }
               />
@@ -153,6 +169,14 @@ export function App() {
                 element={
                   <PageHome>
                     <ContentFeed />
+                  </PageHome>
+                }
+              />
+              <Route
+                path="/genre/:id"
+                element={
+                  <PageHome>
+                    <Genre />
                   </PageHome>
                 }
               />

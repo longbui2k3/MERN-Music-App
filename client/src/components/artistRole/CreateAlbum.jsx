@@ -78,11 +78,7 @@ export default function CreateAlbum() {
             Create Album
           </Text>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl
-            // isInvalid={
-
-            // }
-            >
+            <FormControl>
               <div className="flex">
                 <div
                   class="mb-8 w-[200px] relative"

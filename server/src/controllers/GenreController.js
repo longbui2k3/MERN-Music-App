@@ -21,7 +21,7 @@ class GenreController {
       metadata: {
         genre,
       },
-    });
+    }).send(res);
   };
   static getGenresById = async (req, res, next) => {
     const genre = await GenreService.getGenresById({ id: req.params.id });
@@ -31,7 +31,7 @@ class GenreController {
       metadata: {
         genre,
       },
-    });
+    }).send(res);
   };
 
   static updateGenre = async (req, res, next) => {
@@ -42,7 +42,7 @@ class GenreController {
       metadata: {
         genre,
       },
-    });
+    }).send(res);
   };
 
   static deleteGenre = async (req, res, next) => {
@@ -50,7 +50,7 @@ class GenreController {
 
     new OK({
       message: "Delete genre successfully!",
-    });
+    }).send(res);
   };
 }
 module.exports = GenreController;

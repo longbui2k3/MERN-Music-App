@@ -27,6 +27,7 @@ const User = require("../models/userModel");
 const Song = require("../models/songModel");
 const { LIKEDSONGS_IMAGE_URL } = require("../configs");
 const { removeUndefinedInObject } = require("../utils");
+const transaction = require("../helpers/transaction");
 initializeApp(firebaseConfig);
 const storage = getStorage();
 
@@ -86,6 +87,19 @@ class MusicListFactory {
       throw new BadRequestError(`Invalid Musiclist type ${type}`);
     }
     return new musicListClass({}).findAllMusicLists({ filter, limit });
+  }
+
+  static async updateMusicList({ type, name, description, file = {}, id }) {
+    const musicListClass = MusicListFactory.musicListRegistry[type];
+    if (!musicListClass) {
+      throw new BadRequestError(`Invalid Musiclist type ${type}`);
+    }
+    return new musicListClass({}).updateMusicList({
+      name,
+      description,
+      file,
+      id,
+    });
   }
 }
 class PlaylistFactory {
@@ -260,50 +274,52 @@ class AlbumService extends MusicListService {
     this.type = "Album";
   }
   async createMusicList({ file = {} }) {
-    const session = await startSession();
-    session.startTransaction();
-    this.musiclist_attributes.singers = this.musiclist_attributes.singers.map(
-      (singer) => new Types.ObjectId(singer)
-    );
-
-    const newAlbum = await Album.create([this.musiclist_attributes], {
-      session,
-    });
-    if (!newAlbum[0]) {
-      throw new BadRequestError("Create album unsucessfully");
-    }
-
-    const newMusicList = await super.createMusicList(
-      newAlbum[0]._id,
-      session,
-      file
-    );
-    if (!newMusicList[0]) {
-      throw new BadRequestError("Create album unsucessfully");
-    }
-
-    for (let i = 0; i < this.genres.length; i++) {
-      const genre = await Genre.findByIdAndUpdate(
-        { _id: this.genres[i] },
-        { $addToSet: { musicLists: newMusicList[0] } },
-        { session, new: true }
+    return await transaction(async (session) => {
+      this.musiclist_attributes.singers = this.musiclist_attributes.singers.map(
+        (singer) => new Types.ObjectId(singer)
       );
-      if (!genre) {
-        throw new BadRequestError(`Genre with id ${this.genres[i]} not found`);
+
+      const newAlbum = await Album.create([this.musiclist_attributes], {
+        session,
+      });
+      if (!newAlbum[0]) {
+        throw new BadRequestError("Create album unsucessfully");
       }
-    }
-    for (let i = 0; i < newAlbum[0].singers.length; i++) {
-      const updatedSinger = await Singer.findOneAndUpdate(
-        { _id: newAlbum[0].singers[i] },
-        { $addToSet: { musicLists: newMusicList[0] } },
-        { session, new: true }
+
+      const newMusicList = await super.createMusicList(
+        newAlbum[0]._id,
+        session,
+        file
       );
-      if (!updatedSinger)
-        throw new Error(`Singer with id: ${newAlbum[0].singers[i]} not found`);
-    }
-    await session.commitTransaction();
-    session.endSession();
-    return newMusicList[0];
+      if (!newMusicList[0]) {
+        throw new BadRequestError("Create album unsucessfully");
+      }
+
+      for (let i = 0; i < this.genres.length; i++) {
+        const genre = await Genre.findByIdAndUpdate(
+          { _id: this.genres[i] },
+          { $addToSet: { musicLists: newMusicList[0] } },
+          { session, new: true }
+        );
+        if (!genre) {
+          throw new BadRequestError(
+            `Genre with id ${this.genres[i]} not found`
+          );
+        }
+      }
+      for (let i = 0; i < newAlbum[0].singers.length; i++) {
+        const updatedSinger = await Singer.findOneAndUpdate(
+          { _id: newAlbum[0].singers[i] },
+          { $addToSet: { musicLists: newMusicList[0] } },
+          { session, new: true }
+        );
+        if (!updatedSinger)
+          throw new Error(
+            `Singer with id: ${newAlbum[0].singers[i]} not found`
+          );
+      }
+      return newMusicList[0];
+    });
   }
 
   async findAllMusicLists({ filter, limit = 20 }) {
@@ -363,167 +379,188 @@ class PlaylistService extends MusicListService {
     this.type = "Playlist";
   }
   async createMusicList({ userId, file = {} }) {
-    const session = await startSession();
-    session.startTransaction();
-    if (!this.musiclist_attributes) {
-      this.musiclist_attributes = {
-        user: userId,
-      };
-    }
-    const newPlaylist = await Playlist.create([this.musiclist_attributes], {
-      session,
-    });
+    return await transaction(async (session) => {
+      if (!this.musiclist_attributes) {
+        this.musiclist_attributes = {
+          user: userId,
+        };
+      }
+      const newPlaylist = await Playlist.create([this.musiclist_attributes], {
+        session,
+      });
 
-    if (!newPlaylist[0]) {
-      throw new BadRequestError("Create playlist unsucessfully");
-    }
+      if (!newPlaylist[0]) {
+        throw new BadRequestError("Create playlist unsucessfully");
+      }
 
-    const newMusicList = await super.createMusicList(
-      newPlaylist[0]._id,
-      session,
-      file
-    );
-    if (!newMusicList[0]) {
-      throw new BadRequestError("Create playlist unsucessfully");
-    }
+      const newMusicList = await super.createMusicList(
+        newPlaylist[0]._id,
+        session,
+        file
+      );
+      if (!newMusicList[0]) {
+        throw new BadRequestError("Create playlist unsucessfully");
+      }
 
-    const updatedUser = await User.updateOne(
-      { _id: userId },
-      {
-        $push: {
-          musicLists: {
-            musicList: newMusicList[0],
-            dateAdded: Date.now(),
-            datePlayed: Date.now(),
+      const updatedUser = await User.updateOne(
+        { _id: userId },
+        {
+          $push: {
+            musicLists: {
+              musicList: newMusicList[0],
+              dateAdded: Date.now(),
+              datePlayed: Date.now(),
+            },
           },
         },
-      },
-      { session, new: true }
-    );
+        { session, new: true }
+      );
 
-    if (!updatedUser)
-      throw new BadRequestError(`User with id: ${userId} not found`);
-    await session.commitTransaction();
-    session.endSession();
+      if (!updatedUser)
+        throw new BadRequestError(`User with id: ${userId} not found`);
 
-    return newMusicList[0];
+      return newMusicList[0];
+    });
   }
 
   async addSongToMusicList({ song, id }) {
-    const session = await startSession();
-    session.startTransaction();
+    return await transaction(async (session) => {
+      const playlist = await MusicList.findById(id);
 
-    const playlist = await MusicList.findById(id);
+      if (!playlist) {
+        throw new BadRequestError(`Playlist with id ${id} does not exist!`);
+      }
 
-    if (!playlist) {
-      throw new BadRequestError(`Playlist with id ${id} does not exist!`);
-    }
+      const existedSong = await Song.findById(song);
+      if (!existedSong) {
+        throw new BadRequestError(`Song with id ${song} does not exist!`);
+      }
 
-    const existedSong = await Song.findById(song);
-    if (!existedSong) {
-      throw new BadRequestError(`Song with id ${song} does not exist!`);
-    }
-
-    const existedMusicList = await MusicList.findById(id).populate({
-      path: "songs",
-      match: {
-        song,
-      },
-    });
-
-    if (existedMusicList.songs[0])
-      throw new BadRequestError("This song is already in your Liked Song List");
-
-    const playlistSong = await PlaylistSong.create(
-      [
-        {
+      const existedMusicList = await MusicList.findById(id).populate({
+        path: "songs",
+        match: {
           song,
-          dateAdded: Date.now(),
         },
-      ],
-      { session }
-    );
-    if (!playlistSong[0]) {
-      throw new BadRequestError("Add song unsuccessfully!");
-    }
-    const musicList = await MusicList.findByIdAndUpdate(
-      id,
-      {
-        $addToSet: {
-          songs: playlistSong[0],
+      });
+
+      if (existedMusicList.songs[0])
+        throw new BadRequestError(
+          "This song is already in your Liked Song List"
+        );
+
+      const playlistSong = await PlaylistSong.create(
+        [
+          {
+            song,
+            dateAdded: Date.now(),
+          },
+        ],
+        { session }
+      );
+      if (!playlistSong[0]) {
+        throw new BadRequestError("Add song unsuccessfully!");
+      }
+      const musicList = await MusicList.findByIdAndUpdate(
+        id,
+        {
+          $addToSet: {
+            songs: playlistSong[0],
+          },
         },
-      },
-      { session, new: true }
-    ).populate("songs");
-
-    if (!musicList) {
-      throw new BadRequestError("Add to Playlist unsuccessfully!");
-    }
-
-    await session.commitTransaction();
-    session.endSession();
-
-    return musicList;
+        { session, new: true }
+      ).populate({
+        path: "songs",
+        populate: { path: "song", populate: "singers album" },
+      });
+      if (!musicList) {
+        throw new BadRequestError("Add to Playlist unsuccessfully!");
+      }
+      return musicList;
+    });
   }
 
   async addSongsToMusicList({ albumId, id }) {
-    const session = await startSession();
-    session.startTransaction();
-
-    const album = await MusicList.findById(albumId);
-    if (!album) {
-      throw new BadRequestError(
-        `Selected musiclist with id ${albumId} is not found!`
-      );
-    }
-    if (album.type !== "Album") {
-      throw new BadRequestError(`Selected musiclist must be album!`);
-    }
-
-    const musiclist = await MusicList.findById(id);
-    if (!musiclist) {
-      throw new BadRequestError(`Musiclist with id ${id} is not found!`);
-    }
-
-    const addedMusicListIds = [];
-    for (const song of album.songs) {
-      const checkSongExisted = await MusicList.findById(id).populate({
-        path: "songs",
-        match: { song },
-      });
-      if (!checkSongExisted.songs[0]) {
-        addedMusicListIds.push(song);
+    return await transaction(async (session) => {
+      const album = await MusicList.findById(albumId);
+      if (!album) {
+        throw new BadRequestError(
+          `Selected musiclist with id ${albumId} is not found!`
+        );
       }
-    }
+      if (album.type !== "Album") {
+        throw new BadRequestError(`Selected musiclist must be album!`);
+      }
 
-    const playlistSongIds = await Promise.all(
-      addedMusicListIds.map(async (id) => {
-        const playlistSong = new PlaylistSong({
-          song: id,
-          dateAdded: Date.now(),
+      const musiclist = await MusicList.findById(id);
+      if (!musiclist) {
+        throw new BadRequestError(`Musiclist with id ${id} is not found!`);
+      }
+
+      const addedMusicListIds = [];
+      for (const song of album.songs) {
+        const checkSongExisted = await MusicList.findById(id).populate({
+          path: "songs",
+          match: { song },
         });
-        playlistSong.save();
-        if (!playlistSong) {
-          throw new BadRequestError("Add song unsuccessfully!");
+        if (!checkSongExisted.songs[0]) {
+          addedMusicListIds.push(song);
         }
-        return playlistSong._id;
-      })
-    );
+      }
 
-    const updatedMusiclist = await MusicList.findByIdAndUpdate(
-      id,
-      {
-        $addToSet: {
-          songs: playlistSongIds,
+      const playlistSongIds = await Promise.all(
+        addedMusicListIds.map(async (id) => {
+          const playlistSong = new PlaylistSong({
+            song: id,
+            dateAdded: Date.now(),
+          });
+          playlistSong.save();
+          if (!playlistSong) {
+            throw new BadRequestError("Add song unsuccessfully!");
+          }
+          return playlistSong._id;
+        })
+      );
+
+      const updatedMusiclist = await MusicList.findByIdAndUpdate(
+        id,
+        {
+          $addToSet: {
+            songs: playlistSongIds,
+          },
         },
-      },
+        { new: true }
+      );
+      return updatedMusiclist;
+    });
+  }
+
+  async updateMusicList({ name, description, file = {}, id }) {
+    const dateTime = Date.now();
+    if (file.mimetype && file.buffer) {
+      const storageRef = ref(storage, `${this.type.toLowerCase()}/${dateTime}`);
+      // Create file metadata including the content type
+      const metadata = {
+        contentType: file.mimetype,
+      };
+
+      const snapshot = await uploadBytesResumable(
+        storageRef,
+        file.buffer,
+        metadata
+      );
+
+      const downloadURL = await getDownloadURL(snapshot.ref);
+      this.imageURL = downloadURL;
+    }
+    return await MusicList.findByIdAndUpdate(
+      id,
+      removeUndefinedInObject({
+        name,
+        description,
+        imageURL: this.imageURL,
+      }),
       { new: true }
     );
-
-    await session.commitTransaction();
-    session.endSession();
-
-    return updatedMusiclist;
   }
 }
 

@@ -19,7 +19,6 @@ export default function Album() {
     const getAlbumFunc = async () => {
       try {
         const res = await getAlbumById(params.id);
-        console.log(res);
         setAlbum(res.data.metadata.album);
         setSongs(res.data.metadata.album.songs);
       } catch (err) {
@@ -90,7 +89,7 @@ export default function Album() {
       >
         <div className="mx-8 mb-3 text-[#FFFFFF] font-bold text-[24px] flex justify-between items-center">
           <h2 className="cursor-pointer hover:underline">
-            More of {album?.musiclist_attributes?.singers[0].name}
+            More of {album?.musiclist_attributes?.singers[0]?.name}
           </h2>
           <div className="text-[#B3B3B3] text-[14px] cursor-pointer hover:underline">
             See discography

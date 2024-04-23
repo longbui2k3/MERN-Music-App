@@ -8,6 +8,10 @@ import MusicPlayer from "./MusicPlayer";
 import { styled } from "styled-components";
 import { useResizeDetector } from "react-resize-detector";
 import Footer from "./Footer";
+import EditPlaylist from "./EditPlaylist";
+import { useDispatch, useSelector } from "react-redux";
+import EditSection from "./adminRole/EditSection";
+import AddListsToSection from "./adminRole/AddListsToSection";
 const Container = styled.div`
   position: relative;
   display: grid;
@@ -80,8 +84,22 @@ function PageHome({ children }) {
       setResizeStyle(false);
     }
   }, [width]);
+  const editPlaylist = useSelector((state) => state.editForm.editPlaylist);
+  const editSection = useSelector((state) => state.editForm.editSection);
+  const addListsToSection = useSelector(
+    (state) => state.editForm.addListsToSection
+  );
   return (
     <Container>
+      {editPlaylist ? (
+        <EditPlaylist />
+      ) : editSection ? (
+        <EditSection />
+      ) : addListsToSection ? (
+        <AddListsToSection />
+      ) : (
+        ""
+      )}
       <div className="app-container h-full">
         <div
           ref={sidebarRef}

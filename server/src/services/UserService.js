@@ -3,6 +3,7 @@
 const { Types } = require("mongoose");
 const { BadRequestError, AuthFailureError } = require("../core/errorResponse");
 const User = require("../models/userModel");
+const { removeUndefinedInObject } = require("../utils");
 
 class UserService {
   getUserById = async ({ id }) => {
@@ -31,7 +32,7 @@ class UserService {
     if (!user) {
       throw new BadRequestError("Invalid ID!");
     }
-    user["items"] = [...user["musicLists"], ...user["singers"]];
+    user["items"] = [...(user["musicLists"] || []), ...(user["singers"] || [])];
     return user;
   };
   addFavoriteMusicList = async ({ user, musicListId }) => {
@@ -230,26 +231,44 @@ class UserService {
     return types.includes(musiclist_type) ? musiclists : user[0].musicLists;
   };
   getItemsByUserId = async ({ userId, type, search }) => {
-    const user = await User.aggregate([
+    let user = await User.findById(userId);
+    if (!user) {
+      throw new BadRequestError(`User with id: ${userId} not found`);
+    }
+    const agg = [
       {
         $match: {
           _id: new Types.ObjectId(userId),
         },
       },
-      { $unwind: "$singers" },
-      {
+    ];
+    if (user.singers.length !== 0) {
+      agg.push({ $unwind: "$singers" });
+      agg.push({
+        $addFields: {
+          "singers.type": "singers",
+        },
+      });
+      agg.push({
         $lookup: {
           from: "singers",
           localField: "singers.singer",
           foreignField: "_id",
           as: "singers.singer",
         },
-      },
-      { $unwind: "$singers.singer" },
-      {
+      });
+      agg.push({ $unwind: "$singers.singer" });
+    }
+    if (user.musicLists.length !== 0) {
+      agg.push({
         $unwind: "$musicLists", // Unwind the musicLists array
-      },
-      {
+      });
+      agg.push({
+        $addFields: {
+          "musicLists.type": "musicLists",
+        },
+      });
+      agg.push({
         $lookup: {
           from: "musiclists",
           localField: "musicLists.musicList",
@@ -352,29 +371,63 @@ class UserService {
           ],
           as: "musicLists.musicList",
         },
-      },
-      {
+      });
+      agg.push({
         $unwind: "$musicLists.musicList",
-      },
-      {
-        $group: {
-          _id: "$_id",
-          musicLists: { $addToSet: "$musicLists" },
-          singers: { $addToSet: "$singers" },
-        },
-      },
-      {
-        $project: {
-          items: { $concatArrays: ["$musicLists", "$singers"] },
-        },
-      },
-    ]);
-    if (!user) {
-      throw new BadRequestError(`User with id: ${userId} not found`);
+      });
     }
+    if (user.folders.length !== 0) {
+      agg.push({
+        $unwind: "$folders",
+      });
 
-    // if (musiclist_type === "")
+      agg.push({
+        $lookup: {
+          from: "folders",
+          localField: "folders",
+          foreignField: "_id",
+          as: "folders",
+        },
+      });
+      agg.push({
+        $addFields: {
+          "folders.type": "folders",
+        },
+      });
+      agg.push({
+        $unwind: "$folders",
+      });
+    }
+    agg.push({
+      $group: removeUndefinedInObject({
+        _id: "$_id",
+        musicLists:
+          user.musicLists.length !== 0
+            ? { $addToSet: "$musicLists" }
+            : undefined,
+        singers:
+          user.singers.length !== 0 ? { $addToSet: "$singers" } : undefined,
+        folders:
+          user.folders.length !== 0 ? { $addToSet: "$folders" } : undefined,
+      }),
+    });
+    const concatArrays = [];
+    if (user.musicLists.length) {
+      concatArrays.push("$musicLists");
+    }
+    if (user.singers.length) {
+      concatArrays.push("$singers");
+    }
+    if (user.folders.length) {
+      concatArrays.push("$folders");
+    }
+    agg.push({
+      $project: {
+        items: { $concatArrays: concatArrays },
+      },
+    });
 
+    user = await User.aggregate(agg);
     const types = ["Album", "Playlist"];
     if (!user[0]) return [];
     const items = user[0].items.filter(
@@ -384,7 +437,9 @@ class UserService {
     if (type === "Artist") {
       return user[0].items.filter((item) => item.singer);
     }
-    return types.includes(type) ? items : user[0].items;
+    return types.includes(type)
+      ? items
+      : user[0].items.sort((a, b) => (a.dateAdded > b.dateAdded ? -1 : 1));
   };
 
   followSinger = async ({ user, singerId }) => {

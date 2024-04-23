@@ -21,13 +21,14 @@ export {
   followSinger,
   unfollowSinger,
 } from "./UserAPI";
-export { searchGenres } from "./GenreAPI";
+export { searchGenres, getGenres, getGenre } from "./GenreAPI";
 export {
   getAllPlaylists,
   getPlaylist,
   createPlaylist,
   addSongToPlaylist,
-  addSongsToPlaylist
+  addSongsToPlaylist,
+  updatePlaylist,
 } from "./PlaylistAPI";
 export { createAlbum, getAlbumById, getAllAlbums } from "./AlbumAPI";
 export {
@@ -35,3 +36,5 @@ export {
   addSongToLikedSongs,
   removeSongFromLikedSongs,
 } from "./LikedSongsAPI";
+export { searchLists } from "./SearchAPI";
+export { getChildOfFolder, createFolder } from "./FolderAPI";

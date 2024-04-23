@@ -1,7 +1,7 @@
 const express = require("express");
 const SectionController = require("../controllers/SectionController");
 const asyncHandler = require("../helpers/asyncHandler");
-const { protect } = require("../auth/authUtils");
+const { protect, restrictTo } = require("../auth/authUtils");
 
 const router = express.Router();
 
@@ -18,4 +18,8 @@ router
   .patch(asyncHandler(SectionController.updateSection))
   .delete(asyncHandler(SectionController.deleteSection));
 
+router
+  .route("/musiclist")
+  .post(asyncHandler(SectionController.addMusiclistToLists));
+router.route("/singer").post(asyncHandler(SectionController.addSingerToLists));
 module.exports = router;

@@ -63,5 +63,29 @@ class SectionController {
       },
     }).send(res);
   };
+  static addMusiclistToLists = async (req, res, next) => {
+    const section = await SectionService.addMusiclistToLists({
+      musiclist_id: req.body.musiclist,
+      section_id: req.body.section,
+    });
+    new OK({
+      message: "Add musiclist to section successfully!",
+      metadata: {
+        section,
+      },
+    }).send(res);
+  };
+  static addSingerToLists = async (req, res, next) => {
+    const section = await SectionService.addSingerToLists({
+      singer_id: req.body.singer,
+      section_id: req.body.section,
+    });
+    new OK({
+      message: "Add singer to section successfully!",
+      metadata: {
+        section,
+      },
+    }).send(res);
+  };
 }
 module.exports = SectionController;

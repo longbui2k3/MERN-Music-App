@@ -16,6 +16,7 @@ router
   .post(asyncHandler(PlaylistController.addSongToMusicList));
 router
   .route("/")
-  .post(upload.single("image"), asyncHandler(PlaylistController.createPlaylist));
+  .post(upload.single("image"), asyncHandler(PlaylistController.createPlaylist))
+  .patch(upload.single("image"), asyncHandler(PlaylistController.updateMusicList));
 
 module.exports = router;

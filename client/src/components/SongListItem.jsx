@@ -12,11 +12,22 @@ export default function SongListItem({ musicList }) {
   useEffect(() => {
     try {
       const getSingers = async () => {
-        for (let i = 0; i < musicList.musiclist_attributes.singers.length; i++) {
-          const singerData = await SingerAPI.getSingerById(
-            musicList.musiclist_attributes.singers[i]
-          );
-          setArtists((preData) => [...preData, singerData.data.metadata.singer.name]);
+        if (musicList.type === "Album") {
+          for (
+            let i = 0;
+            i < musicList.musiclist_attributes.singers.length;
+            i++
+          ) {
+            const singerData = await SingerAPI.getSingerById(
+              musicList.musiclist_attributes.singers[i]
+            );
+            setArtists((preData) => [
+              ...preData,
+              singerData.data.metadata.singer.name,
+            ]);
+          }
+        } else if (musicList.type === "Playlist") {
+          setArtists(["Spotifree"]);
         }
       };
 
@@ -35,7 +46,8 @@ export default function SongListItem({ musicList }) {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => {
-        navigatePage(`/album/${musicList._id}`);
+        if (musicList.type === "Album") navigatePage(`/album/${musicList._id}`);
+        else navigatePage(`/playlist/${musicList._id}`);
       }}
     >
       <div

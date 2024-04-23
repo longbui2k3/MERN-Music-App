@@ -29,7 +29,7 @@ const BodyArtist = () => {
           types.map(function (type) {
             return {
               title: type,
-              musicLists: res.data.metadata.singer.musicLists
+              lists: res.data.metadata.singer.musicLists
                 ?.slice(0, 9)
                 .filter((musicList) => musicList.type === type),
               create: true,

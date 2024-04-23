@@ -30,6 +30,7 @@ import { getUser, getItemsByUserId } from "../api";
 import { NavigateAuth } from "../context/NavigateContext";
 import { useSelector } from "react-redux";
 import { dateDistance } from "../config";
+import Folder from "./Folder";
 function useOutsideComponents(
   searchRef,
   createBtnRef,
@@ -154,6 +155,7 @@ const Library = () => {
           search: inputSearch,
         });
         if (res.data.status === 200) {
+          // console.log(res.data.metadata.items);
           setItems(res.data.metadata.items);
         }
       } catch (err) {
@@ -189,7 +191,6 @@ const Library = () => {
     const getItemsByUser = async () => {
       try {
         const res = await getUser();
-        console.log(res.data.metadata.user);
         if (res.data.status === 200) {
           const items = res.data.metadata.user.items;
           setItems(items);
@@ -223,7 +224,8 @@ const Library = () => {
   }, [items]);
 
   const { navigatePage } = NavigateAuth();
-
+  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [selectedChilds, setSelectedChilds] = useState([]);
   return (
     <div
       className={`h-full flex flex-col`}
@@ -240,6 +242,9 @@ const Library = () => {
           text2="Create folder"
           items={items}
           setItems={setItems}
+          parentFolder={selectedFolder}
+          setSelectedChilds={setSelectedChilds}
+          setSelectedFolder={setSelectedFolder}
         />
       ) : (
         ""
@@ -252,6 +257,9 @@ const Library = () => {
           text2="Create a new folder"
           items={items}
           setItems={setItems}
+          parentFolder={selectedFolder}
+          setSelectedChilds={setSelectedChilds}
+          setSelectedFolder={setSelectedFolder}
         />
       ) : (
         ""
@@ -471,10 +479,10 @@ const Library = () => {
                 resizeStyle === "3" && viewAs !== "Grid" ? "" : "hidden"
               }`}
             >
-              <ul className="flex font-semibold text-[13px]">
-                <li className="basis-[50%]">Title</li>
-                <li className="basis-[40%]">Date Added</li>
-                <li className="basis-[10%]">Played</li>
+              <ul className="flex flex-row-reverse font-semibold text-[13px] me-2">
+                <li className="grow order-3 text-center">Title</li>
+                <li className="w-[150px] order-2">Date Added</li>
+                <li className="w-[150px] order-1 text-right">Played</li>
               </ul>
               <div className="mt-2 h-[1px] w-[100%] border-t-[1px] border-[rgb(40,40,40)]"></div>
             </div>
@@ -648,8 +656,8 @@ const Library = () => {
                   : ""}
               </div>
             ) : items ? (
-              items.map((item, i) =>
-                item.musicList ? (
+              items.map((item, i) => {
+                return item.type === "musicLists" ? (
                   <Tooltip
                     label={
                       <>
@@ -683,14 +691,16 @@ const Library = () => {
                         );
                       }}
                     >
-                      <div className="flex w-full">
+                      <div
+                        className={`flex ${
+                          resizeStyle === "3" ? "flex-row-reverse" : ""
+                        } w-full`}
+                      >
                         {viewAs === "List" || resizeStyle === "1" ? (
                           <div
-                            className={`flex ${
+                            className={`flex order-3 ${
                               resizeStyle === "1" ? "justify-center" : ""
-                            } w-full ${
-                              resizeStyle === "3" ? "basis-[50%]" : "grow"
-                            }`}
+                            } grow`}
                           >
                             <div
                               class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-md overflow-hidden"
@@ -724,6 +734,9 @@ const Library = () => {
                                   ? item.musicList.musiclist_attributes.singers
                                       ?.map((singer) => singer.name)
                                       .join(", ")
+                                  : item.musicList.musiclist_attributes?.user
+                                      .role === "admin"
+                                  ? "Spotifree"
                                   : item.musicList.musiclist_attributes?.user
                                       ._id}
                               </span>
@@ -759,23 +772,23 @@ const Library = () => {
                         )}
 
                         <div
-                          className={`my-auto w-[92px] basis-[22%] ${
-                            resizeStyle !== "3" ? "hidden" : ""
+                          className={`my-auto w-[150px] ${
+                            resizeStyle !== "3" ? "hidden" : "order-2"
                           }`}
                         >
                           {dateDistance(item.dateAdded)}
                         </div>
                         <div
-                          className={`my-auto w-[92px] basis-[26%] text-right ${
-                            resizeStyle !== "3" ? "hidden" : ""
-                          }`}
+                          className={`my-auto w-[150px] ${
+                            resizeStyle !== "3" ? "hidden" : "order-1"
+                          } text-right`}
                         >
                           {dateDistance(item.datePlayed)}
                         </div>
                       </div>
                     </div>
                   </Tooltip>
-                ) : (
+                ) : item.type === "singers" ? (
                   <Tooltip
                     label={
                       <>
@@ -802,14 +815,16 @@ const Library = () => {
                         navigatePage(`/artist/${item.singer._id}`);
                       }}
                     >
-                      <div className="flex w-full">
+                      <div
+                        className={`flex ${
+                          resizeStyle === "3" ? "flex-row-reverse" : ""
+                        } w-full`}
+                      >
                         {viewAs === "List" || resizeStyle === "1" ? (
                           <div
-                            className={`flex ${
+                            className={`order-3 flex items-center ${
                               resizeStyle === "1" ? "justify-center" : ""
-                            } w-full ${
-                              resizeStyle === "3" ? "basis-[50%]" : "grow"
-                            }`}
+                            } grow`}
                           >
                             <div
                               class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-[50%] overflow-hidden "
@@ -832,7 +847,7 @@ const Library = () => {
                               }}
                             >
                               <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
-                                {item.singer.name}
+                                {item?.singer?.name}
                               </span>
                               <span class="whitespace-nowrap overflow-hidden text-ellipsis">
                                 Artist
@@ -869,15 +884,15 @@ const Library = () => {
                         )}
 
                         <div
-                          className={`my-auto w-[92px] basis-[22%] ${
-                            resizeStyle !== "3" ? "hidden" : ""
+                          className={`my-auto w-[150px] ${
+                            resizeStyle !== "3" ? "hidden" : "order-2"
                           }`}
                         >
                           {dateDistance(item.dateAdded)}
                         </div>
                         <div
-                          className={`my-auto w-[92px] basis-[26%] text-right ${
-                            resizeStyle !== "3" ? "hidden" : ""
+                          className={`my-auto w-[150px] text-right ${
+                            resizeStyle !== "3" ? "hidden" : "order-1"
                           }`}
                         >
                           {dateDistance(item.datePlayed)}
@@ -885,8 +900,21 @@ const Library = () => {
                       </div>
                     </div>
                   </Tooltip>
-                )
-              )
+                ) : item.type === "folders" ? (
+                  <Folder
+                    item={item}
+                    resizeStyle={resizeStyle}
+                    viewAs={viewAs}
+                    listSongRef={listSongRef}
+                    level={1}
+                    setSelectedFolder={setSelectedFolder}
+                    selectedChilds={selectedChilds}
+                    setSelectedChilds={setSelectedChilds}
+                  />
+                ) : (
+                  ""
+                );
+              })
             ) : (
               ""
             )}

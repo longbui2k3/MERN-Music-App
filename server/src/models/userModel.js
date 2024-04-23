@@ -87,6 +87,10 @@ const userSchema = Schema(
       ],
       default: [],
     },
+    folders: {
+      type: [{ type: Schema.ObjectId, ref: DOCUMENT_NAME.FOLDER }],
+      default: [],
+    },
     singers: {
       type: [
         {

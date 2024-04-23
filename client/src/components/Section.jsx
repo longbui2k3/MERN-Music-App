@@ -4,20 +4,44 @@ import { GoPlus } from "react-icons/go";
 import { Tooltip } from "@chakra-ui/react";
 import { NavigateAuth } from "../context/NavigateContext";
 import ArtistItem from "./ArtistItem";
-
+import { FiEdit } from "react-icons/fi";
+import { useDispatch } from "react-redux";
+import {
+  openAddListsToSection,
+  openEditFormSection,
+  setSection,
+} from "../features/editForm/editFormSlice";
 export default function Section({ section }) {
   const { navigatePage } = NavigateAuth();
+  const dispatch = useDispatch();
   return (
     <section aria-label={section.title}>
       <div className="text-[#FFFFFF] font-bold text-[24px] flex justify-between items-center">
-        <h2
-          className="cursor-pointer hover:underline"
-          onClick={function (e) {
-            navigatePage(`/section/${section._id}`);
-          }}
-        >
-          {section.title}
-        </h2>
+        <div className="flex">
+          <h2
+            className="cursor-pointer hover:underline"
+            onClick={function (e) {
+              navigatePage(`/section/${section._id}`);
+            }}
+          >
+            {section.title}
+          </h2>
+          {section.edit ? (
+            <div
+              className="flex flex-col justify-center mx-4"
+              onClick={function (e) {
+                dispatch(openEditFormSection());
+                dispatch(setSection(section));
+              }}
+            >
+              <FiEdit
+                className="text-[20px] text-white" // style={{}}
+              />
+            </div>
+          ) : (
+            ""
+          )}
+        </div>
         <div
           className="text-[#B3B3B3] text-[14px] cursor-pointer hover:underline"
           onClick={function (e) {
@@ -43,7 +67,10 @@ export default function Section({ section }) {
               <div
                 className="flex flex-col justify-center hover:scale-[1.05] bg-[rgb(35,35,35)] hover:text-white rounded-full p-1 w-[100px] h-[100px] mx-auto"
                 onClick={function (e) {
-                  navigatePage("/createAlbum");
+                  if (section.type === "section") {
+                    dispatch(setSection(section))
+                    dispatch(openAddListsToSection());
+                  } else navigatePage("/createAlbum");
                 }}
               >
                 <GoPlus
