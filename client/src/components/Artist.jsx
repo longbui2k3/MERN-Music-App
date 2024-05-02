@@ -45,14 +45,14 @@ export default function Artist() {
                   <SongItem key={song._id} song={song} index={index} />
                 ))
               : showAll
-              ? songs
+              ? songs.map((song, index) => (
+                  <SongItem key={song._id} song={song} index={index} />
+                ))
+              : songs
                   .slice(0, 5)
                   .map((song, index) => (
                     <SongItem key={song._id} song={song} index={index} />
-                  ))
-              : songs.map((song, index) => (
-                  <SongItem key={song._id} song={song} index={index} />
-                ))}
+                  ))}
             {songs.length > 5 && (
               <button
                 className="w-16 text-1xl font-bold hover:text-white"

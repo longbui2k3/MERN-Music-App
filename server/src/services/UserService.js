@@ -4,6 +4,7 @@ const { Types } = require("mongoose");
 const { BadRequestError, AuthFailureError } = require("../core/errorResponse");
 const User = require("../models/userModel");
 const { removeUndefinedInObject } = require("../utils");
+const Singer = require("../models/singerModel");
 
 class UserService {
   getUserById = async ({ id }) => {
@@ -501,6 +502,45 @@ class UserService {
       throw new FailedDependencyError("Something error!");
     }
     return updatedUser;
+  };
+
+  getNewInfoFromFollowSinger = async ({ userId }) => {
+    // get all followed singers
+    const userHasFollowedSingers = await User.findOne({
+      _id: userId,
+      singers: { $exists: true, $not: { $size: 0 } },
+    }).populate("singers.singer");
+
+    if (!userHasFollowedSingers) {
+      throw new BadRequestError(
+        "User is not found or does not follow any singers"
+      );
+    }
+
+    //get new info
+    var newInfoList = [];
+    await Promise.all(
+      userHasFollowedSingers.singers.map(async (singer) => {
+        let singerSongs = await singer.singer.populate("songs");
+        let songs = singerSongs.songs;
+        let mergedSongs = [].concat.apply([], songs);
+
+        const currentDate = new Date();
+        const oneMonthAgoDate = new Date();
+        oneMonthAgoDate.setMonth(oneMonthAgoDate.getMonth() - 1);
+
+        const songsInMonth = mergedSongs.filter((item) => {
+          return (
+            item.releasedDate &&
+            new Date(item.releasedDate) >= oneMonthAgoDate &&
+            new Date(item.releasedDate) <= currentDate
+          );
+        });
+        newInfoList.push(...songsInMonth);
+      })
+    );
+
+    return newInfoList.sort((a, b) => b.releasedDate - a.releasedDate);
   };
 }
 

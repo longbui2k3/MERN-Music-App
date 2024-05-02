@@ -418,6 +418,7 @@ const Library = () => {
                 >
                   {types.map((type, i) => (
                     <SwiperSlide
+                      key={i}
                       className="swiper__slide bg-[rgb(35,35,35)] py-1 px-3 text-white text-center text-[14px] font-semibold rounded-[10px] hover:bg-[rgb(50,50,50)] cursor-pointer"
                       style={{
                         width: "fit-content",
@@ -590,12 +591,13 @@ const Library = () => {
                   ? items.map((item, i) =>
                       item.musicList ? (
                         <Tooltip
+                          key={i}
                           label={
                             <>
-                              <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                              <div className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                                 {item.musicList.name}
                               </div>
-                              <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                              <div className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
                                 {item.musicList.type} •{" "}
                                 {item.musicList.songs.length} songs
                               </div>
@@ -622,12 +624,13 @@ const Library = () => {
                         </Tooltip>
                       ) : (
                         <Tooltip
+                          key={i}
                           label={
                             <>
-                              <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                              <div className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                                 {item.singer.name}
                               </div>
-                              <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                              <div className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
                                 Artist
                               </div>
                             </>
@@ -659,12 +662,13 @@ const Library = () => {
               items.map((item, i) => {
                 return item.type === "musicLists" ? (
                   <Tooltip
+                    key={i}
                     label={
                       <>
-                        <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                        <div className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                           {item?.musicList?.name}
                         </div>
-                        <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                        <div className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
                           {item.musicList?.type} •{" "}
                           {item.musicList?.songs.length} songs
                         </div>
@@ -675,7 +679,7 @@ const Library = () => {
                     isDisabled={resizeStyle === "1" ? false : true}
                   >
                     <div
-                      class={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
+                      className={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
                         item.musicList?._id ===
                         window.location.pathname.split("/")[2]
                           ? "rgb(35,35,35)"
@@ -703,7 +707,7 @@ const Library = () => {
                             } grow`}
                           >
                             <div
-                              class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-md overflow-hidden"
+                              className="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-md overflow-hidden"
                               ref={listSongRef}
                             >
                               {item?.musicList?.imageURL ? (
@@ -716,7 +720,7 @@ const Library = () => {
                               )}
                             </div>
                             <div
-                              class={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
+                              className={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
                                 resizeStyle === "1" ? "hidden" : ""
                               }`}
                               style={{
@@ -725,10 +729,10 @@ const Library = () => {
                                 }`,
                               }}
                             >
-                              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis text-white">
                                 {item.musicList.name}
                               </span>
-                              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                                 {item.musicList.type} •{" "}
                                 {item.musicList.type === "Album"
                                   ? item.musicList.musiclist_attributes.singers
@@ -750,7 +754,7 @@ const Library = () => {
                             }`}
                           >
                             <div
-                              class={`listsong-info grow flex overflow-hidden ${
+                              className={`listsong-info grow flex overflow-hidden ${
                                 resizeStyle === "1" ? "hidden" : ""
                               }`}
                               style={{
@@ -759,10 +763,10 @@ const Library = () => {
                                 }`,
                               }}
                             >
-                              <span class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                                 {item.musicList.name}
                               </span>
-                              <span class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
                                 • {item.musicList.type}
                               </span>
                             </div>
@@ -790,12 +794,13 @@ const Library = () => {
                   </Tooltip>
                 ) : item.type === "singers" ? (
                   <Tooltip
+                    key={i}
                     label={
                       <>
-                        <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                        <div className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                           {item?.singer?.name}
                         </div>
-                        <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+                        <div className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
                           Artist
                         </div>
                       </>
@@ -805,7 +810,7 @@ const Library = () => {
                     isDisabled={resizeStyle === "1" ? false : true}
                   >
                     <div
-                      class={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
+                      className={`gap-2 p-2 overflow-hidden cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] bg-[${
                         item.singer?._id ===
                         window.location.pathname.split("/")[2]
                           ? "rgb(35,35,35)"
@@ -827,7 +832,7 @@ const Library = () => {
                             } grow`}
                           >
                             <div
-                              class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-[50%] overflow-hidden "
+                              className="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] rounded-[50%] overflow-hidden "
                               ref={listSongRef}
                             >
                               {item?.singer?.imageURL ? (
@@ -837,7 +842,7 @@ const Library = () => {
                               )}
                             </div>
                             <div
-                              class={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
+                              className={`listsong-info ms-3 grow flex flex-col overflow-hidden ${
                                 resizeStyle === "1" ? "hidden" : ""
                               }`}
                               style={{
@@ -846,10 +851,10 @@ const Library = () => {
                                 }`,
                               }}
                             >
-                              <span class="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis text-white">
                                 {item?.singer?.name}
                               </span>
-                              <span class="whitespace-nowrap overflow-hidden text-ellipsis">
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis">
                                 Artist
                               </span>
                             </div>
@@ -862,7 +867,7 @@ const Library = () => {
                             }`}
                           >
                             <div
-                              class={`listsong-info grow flex overflow-hidden ${
+                              className={`listsong-info grow flex overflow-hidden ${
                                 resizeStyle === "1" ? "hidden" : ""
                               }`}
                               style={{
@@ -871,10 +876,10 @@ const Library = () => {
                                 }`,
                               }}
                             >
-                              <span class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                                 {item.singer.name}
                               </span>
-                              <span class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
+                              <span className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
                                 • Artist
                               </span>
                             </div>
