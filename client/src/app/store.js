@@ -5,6 +5,7 @@ import navigateReducer from "../features/navigate/navigateSlice";
 import userReducer from "../features/user/userSlice";
 import editFormSlice from "../features/editForm/editFormSlice";
 import updateSlice from "../features/update/updateSlice";
+import queueSlice from "../features/queue/queueSlice";
 export default configureStore({
   reducer: {
     signUp: signUpReducer,
@@ -13,5 +14,6 @@ export default configureStore({
     user: userReducer,
     editForm: editFormSlice,
     update: updateSlice,
+    queue: queueSlice,
   },
 });

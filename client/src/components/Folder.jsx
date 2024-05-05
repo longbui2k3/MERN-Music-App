@@ -43,9 +43,8 @@ export default function Folder({
   const textRef = useRef();
   useEffect(() => {
     const spanNames = document.querySelectorAll(".span-name");
-    const listsonginfo = document.querySelector(".listsong-info");
     spanNames.forEach((spanName) => {
-      const width = textRef.current.offsetWidth - 100;
+      const width = textRef.current.offsetWidth - 70;
       spanName.style.width = `${width}px`;
     });
   }, [textRef.current?.offsetWidth]);

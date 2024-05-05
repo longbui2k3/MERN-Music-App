@@ -43,15 +43,26 @@ const Container = styled.div`
 `;
 function PageHome({ children }) {
   const sidebarRef = useRef(null);
+  const sidebarRef2 = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
+  const [isResizing2, setIsResizing2] = useState(false);
   const [sidebarWidth, setSidebarWidth] = useState(360);
-
+  const [sidebarWidth2, setSidebarWidth2] = useState(350);
+  const isOpenQueue = useSelector((state) => state.queue.isOpenQueue);
   const startResizing = React.useCallback((mouseDownEvent) => {
     setIsResizing(true);
   }, []);
 
+  const startResizing2 = React.useCallback((mouseDownEvent) => {
+    setIsResizing2(true);
+  }, []);
+
   const stopResizing = React.useCallback(() => {
     setIsResizing(false);
+  }, []);
+
+  const stopResizing2 = React.useCallback(() => {
+    setIsResizing2(false);
   }, []);
 
   const resize = React.useCallback(
@@ -65,6 +76,18 @@ function PageHome({ children }) {
     },
     [isResizing]
   );
+  const appContainerRef = useRef();
+  const resize2 = React.useCallback(
+    (mouseMoveEvent) => {
+      if (isResizing2) {
+        const value =
+          appContainerRef.current.getBoundingClientRect().width -
+          mouseMoveEvent.clientX;
+        setSidebarWidth2(value);
+      }
+    },
+    [isResizing2]
+  );
 
   React.useEffect(() => {
     window.addEventListener("mousemove", resize);
@@ -75,8 +98,19 @@ function PageHome({ children }) {
     };
   }, [resize, stopResizing]);
 
+  React.useEffect(() => {
+    window.addEventListener("mousemove", resize2);
+    window.addEventListener("mouseup", stopResizing2);
+    return () => {
+      window.removeEventListener("mousemove", resize2);
+      window.removeEventListener("mouseup", stopResizing2);
+    };
+  }, [resize2, stopResizing2]);
+
   const { width, height, ref } = useResizeDetector();
+  const { width2, height2, ref2 } = useResizeDetector();
   const [resizeStyle, setResizeStyle] = useState(false);
+  const [resizeStyle2, setResizeStyle2] = useState(false);
   useEffect(() => {
     if (width < 223) {
       setResizeStyle(true);
@@ -84,6 +118,13 @@ function PageHome({ children }) {
       setResizeStyle(false);
     }
   }, [width]);
+  useEffect(() => {
+    if (width2 < 300) {
+      setResizeStyle2(true);
+    } else {
+      setResizeStyle2(false);
+    }
+  }, [width2]);
   const editPlaylist = useSelector((state) => state.editForm.editPlaylist);
   const editSection = useSelector((state) => state.editForm.editSection);
   const addListsToSection = useSelector(
@@ -100,7 +141,7 @@ function PageHome({ children }) {
       ) : (
         ""
       )}
-      <div className="app-container h-full">
+      <div className="app-container h-full" ref={appContainerRef}>
         <div
           ref={sidebarRef}
           className={"app-sidebar w-[360px]"}
@@ -126,6 +167,22 @@ function PageHome({ children }) {
             </div>
           </div>
         </div>
+
+        {isOpenQueue ? (
+          <div
+            ref={sidebarRef2}
+            className={"app-sidebar2 bg-[#121212] ms-[8px]"}
+            style={{ width: sidebarWidth2 }}
+          >
+            <div
+              className={"app-sidebar-resizer2"}
+              onMouseDown={startResizing2}
+            />
+            <div className={"app-sidebar-content"}></div>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
       <div className="footer">
         <MusicPlayer />

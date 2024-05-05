@@ -224,7 +224,7 @@ const Library = () => {
   }, [items]);
 
   const { navigatePage } = NavigateAuth();
-  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [selectedChilds, setSelectedChilds] = useState([]);
   return (
     <div
@@ -242,9 +242,9 @@ const Library = () => {
           text2="Create folder"
           items={items}
           setItems={setItems}
-          parentFolder={selectedFolder}
+          parentFolder={selectedItem}
           setSelectedChilds={setSelectedChilds}
-          setSelectedFolder={setSelectedFolder}
+          setSelectedFolder={setSelectedItem}
         />
       ) : (
         ""
@@ -257,9 +257,9 @@ const Library = () => {
           text2="Create a new folder"
           items={items}
           setItems={setItems}
-          parentFolder={selectedFolder}
+          parentFolder={selectedItem}
           setSelectedChilds={setSelectedChilds}
-          setSelectedFolder={setSelectedFolder}
+          setSelectedFolder={setSelectedItem}
         />
       ) : (
         ""
@@ -907,9 +907,9 @@ const Library = () => {
                     viewAs={viewAs}
                     listSongRef={listSongRef}
                     level={1}
-                    setSelectedFolder={setSelectedFolder}
+                    setSelectedFolder={setSelectedItem}
                     selectedChilds={selectedChilds}
-                    setSelectedChilds={setSelectedChilds}
+                    setSelectedChilds={setSelectedItem}
                   />
                 ) : (
                   ""

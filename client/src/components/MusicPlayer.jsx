@@ -55,7 +55,7 @@ const MusicPlayer = () => {
           setDuration={setDuration}
         />
       </div>
-      <div className="w-1/3 flex justify-center items-center">
+      <div className="w-1/3 flex justify-center gap-2 items-center">
         <OtherControls audioRef={audioRef} />
       </div>
     </div>

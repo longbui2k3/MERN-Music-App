@@ -11,6 +11,19 @@
   flex-shrink: 0;
   min-width: 93px;
   max-width: 1000px;
+  /* max-width: 550px; */
+  display: flex;
+  flex-direction: row;
+  box-shadow: -8px 2px 22px -7px rgba(0, 0, 0, 0.25);
+  border-radius: 10px 0px 0px 10px;
+  z-index: 100;
+}
+
+.app-sidebar2 {
+  flex-grow: 0;
+  flex-shrink: 0;
+  min-width: 250px;
+  max-width: 450px;
   display: flex;
   flex-direction: row;
   box-shadow: -8px 2px 22px -7px rgba(0, 0, 0, 0.25);
@@ -44,5 +57,24 @@
 }
 
 .app-sidebar .app-sidebar-resizer:hover {
+  width: 0px;
+}
+
+.app-sidebar2 .app-sidebar-content {
+  flex: 1;
+  overflow: hidden;
+}
+
+.app-sidebar2 .app-sidebar-resizer2 {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 6px;
+  justify-self: flex-start;
+  cursor: col-resize;
+  resize: horizontal;
+  margin-right: 8px;
+}
+
+.app-sidebar2 .app-sidebar-resizer2:hover {
   width: 0px;
 }

@@ -7,7 +7,6 @@ import {
   getUser,
 } from "../api";
 import { NavigateAuth } from "../context/NavigateContext";
-import { useEffect } from "react";
 
 export default function VerticalNavigateCreateLibrary({
   leftPos,
