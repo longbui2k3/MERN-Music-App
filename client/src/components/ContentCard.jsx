@@ -3,8 +3,12 @@ import { MdOutlinePlayCircleFilled } from "react-icons/md";
 import { GoPlusCircle } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 import { MdPauseCircleFilled } from "react-icons/md";
+import { calculateDate } from "../utils/Date";
+import { NavigateAuth } from "../context/NavigateContext";
+import { Link } from "react-router-dom";
 
-export default function ContentCard() {
+export default function ContentCard({ song }) {
+  const { navigatePage } = NavigateAuth();
   const [playClick, setPlayClick] = useState(false);
 
   const handlePlayClick = () => {
@@ -16,27 +20,31 @@ export default function ContentCard() {
   const handleMoreClick = () => {};
   return (
     <>
-      <div className="grid grid-cols-4 lg:w-[40%] md:w-[100%] gap-3">
-        <div>
-          <img
-            alt="Dùng hết xuân thì để chờ nhau"
-            src="https://i.scdn.co/image/ab67616d0000b273b315e8bb7ef5e57e9a25bb0f"
-          />
+      <div
+        className={`flex flex-row h-[212px] min-w-[550px] md:w-[40%] sm:w-full  gap-3 border-b-[1px] cursor-pointer border-slate-600 hover:border-none hover:bg-zinc-900`}
+      >
+        <div
+          className="container h-2/3 w-1/4 text-center rounded"
+          onClick={function (e) {
+            navigatePage(`/playlist/${song._id}`);
+          }}
+        >
+          <img alt={song.name} src={song.imageURL} className="w-full h-full" />
         </div>
-        <div className="col-span-3">
+        <div className="w-3/4">
           <div>
-            <p className="text-white text-1xl font-bold pb-2">
-              <a href="#">Dành hết xuân thì để chờ nhau</a>
+            <p className="text-white text-1xl font-bold py-2 hover:underline decoration-solid">
+              <Link to={`/playlist/${song._id}`}>{song.name}</Link>
             </p>
-            <p>
-              <a href="#">Vũ</a>, <a href="#">Hà Anh Tuấn</a>
-            </p>
+            {song.writtenBy && (
+              <p className="hover:text-white">{song.writtenBy}</p>
+            )}
           </div>
-          <div className="text-white text-1xl font-bold pb-3 mt-2">
-            <span>Đĩa đơn * 3 tuần trước</span>
+          <div className="text-white text-1xl font-bold py-3 mt-2">
+            <span>Đĩa đơn - {calculateDate(song.releasedDate)} ngày trước</span>
           </div>
-          <div className="mt-3">
-            <div className="flex justify-between items-center h-16">
+          <div className="mt-5">
+            <div className="flex justify-between items-center">
               <div>
                 <button onClick={handleAddClick}>
                   <GoPlusCircle size={35} />
@@ -45,7 +53,7 @@ export default function ContentCard() {
                   <IoIosMore size={32} />
                 </button>
               </div>
-              <div>
+              <div className="mr-[5px]">
                 <button onClick={handlePlayClick}>
                   {!playClick ? (
                     <MdOutlinePlayCircleFilled size={40} color="white" />
@@ -58,7 +66,6 @@ export default function ContentCard() {
           </div>
         </div>
       </div>
-      <hr className="lg:w-[40%] md:w-[100%] border-t-2 border-gray-500 mt-3" />
     </>
   );
 }

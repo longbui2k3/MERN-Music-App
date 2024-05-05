@@ -90,5 +90,17 @@ class UserController {
       },
     }).send(res);
   };
+  static getNewInfoFromFollowedSingers = async (req, res, next) => {
+    const newInfo = await UserService.getNewInfoFromFollowSinger({
+      userId: req.user.id,
+    });
+
+    new OK({
+      message: "Get new info of followed singers successfully",
+      metadata: {
+        newInfo,
+      },
+    }).send(res);
+  };
 }
 module.exports = UserController;

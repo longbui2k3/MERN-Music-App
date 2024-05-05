@@ -31,10 +31,7 @@ export const getMusicListsByUserId = async ({
   return res;
 };
 
-export const getItemsByUserId = async ({
-  type = "",
-  search = "",
-}) => {
+export const getItemsByUserId = async ({ type = "", search = "" }) => {
   const res = await axios.get(
     `http://localhost:4000/api/v1/user/items?type=${type}&search=${search}`
   );
@@ -54,5 +51,11 @@ export const unfollowSinger = async (singer) => {
     `http://localhost:4000/api/v1/user/follow/${singer}`
   );
 
+  return res;
+};
+
+export const getNewInfoFromFollowedSingers = async () => {
+  const res = await axios.get("http://localhost:4000/api/v1/user/newInfo");
+  console.log(res);
   return res;
 };

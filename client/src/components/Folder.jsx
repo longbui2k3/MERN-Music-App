@@ -53,10 +53,10 @@ export default function Folder({
       <Tooltip
         label={
           <>
-            <div class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+            <div className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
               {item?.name}
             </div>
-            <div class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
+            <div className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
               0 playlists
             </div>
           </>
@@ -66,7 +66,7 @@ export default function Folder({
         isDisabled={resizeStyle === "1" ? false : true}
       >
         <div
-          class={`gap-2 p-2 z-[10] relative cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] rounded-lg`}
+          className={`gap-2 p-2 z-[10] relative cursor-pointer text-[#b3b3b3] font-semibold text-[14px] hover:bg-[rgb(35,35,35)] rounded-lg`}
           style={{
             marginLeft: `${15 * (level - 1)}px`,
           }}
@@ -87,7 +87,7 @@ export default function Folder({
               >
                 <div className="flex grow" ref={textRef}>
                   <div
-                    class="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] overflow-hidden rounded-lg"
+                    className="h-[45px] w-[45px] flex flex-col justify-center bg-[rgb(40,40,40)] overflow-hidden rounded-lg"
                     ref={listSongRef}
                   >
                     <FaRegFolder className="text-[27px] mx-auto" />
@@ -159,17 +159,17 @@ export default function Folder({
                 }`}
               >
                 <div
-                  class={`listsong-info grow flex overflow-hidden ${
+                  className={`listsong-info grow flex overflow-hidden ${
                     resizeStyle === "1" ? "hidden" : ""
                   }`}
                   style={{
                     maxWidth: `${resizeStyle === "3" ? "200px" : "100%"}`,
                   }}
                 >
-                  <span class="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                  <span className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                     {item.name}
                   </span>
-                  <span class="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
+                  <span className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
                     • 0 playlists
                   </span>
                 </div>

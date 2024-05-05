@@ -11,6 +11,9 @@ router
   .get(asyncHandler(UserController.getMusicListsByUserId));
 router.route("/items").get(asyncHandler(UserController.getItemsByUserId));
 router.route("/me").get(getMe, asyncHandler(UserController.getUserById));
+router
+  .route("/newInfo")
+  .get(asyncHandler(UserController.getNewInfoFromFollowedSingers));
 // router
 //   .route("/likedsongs")
 //   .post(asyncHandler(UserController.addSongToLikedSongs));
