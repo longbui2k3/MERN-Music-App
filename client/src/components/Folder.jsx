@@ -104,7 +104,6 @@ export default function Folder({
                   >
                     <span className="span-name truncate text-white">
                       {item?.name}
-                      {item._id}
                     </span>
                     <span className="truncate" style={{ minWidth: "0px" }}>
                       {childs.length} folder

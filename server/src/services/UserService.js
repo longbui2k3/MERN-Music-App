@@ -4,7 +4,6 @@ const { Types } = require("mongoose");
 const { BadRequestError, AuthFailureError } = require("../core/errorResponse");
 const User = require("../models/userModel");
 const { removeUndefinedInObject } = require("../utils");
-const Singer = require("../models/singerModel");
 
 class UserService {
   getUserById = async ({ id }) => {
@@ -521,26 +520,34 @@ class UserService {
     var newInfoList = [];
     await Promise.all(
       userHasFollowedSingers.singers.map(async (singer) => {
-        let singerSongs = await singer.singer.populate("songs");
-        let songs = singerSongs.songs;
-        let mergedSongs = [].concat.apply([], songs);
+        let singerAlbums = await singer.singer.populate({
+          path: "musicLists",
+          populate: { path: "musiclist_attributes", populate: "singers" },
+        });
+
+        let albums = singerAlbums.musicLists;
+        let mergedAlbums = [].concat.apply([], albums);
 
         const currentDate = new Date();
         const oneMonthAgoDate = new Date();
         oneMonthAgoDate.setMonth(oneMonthAgoDate.getMonth() - 1);
 
-        const songsInMonth = mergedSongs.filter((item) => {
+        const albumsInMonth = mergedAlbums.filter((item) => {
           return (
-            item.releasedDate &&
-            new Date(item.releasedDate) >= oneMonthAgoDate &&
-            new Date(item.releasedDate) <= currentDate
+            item.musiclist_attributes.releasedDate &&
+            new Date(item.musiclist_attributes.releasedDate) >=
+              oneMonthAgoDate &&
+            new Date(item.musiclist_attributes.releasedDate) <= currentDate
           );
         });
-        newInfoList.push(...songsInMonth);
+        newInfoList.push(...albumsInMonth);
       })
     );
-
-    return newInfoList.sort((a, b) => b.releasedDate - a.releasedDate);
+    return newInfoList.sort(
+      (a, b) =>
+        b.musiclist_attributes.releasedDate -
+        a.musiclist_attributes.releasedDate
+    );
   };
 }
 

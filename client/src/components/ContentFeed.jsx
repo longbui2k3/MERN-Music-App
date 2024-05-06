@@ -9,6 +9,7 @@ export default function ContentFeed() {
     const newsFunc = async () => {
       try {
         const res = await getNewInfoFromFollowedSingers();
+        console.log(res.data.metadata.newInfo);
         setNews(res.data.metadata.newInfo);
       } catch (err) {
         console.log("Error: ", err);
@@ -30,7 +31,7 @@ export default function ContentFeed() {
           <h3 className="text-white text-2xl font-bold pb-3">Trước đó</h3>
           <div className="flex flex-col gap-8 overflow-auto">
             {news ? (
-              news.map((song) => <ContentCard key={song._id} song={song} />)
+              news.map((album) => <ContentCard key={album._id} album={album} />)
             ) : (
               <p className="text-white text-2xl font-bold pb-3">
                 Nothing is new

@@ -7,7 +7,7 @@ import { calculateDate } from "../utils/Date";
 import { NavigateAuth } from "../context/NavigateContext";
 import { Link } from "react-router-dom";
 
-export default function ContentCard({ song }) {
+export default function ContentCard({ album }) {
   const { navigatePage } = NavigateAuth();
   const [playClick, setPlayClick] = useState(false);
 
@@ -26,22 +26,33 @@ export default function ContentCard({ song }) {
         <div
           className="container h-2/3 w-1/4 text-center rounded"
           onClick={function (e) {
-            navigatePage(`/playlist/${song._id}`);
+            navigatePage(`/album/${album._id}`);
           }}
         >
-          <img alt={song.name} src={song.imageURL} className="w-full h-full" />
+          <img
+            alt={album.name}
+            src={album.imageURL}
+            className="w-full h-full"
+          />
         </div>
         <div className="w-3/4">
           <div>
             <p className="text-white text-1xl font-bold py-2 hover:underline decoration-solid">
-              <Link to={`/playlist/${song._id}`}>{song.name}</Link>
+              <Link to={`/album/${album._id}`}>{album.name}</Link>
             </p>
-            {song.writtenBy && (
-              <p className="hover:text-white">{song.writtenBy}</p>
+            {album.musiclist_attributes.singers.length && (
+              <p className="hover:text-white">
+                {album.musiclist_attributes.singers
+                  .map((singer) => singer.name)
+                  .join(",")}
+              </p>
             )}
           </div>
           <div className="text-white text-1xl font-bold py-3 mt-2">
-            <span>Đĩa đơn - {calculateDate(song.releasedDate)} ngày trước</span>
+            <span>
+              Đĩa đơn - {calculateDate(album.musiclist_attributes.releasedDate)}{" "}
+              ngày trước
+            </span>
           </div>
           <div className="mt-5">
             <div className="flex justify-between items-center">
