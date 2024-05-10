@@ -54,7 +54,7 @@ class UserController {
     }).send(res);
   };
   static getItemsByUserId = async (req, res, next) => {
-    const items = await UserService.getItemsByUserId({
+    const result = await UserService.getItemsByUserId({
       userId: req.user.id,
       type: req.query.type,
       search: req.query.search,
@@ -62,7 +62,8 @@ class UserController {
     new OK({
       message: `Get items successfully!`,
       metadata: {
-        items,
+        items: result.items,
+        lengthOfPlaylists: result.lengthOfPlaylists,
       },
     }).send(res);
   };

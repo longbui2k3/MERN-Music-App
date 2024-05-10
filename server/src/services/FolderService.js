@@ -1,4 +1,4 @@
-const { Folder } = require("../models/folderModel");
+const { Folder, FolderMusicList } = require("../models/folderModel");
 const User = require("../models/userModel");
 const { BadRequestError } = require("../core/errorResponse");
 class FolderService {
@@ -9,6 +9,7 @@ class FolderService {
       dateAdded: Date.now(),
       datePlayed: Date.now(),
     });
+
     let rightValue;
     if (!parentId) {
       const maxRightValue = await Folder.findOne({ user: userId }, "right", {
@@ -45,6 +46,24 @@ class FolderService {
           $inc: { left: 2 },
         }
       );
+      await FolderMusicList.updateMany(
+        {
+          user: userId,
+          right: { $gte: rightValue },
+        },
+        {
+          $inc: { right: 2 },
+        }
+      );
+      await FolderMusicList.updateMany(
+        {
+          user: userId,
+          left: { $gte: rightValue },
+        },
+        {
+          $inc: { left: 2 },
+        }
+      );
     }
 
     folder.left = rightValue;
@@ -61,11 +80,35 @@ class FolderService {
         throw new BadRequestError(`Parent folder not found!`);
       }
     }
-    const folder = await Folder.find({
-      user: userId,
-      parentId: folderId === "null" ? null : folderId,
+    const folders = (
+      await Folder.find({
+        user: userId,
+        parentId: folderId === "null" ? null : folderId,
+      }).lean()
+    ).map((folder) => {
+      return {
+        folder,
+        type: "folder",
+      };
     });
-    return [...folder];
+
+    const foldermusiclists = (
+      await FolderMusicList.find({
+        user: userId,
+        parentId: folderId === "null" ? null : folderId,
+      })
+        .populate({
+          path: "musicList",
+          populate: { path: "musiclist_attributes", populate: "user" },
+        })
+        .lean()
+    ).map((foldermusiclist) => {
+      return {
+        ...foldermusiclist,
+        type: "foldermusiclist",
+      };
+    });
+    return [...folders, ...foldermusiclists];
   }
 }
 

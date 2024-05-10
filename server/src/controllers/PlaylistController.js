@@ -10,6 +10,7 @@ class PlaylistController {
       payload: req.body,
       file: req.file,
       userId: req.user.id,
+      parentId: req.body.parentId
     });
 
     new CREATED({

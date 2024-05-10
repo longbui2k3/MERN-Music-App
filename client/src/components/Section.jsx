@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SongListItem from "./SongListItem";
 import { GoPlus } from "react-icons/go";
 import { Tooltip } from "@chakra-ui/react";
 import { NavigateAuth } from "../context/NavigateContext";
 import ArtistItem from "./ArtistItem";
 import { FiEdit } from "react-icons/fi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   openAddListsToSection,
   openEditFormSection,
@@ -14,6 +14,14 @@ import {
 export default function Section({ section }) {
   const { navigatePage } = NavigateAuth();
   const dispatch = useDispatch();
+  const [columnCount, setColumnCount] = useState(6);
+  const sidebarSize = useSelector((state) => state.resize.sidebarSize);
+  const appContainerSize = useSelector(
+    (state) => state.resize.appContainerSize
+  );
+  useEffect(() => {
+    setColumnCount(Math.floor((appContainerSize - sidebarSize) / 230));
+  }, [sidebarSize]);
   return (
     <section aria-label={section.title}>
       <div className="text-[#FFFFFF] font-bold text-[24px] flex justify-between items-center">
@@ -51,7 +59,13 @@ export default function Section({ section }) {
           Show All
         </div>
       </div>
-      <div className="flex gap-4 flex-wrap overflow-hidden">
+      <div
+        className="grid-songs grid gap-4 overflow-hidden"
+        style={{
+          gridTemplateColumns: `repeat(${columnCount},minmax(0,1fr))`,
+          // gridAutoFlow: "row dense",
+        }}
+      >
         {section.create ? (
           <div
             className={
@@ -68,7 +82,7 @@ export default function Section({ section }) {
                 className="flex flex-col justify-center hover:scale-[1.05] bg-[rgb(35,35,35)] hover:text-white rounded-full p-1 w-[100px] h-[100px] mx-auto"
                 onClick={function (e) {
                   if (section.type === "section") {
-                    dispatch(setSection(section))
+                    dispatch(setSection(section));
                     dispatch(openAddListsToSection());
                   } else navigatePage("/createAlbum");
                 }}

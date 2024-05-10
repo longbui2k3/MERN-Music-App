@@ -12,6 +12,7 @@ import EditPlaylist from "./EditPlaylist";
 import { useDispatch, useSelector } from "react-redux";
 import EditSection from "./adminRole/EditSection";
 import AddListsToSection from "./adminRole/AddListsToSection";
+import { setSize } from "../features/resize/resizeSlice";
 const Container = styled.div`
   position: relative;
   display: grid;
@@ -107,8 +108,8 @@ function PageHome({ children }) {
     };
   }, [resize2, stopResizing2]);
 
-  const { width, height, ref } = useResizeDetector();
-  const { width2, height2, ref2 } = useResizeDetector();
+  const { width } = useResizeDetector();
+  const { width2 } = useResizeDetector();
   const [resizeStyle, setResizeStyle] = useState(false);
   const [resizeStyle2, setResizeStyle2] = useState(false);
   useEffect(() => {
@@ -130,6 +131,15 @@ function PageHome({ children }) {
   const addListsToSection = useSelector(
     (state) => state.editForm.addListsToSection
   );
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(
+      setSize({
+        appContainerSize: appContainerRef.current.getBoundingClientRect().width,
+        sidebarSize: sidebarRef.current.getBoundingClientRect().width,
+      })
+    );
+  }, [sidebarRef.current?.getBoundingClientRect().width]);
   return (
     <Container>
       {editPlaylist ? (

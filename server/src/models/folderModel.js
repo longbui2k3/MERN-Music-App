@@ -22,6 +22,7 @@ const Folder = model(DOCUMENT_NAME.FOLDER, folderSchema);
 const folderMusicListSchema = Schema(
   {
     musicList: { type: Schema.ObjectId, ref: DOCUMENT_NAME.MUSICLIST },
+    user: { type: Schema.ObjectId, ref: DOCUMENT_NAME.USER },
     dateAdded: { type: Date, required: true, default: Date.now() },
     datePlayed: { type: Date, required: true, default: Date.now() },
     left: { type: Number, default: 0 },

@@ -9,10 +9,8 @@ export default function ArtistItem({ singer }) {
   const { navigatePage } = NavigateAuth();
   return (
     <div
-      className={
-        "h-[270px] rounded-md w-[190px] inline-block cursor-pointer mb-[24px] "
-      }
-      style={{ backgroundColor: "#181818" }}
+      className={"rounded-md cursor-pointer mb-[24px] grow aspect-[0.75] "}
+      style={{ backgroundColor: "#181818", minWidth: "150px" }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={() => {
@@ -25,23 +23,25 @@ export default function ArtistItem({ singer }) {
           padding: "16px",
           position: "relative",
         }}
-        className={"hover:bg-neutral-800 rounded-md"}
+        className={
+          "hover:bg-neutral-800 rounded-md flex flex-col justify-between"
+        }
       >
         <div
           style={{
             position: "relative",
             height: "160px",
-            width: "160px",
+            width: "100%",
             transform: "translateY(0)",
             transition: "transform 0.3s ease",
           }}
         >
           <Image
-            boxSize="160px"
+            // boxSize="160px"
             objectFit="cover"
             src={singer.imageURL}
             alt={singer.name}
-            className={"rounded-md"}
+            className={"rounded-md aspect-square"}
             style={{
               position: "absolute",
               boxShadow:
@@ -66,17 +66,18 @@ export default function ArtistItem({ singer }) {
           />
         </div>
 
-        <div style={{ height: "70px", maxWidth: "158px" }}>
+        <div className="mb-[10px]">
           <div
             style={{
               position: "relative",
               height: "100%",
             }}
           >
-            <span
+            <div
               className={"text-[15px] font-bold text-white "}
               style={{
-                maxWidth: "158px",
+                // maxWidth: "158px",
+                width: "100%",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -84,12 +85,13 @@ export default function ArtistItem({ singer }) {
               }}
             >
               {singer.name}
-            </span>
+            </div>
             <br />
-            <span
+            <div
               className={"text-[14px] font-medium hover:underline"}
               style={{
-                maxWidth: "158px",
+                // maxWidth: "158px",
+                width: "100%",
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -98,7 +100,7 @@ export default function ArtistItem({ singer }) {
               }}
             >
               Artist
-            </span>
+            </div>
           </div>
         </div>
       </div>

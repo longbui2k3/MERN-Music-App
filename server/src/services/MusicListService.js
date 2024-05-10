@@ -1,9 +1,6 @@
 "use strict";
 
-const {
-  BadRequestError,
-  InternalServerError,
-} = require("../core/errorResponse");
+const { BadRequestError } = require("../core/errorResponse");
 const {
   MusicList,
   Album,
@@ -11,7 +8,6 @@ const {
   LikedSongs,
   PlaylistSong,
 } = require("../models/musicListModel");
-const multer = require("multer");
 const { initializeApp } = require("firebase/app");
 const {
   getStorage,
@@ -20,7 +16,7 @@ const {
   uploadBytesResumable,
 } = require("firebase/storage");
 const firebaseConfig = require("../configs/firebase");
-const { startSession, Types, trusted } = require("mongoose");
+const { startSession, Types } = require("mongoose");
 const Genre = require("../models/genreModel");
 const Singer = require("../models/singerModel");
 const User = require("../models/userModel");
@@ -28,6 +24,7 @@ const Song = require("../models/songModel");
 const { LIKEDSONGS_IMAGE_URL } = require("../configs");
 const { removeUndefinedInObject } = require("../utils");
 const transaction = require("../helpers/transaction");
+const { Folder, FolderMusicList } = require("../models/folderModel");
 initializeApp(firebaseConfig);
 const storage = getStorage();
 
@@ -36,13 +33,23 @@ class MusicListFactory {
   static registerMusicListType(type, classRef) {
     MusicListFactory.musicListRegistry[type] = classRef;
   }
-  static async createMusicList({ type, payload = {}, file = {}, userId }) {
+  static async createMusicList({
+    type,
+    payload = {},
+    file = {},
+    userId,
+    parentId,
+  }) {
     const musicListClass = MusicListFactory.musicListRegistry[type];
     if (!musicListClass) {
       throw new BadRequestError(`Invalid Musiclist type ${type}`);
     }
 
-    return new musicListClass(payload).createMusicList({ file, userId });
+    return new musicListClass(payload).createMusicList({
+      file,
+      userId,
+      parentId,
+    });
   }
   static async getMusicListById({ type, id }) {
     const musicListClass = MusicListFactory.musicListRegistry[type];
@@ -378,7 +385,7 @@ class PlaylistService extends MusicListService {
     });
     this.type = "Playlist";
   }
-  async createMusicList({ userId, file = {} }) {
+  async createMusicList({ userId, parentId, file = {} }) {
     return await transaction(async (session) => {
       if (!this.musiclist_attributes) {
         this.musiclist_attributes = {
@@ -402,23 +409,79 @@ class PlaylistService extends MusicListService {
         throw new BadRequestError("Create playlist unsucessfully");
       }
 
-      const updatedUser = await User.updateOne(
-        { _id: userId },
-        {
-          $push: {
-            musicLists: {
-              musicList: newMusicList[0],
-              dateAdded: Date.now(),
-              datePlayed: Date.now(),
+      if (parentId) {
+        const parentFolder = await Folder.findById(parentId);
+        if (!parentFolder) {
+          throw new BadRequestError(`Parent folder not found!`);
+        }
+
+        const foldermusiclist = new FolderMusicList({
+          musicList: newMusicList[0]._id,
+          user: userId,
+          parentId,
+          dateAdded: Date.now(),
+          datePlayed: Date.now(),
+        });
+
+        let rightValue;
+        rightValue = parentFolder.right;
+        await Folder.updateMany(
+          {
+            user: userId,
+            right: { $gte: rightValue },
+          },
+          {
+            $inc: { right: 2 },
+          }
+        );
+        await Folder.updateMany(
+          {
+            user: userId,
+            left: { $gte: rightValue },
+          },
+          {
+            $inc: { left: 2 },
+          }
+        );
+        await FolderMusicList.updateMany(
+          {
+            user: userId,
+            right: { $gte: rightValue },
+          },
+          {
+            $inc: { right: 2 },
+          }
+        );
+        await FolderMusicList.updateMany(
+          {
+            user: userId,
+            left: { $gte: rightValue },
+          },
+          {
+            $inc: { left: 2 },
+          }
+        );
+        foldermusiclist.left = rightValue;
+        foldermusiclist.right = rightValue + 1;
+        await foldermusiclist.save();
+      } else {
+        const updatedUser = await User.updateOne(
+          { _id: userId },
+          {
+            $push: {
+              musicLists: {
+                musicList: newMusicList[0],
+                dateAdded: Date.now(),
+                datePlayed: Date.now(),
+              },
             },
           },
-        },
-        { session, new: true }
-      );
+          { session, new: true }
+        );
 
-      if (!updatedUser)
-        throw new BadRequestError(`User with id: ${userId} not found`);
-
+        if (!updatedUser)
+          throw new BadRequestError(`User with id: ${userId} not found`);
+      }
       return newMusicList[0];
     });
   }

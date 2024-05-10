@@ -5,7 +5,6 @@ import { CgDetailsMore } from "react-icons/cg";
 import { AiOutlineHeart } from "react-icons/ai";
 import { useParams } from "react-router-dom";
 import { addFavoriteMusicList, getUser, removeFavoriteMusicList } from "../api";
-import { TbRulerOff } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import { setUserGlobal } from "../features/user/userSlice";
 import VerticalNavigateMoreOptionsMusicList from "./VerticalNavigateMoreOptionMusicList";

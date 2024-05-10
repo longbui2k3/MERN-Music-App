@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SectionAPI from "../api/SectionAPI";
 import Section from "./Section";
-import Footer from "./Footer";
 
 const Body = () => {
   const [sections, setSections] = useState([]);
@@ -10,9 +9,7 @@ const Body = () => {
     const getAllSection = async () => {
       try {
         const sectionData = await SectionAPI.getAllSection();
-        setSections(
-          sectionData.data.metadata.sections
-        );
+        setSections(sectionData.data.metadata.sections);
       } catch (error) {
         console.log(error);
       }

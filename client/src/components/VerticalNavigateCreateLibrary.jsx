@@ -4,7 +4,6 @@ import {
   createPlaylist,
   getChildOfFolder,
   getItemsByUserId,
-  getUser,
 } from "../api";
 import { NavigateAuth } from "../context/NavigateContext";
 
@@ -18,24 +17,20 @@ export default function VerticalNavigateCreateLibrary({
   setItems,
   parentFolder,
   setSelectedChilds,
-  setSelectedFolder,
 }) {
   const { navigatePage } = NavigateAuth();
   const createNewPlaylistFunc = async () => {
     try {
-      const user = await getUser();
-      const myPlaylistLength = items.filter(
-        (item) =>
-          item?.musicList?.type === "Playlist" &&
-          item?.musicList?.musiclist_attributes?.user._id ===
-            user.data.metadata.user._id
-      ).length;
+      const res3 = await getItemsByUserId({});
       const res = await createPlaylist({
-        name: `My Playlist #${myPlaylistLength + 1}`,
+        name: `My Playlist #${res3.data.metadata.lengthOfPlaylists + 1}`,
         type: "Playlist",
+        parentId: parentFolder,
       });
       const res2 = await getItemsByUserId({});
       setItems(res2.data.metadata.items);
+
+      await getChildOfFolderFunc();
 
       navigatePage(`/playlist/${res.data.metadata.playlist._id}`);
     } catch (error) {

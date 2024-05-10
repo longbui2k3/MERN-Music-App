@@ -4,6 +4,7 @@ const { Types } = require("mongoose");
 const { BadRequestError, AuthFailureError } = require("../core/errorResponse");
 const User = require("../models/userModel");
 const { removeUndefinedInObject } = require("../utils");
+const { FolderMusicList } = require("../models/folderModel");
 
 class UserService {
   getUserById = async ({ id }) => {
@@ -437,9 +438,15 @@ class UserService {
     if (type === "Artist") {
       return user[0].items.filter((item) => item.singer);
     }
-    return types.includes(type)
+    const result = types.includes(type)
       ? items
       : user[0].items.sort((a, b) => (a.dateAdded > b.dateAdded ? -1 : 1));
+    return {
+      items: result,
+      lengthOfPlaylists:
+        result.filter((item) => item?.musicList?.type === "Playlist").length +
+        (await FolderMusicList.find({ user: userId })).length,
+    };
   };
 
   followSinger = async ({ user, singerId }) => {

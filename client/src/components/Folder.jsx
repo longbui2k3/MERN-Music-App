@@ -4,6 +4,7 @@ import { GoTriangleDown, GoTriangleLeft } from "react-icons/go";
 import { dateDistance } from "../config";
 import { useEffect, useRef, useState } from "react";
 import { getChildOfFolder } from "../api";
+import MusicList from "./MusicList";
 
 export default function Folder({
   item,
@@ -98,8 +99,7 @@ export default function Folder({
                       resizeStyle === "1" ? "hidden" : ""
                     }`}
                     style={{
-                      maxWidth: `${resizeStyle === "3" ? `100%` : "100%"}`,
-                      // minWidth: `0px`,
+                      maxWidth: `100%`,
                     }}
                   >
                     <span className="span-name truncate text-white">
@@ -153,9 +153,7 @@ export default function Folder({
             ) : viewAs === "Compact" &&
               (resizeStyle === "2" || resizeStyle === "3") ? (
               <div
-                className={`w-full ${
-                  resizeStyle === "3" ? "basis-[50%]" : "grow"
-                }`}
+                className={`relative order-3 flex justify-between items-center grow`}
               >
                 <div
                   className={`listsong-info grow flex overflow-hidden ${
@@ -169,8 +167,47 @@ export default function Folder({
                     {item.name}
                   </span>
                   <span className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">
-                    • 0 playlists
+                    • {childs.length} folder
                   </span>
+                </div>
+                <div>
+                  {resizeStyle !== "1" ? (
+                    isOpenSubFolder ? (
+                      <div
+                        className={`z-[1000] me-7`}
+                        onClick={function (e) {
+                          setIsOpenSubFolder(false);
+                        }}
+                        style={{
+                          right: resizeStyle === "2" ? "10px" : "",
+                          left:
+                            resizeStyle !== "2"
+                              ? `${240 - 15 * (level - 1)}px`
+                              : "",
+                        }}
+                      >
+                        <GoTriangleDown className={`text-[25px]`} />
+                      </div>
+                    ) : (
+                      <div
+                        className={`z-[1000] me-7`}
+                        onClick={function (e) {
+                          setIsOpenSubFolder(true);
+                        }}
+                        style={{
+                          right: resizeStyle === "2" ? "10px" : "",
+                          left:
+                            resizeStyle !== "2"
+                              ? `${240 - 15 * (level - 1)}px`
+                              : "",
+                        }}
+                      >
+                        <GoTriangleLeft className={`text-[25px]`} />
+                      </div>
+                    )
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             ) : (
@@ -196,16 +233,26 @@ export default function Folder({
       </Tooltip>
       {isOpenSubFolder && resizeStyle !== "1"
         ? childs.map((child) => {
+            if (child.type === "folder")
+              return (
+                <Folder
+                  item={child.folder}
+                  resizeStyle={resizeStyle}
+                  viewAs={viewAs}
+                  listSongRef={listSongRef}
+                  level={level + 1}
+                  setSelectedFolder={setSelectedFolder}
+                  selectedChilds={selectedChilds}
+                  setSelectedChilds={setSelectedChilds}
+                />
+              );
             return (
-              <Folder
+              <MusicList
                 item={child}
                 resizeStyle={resizeStyle}
                 viewAs={viewAs}
                 listSongRef={listSongRef}
                 level={level + 1}
-                setSelectedFolder={setSelectedFolder}
-                selectedChilds={selectedChilds}
-                setSelectedChilds={setSelectedChilds}
               />
             );
           })
