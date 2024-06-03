@@ -16,7 +16,7 @@ export default function MusicList({
       //   key={i}
       label={
         <>
-          <div className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+          <div className="name whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
             {item?.musicList?.name}
           </div>
           <div className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
@@ -78,7 +78,7 @@ export default function MusicList({
                   }`,
                 }}
               >
-                <span className="whitespace-nowrap overflow-hidden text-ellipsis text-white">
+                <span className="name whitespace-nowrap overflow-hidden text-ellipsis text-white">
                   {item.musicList.name}
                 </span>
                 <span className="whitespace-nowrap overflow-hidden text-ellipsis">
@@ -104,7 +104,7 @@ export default function MusicList({
                   maxWidth: `${resizeStyle === "3" ? "100%" : "100%"}`,
                 }}
               >
-                <span className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                <span className="name whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                   {item.musicList.name}
                 </span>
                 <span className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">

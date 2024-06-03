@@ -31,9 +31,9 @@ export const getMusicListsByUserId = async ({
   return res;
 };
 
-export const getItemsByUserId = async ({ type = "", search = "" }) => {
+export const getItemsByUserId = async ({ type = "", sort = "recents" }) => {
   const res = await axios.get(
-    `http://localhost:4000/api/v1/user/items?type=${type}&search=${search}`
+    `http://localhost:4000/api/v1/user/items?type=${type}&sort=${sort}`
   );
   return res;
 };

@@ -57,7 +57,7 @@ class UserController {
     const result = await UserService.getItemsByUserId({
       userId: req.user.id,
       type: req.query.type,
-      search: req.query.search,
+      sort: req.query.sort
     });
     new OK({
       message: `Get items successfully!`,

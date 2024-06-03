@@ -54,7 +54,7 @@ export default function Folder({
       <Tooltip
         label={
           <>
-            <div className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+            <div className="name whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
               {item?.name}
             </div>
             <div className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
@@ -102,7 +102,7 @@ export default function Folder({
                       maxWidth: `100%`,
                     }}
                   >
-                    <span className="span-name truncate text-white">
+                    <span className="name span-name truncate text-white">
                       {item?.name}
                     </span>
                     <span className="truncate" style={{ minWidth: "0px" }}>
@@ -163,7 +163,7 @@ export default function Folder({
                     maxWidth: `${resizeStyle === "3" ? "200px" : "100%"}`,
                   }}
                 >
-                  <span className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+                  <span className="name whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
                     {item.name}
                   </span>
                   <span className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px]">

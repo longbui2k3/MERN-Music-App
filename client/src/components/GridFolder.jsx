@@ -21,7 +21,7 @@ export default function GridFolder({ item, listSongRef }) {
     <Tooltip
       label={
         <>
-          <div className="whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
+          <div className="name whitespace-nowrap overflow-hidden text-ellipsis me-1 my-auto text-[16px] text-white">
             {item.name}
           </div>
           <div className="whitespace-nowrap overflow-hidden text-ellipsis mt-[2px] text-[#b3b3b3]">
@@ -43,6 +43,7 @@ export default function GridFolder({ item, listSongRef }) {
           //   maxHeight: "100px",
         }}
       >
+        <div className="name hidden">{item?.name}</div>
         <FaRegFolder className="text-[40px] mx-auto" />
       </div>
     </Tooltip>

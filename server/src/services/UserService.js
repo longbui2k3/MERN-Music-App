@@ -231,7 +231,7 @@ class UserService {
 
     return types.includes(musiclist_type) ? musiclists : user[0].musicLists;
   };
-  getItemsByUserId = async ({ userId, type, search }) => {
+  getItemsByUserId = async ({ userId, type, sort = "recents" }) => {
     let user = await User.findById(userId);
     if (!user) {
       throw new BadRequestError(`User with id: ${userId} not found`);
@@ -269,107 +269,100 @@ class UserService {
           "musicLists.type": "musicLists",
         },
       });
+      let pipeline = [
+        {
+          $lookup: {
+            from: "albums",
+            localField: "musiclist_attributes",
+            foreignField: "_id",
+            as: "musiclist_attributes_album",
+            pipeline: [
+              {
+                $lookup: {
+                  from: "singers",
+                  localField: "singers",
+                  foreignField: "_id",
+                  as: "singers",
+                },
+              },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            from: "playlists",
+            localField: "musiclist_attributes",
+            foreignField: "_id",
+            as: "musiclist_attributes_playlist",
+            pipeline: [
+              {
+                $lookup: {
+                  from: "users",
+                  localField: "user",
+                  foreignField: "_id",
+                  as: "user",
+                },
+              },
+              {
+                $project: {
+                  user: {
+                    $arrayElemAt: ["$user", 0],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            from: "likedsongs",
+            localField: "musiclist_attributes",
+            foreignField: "_id",
+            as: "musiclist_attributes_likedsongs",
+            pipeline: [
+              {
+                $lookup: {
+                  from: "users",
+                  localField: "user",
+                  foreignField: "_id",
+                  as: "user",
+                },
+              },
+              {
+                $project: {
+                  user: {
+                    $arrayElemAt: ["$user", 0],
+                  },
+                },
+              },
+            ],
+          },
+        },
+        {
+          $project: {
+            name: 1,
+            type: 1,
+            songs: 1,
+            imageURL: 1,
+            musiclist_attributes: {
+              $concatArrays: [
+                "$musiclist_attributes_album",
+                "$musiclist_attributes_playlist",
+                "$musiclist_attributes_likedsongs",
+              ],
+            },
+          },
+        },
+        {
+          $unwind: "$musiclist_attributes",
+        },
+      ];
       agg.push({
         $lookup: {
           from: "musiclists",
           localField: "musicLists.musicList",
           foreignField: "_id",
-          pipeline: [
-            {
-              $lookup: {
-                from: "albums",
-                localField: "musiclist_attributes",
-                foreignField: "_id",
-                as: "musiclist_attributes_album",
-                pipeline: [
-                  {
-                    $lookup: {
-                      from: "singers",
-                      localField: "singers",
-                      foreignField: "_id",
-                      as: "singers",
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $lookup: {
-                from: "playlists",
-                localField: "musiclist_attributes",
-                foreignField: "_id",
-                as: "musiclist_attributes_playlist",
-                pipeline: [
-                  {
-                    $lookup: {
-                      from: "users",
-                      localField: "user",
-                      foreignField: "_id",
-                      as: "user",
-                    },
-                  },
-                  {
-                    $project: {
-                      user: {
-                        $arrayElemAt: ["$user", 0],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $lookup: {
-                from: "likedsongs",
-                localField: "musiclist_attributes",
-                foreignField: "_id",
-                as: "musiclist_attributes_likedsongs",
-                pipeline: [
-                  {
-                    $lookup: {
-                      from: "users",
-                      localField: "user",
-                      foreignField: "_id",
-                      as: "user",
-                    },
-                  },
-                  {
-                    $project: {
-                      user: {
-                        $arrayElemAt: ["$user", 0],
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-            {
-              $project: {
-                name: 1,
-                type: 1,
-                songs: 1,
-                imageURL: 1,
-                musiclist_attributes: {
-                  $concatArrays: [
-                    "$musiclist_attributes_album",
-                    "$musiclist_attributes_playlist",
-                    "$musiclist_attributes_likedsongs",
-                  ],
-                },
-              },
-            },
-            {
-              $unwind: "$musiclist_attributes",
-            },
-            {
-              $match: {
-                name: {
-                  $regex: search || "",
-                  $options: "i",
-                },
-              },
-            },
-          ],
+          pipeline,
           as: "musicLists.musicList",
         },
       });
@@ -430,23 +423,87 @@ class UserService {
 
     user = await User.aggregate(agg);
     const types = ["Album", "Playlist"];
-    if (!user[0]) return [];
+    let res;
+    if (!user[0]) res = { items: [] };
     const items = user[0].items.filter(
       (item) => item?.musicList?.type === type
     );
 
     if (type === "Artist") {
-      return user[0].items.filter((item) => item.singer);
+      res = { items: user[0].items.filter((item) => item.singer) };
     }
     const result = types.includes(type)
       ? items
-      : user[0].items.sort((a, b) => (a.dateAdded > b.dateAdded ? -1 : 1));
-    return {
+      : user[0].items.sort((a, b) => (a.datePlayed > b.datePlayed ? -1 : 1));
+    res = {
       items: result,
       lengthOfPlaylists:
         result.filter((item) => item?.musicList?.type === "Playlist").length +
         (await FolderMusicList.find({ user: userId })).length,
     };
+
+    if (sort === "recents") {
+      res.items = res.items.sort((item1, item2) =>
+        item1.datePlayed > item2.datePlayed ? -1 : 1
+      );
+    } else if (sort === "recentlyadded") {
+      res.items = res.items.sort((item1, item2) =>
+        item1.dateAdded > item2.dateAdded ? -1 : 1
+      );
+    } else if (sort === "alphabetical") {
+      res.items = res.items.sort((item1, item2) => {
+        let name1, name2;
+        if (item1.type === "musicLists") {
+          name1 = item1.musicList.name;
+        } else if (item1.type === "singers") {
+          name1 = item1.singer.name;
+        } else {
+          name1 = item1.name;
+        }
+
+        if (item2.type === "musicLists") {
+          name2 = item2.musicList.name;
+        } else if (item2.type === "singers") {
+          name2 = item2.singer.name;
+        } else {
+          name2 = item2.name;
+        }
+
+        return name1.localeCompare(name2, undefined, { sensitivity: "base" });
+      });
+    } else if (sort === "creator") {
+      let creator1, creator2;
+      res.items = res.items.sort((item1, item2) => {
+        if (item1.type === "musicLists") {
+          if (item1.musicList.type === "Playlist") {
+            creator1 = item1.musicList.musiclist_attributes.user._id.toString();
+          } else if (item1.musicList.type === "Album") {
+            creator1 = item1.musicList.musiclist_attributes.singers[0].name;
+          }
+        } else if (item1.type === "singers") {
+          creator1 = item1.singer.name;
+        } else {
+          creator1 = item1.user.toString();
+        }
+
+        if (item2.type === "musicLists") {
+          if (item2.musicList.type === "Playlist") {
+            creator2 = item2.musicList.musiclist_attributes.user._id.toString();
+          } else if (item2.musicList.type === "Album") {
+            creator2 = item2.musicList.musiclist_attributes.singers[0].name;
+          }
+        } else if (item2.type === "singers") {
+          creator2 = item2.singer.name;
+        } else {
+          creator2 = item2.user.toString();
+        }
+        return creator1.localeCompare(creator2, undefined, {
+          sensitivity: "base",
+        });
+      });
+    }
+
+    return res;
   };
 
   followSinger = async ({ user, singerId }) => {

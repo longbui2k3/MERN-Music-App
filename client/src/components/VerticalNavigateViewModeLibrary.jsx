@@ -118,25 +118,67 @@ export default function VerticalNavigateViewModeLibrary({
       </div>
       <ul>
         <li
-          className="flex px-[15px] py-[10px] hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer"
+          className="flex justify-between px-[15px] py-[10px] hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer"
           onMouseDown={clickViewAsCompact}
+          style={{
+            color: `${viewAs === "Compact" ? "rgb(29,185,84)" : "white"}`,
+          }}
         >
-          <HiOutlineBars3 size={20} color="white" className="me-3" />
-          Compact
+          <div className="flex">
+            <HiOutlineBars3
+              size={20}
+              color={`${viewAs === "Compact" ? "rgb(29,185,84)" : "white"}`}
+              className="me-3"
+            />
+            Compact
+          </div>
+          {viewAs === "Compact" ? (
+            <IoCheckmark size={20} color="rgb(29,185,84)" />
+          ) : (
+            ""
+          )}
         </li>
         <li
-          className="flex px-[15px] py-[10px] hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer "
+          className="flex justify-between px-[15px] py-[10px] hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer "
           onMouseDown={clickViewAsList}
+          style={{
+            color: `${viewAs === "List" ? "rgb(29,185,84)" : "white"}`,
+          }}
         >
-          <IoIosList size={20} color="white" className="me-3" />
-          List
+          <div className="flex">
+            <IoIosList
+              size={20}
+              color={`${viewAs === "List" ? "rgb(29,185,84)" : "white"}`}
+              className="me-3"
+            />
+            List
+          </div>
+          {viewAs === "List" ? (
+            <IoCheckmark size={20} color="rgb(29,185,84)" />
+          ) : (
+            ""
+          )}
         </li>
         <li
-          className="flex px-[15px] py-[10px] hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer "
+          className="flex justify-between px-[15px] py-[10px] hover:text-white hover:bg-[rgb(50,50,50)] cursor-pointer "
           onMouseDown={clickViewAsGrid}
+          style={{
+            color: `${viewAs === "Grid" ? "rgb(29,185,84)" : "white"}`,
+          }}
         >
-          <IoGridOutline size={19} color="white" className="me-3" />
-          Grid
+          <div className="flex">
+            <IoGridOutline
+              size={19}
+              color={`${viewAs === "Grid" ? "rgb(29,185,84)" : "white"}`}
+              className="me-3"
+            />
+            Grid
+          </div>
+          {viewAs === "Grid" ? (
+            <IoCheckmark size={20} color="rgb(29,185,84)" />
+          ) : (
+            ""
+          )}
         </li>
       </ul>
     </nav>

@@ -1,10 +1,13 @@
 import { Tooltip } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { getItemsByUserId } from "../api";
+import { Searcher } from "../utils/Searcher";
 
 export default function SearchBarLibrary({
   searchRef,
   setItems,
+  items,
+  sortBy,
   inputSearch,
   setInputSearch,
   typeSearch,
@@ -16,11 +19,11 @@ export default function SearchBarLibrary({
     const getMusicListsBySearch = async () => {
       try {
         const res = await getItemsByUserId({
-          search: inputSearch,
           type: typeSearch.newType,
+          sort: sortBy.toLowerCase().split(" ").join(""),
         });
-        console.log(res);
         if (res.data.status === 200) {
+          console.log(res.data.metadata.items);
           setItems(res.data.metadata.items);
         }
       } catch (err) {
@@ -28,7 +31,28 @@ export default function SearchBarLibrary({
       }
     };
     getMusicListsBySearch();
-  }, [inputSearch, typeSearch.newType]);
+  }, [inputSearch, typeSearch.newType, sortBy]);
+
+  useEffect(() => {
+    let list = Array.from(document.querySelectorAll(".name"))?.map(
+      (name) => name.textContent
+    );
+    let res = Searcher.search(list, inputSearch);
+    let indexes = res.map((r) => r[1]);
+    document.querySelectorAll(".name")?.forEach((name, i) => {
+      if (!indexes.includes(i)) {
+        if (document.querySelectorAll(".item--library")[i])
+          document
+            .querySelectorAll(".item--library")
+            [i].classList.add("hidden");
+      } else {
+        if (document.querySelectorAll(".item--library")[i])
+          document
+            .querySelectorAll(".item--library")
+            [i].classList.remove("hidden");
+      }
+    });
+  }, [items]);
   const openSearchBar = (event) => {
     document.querySelector(".search-input").style = "width: 160px;";
     console.log("long");
