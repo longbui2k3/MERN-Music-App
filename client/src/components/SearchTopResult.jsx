@@ -13,7 +13,7 @@ const SearchTopResult = ({ song }) => {
       </h2>
       <div
         className={
-          "h-[214px] rounded-md  inline-block cursor-pointer mb-[24px] w-[414px]" //w-[190px]
+          "h-[228px] rounded-md  inline-block cursor-pointer mb-[24px] w-[414px]" //w-[190px]
         }
         style={{ backgroundColor: "#181818" }}
         onMouseEnter={() => setIsHovered(true)}

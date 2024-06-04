@@ -3,29 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { IoIosMore } from "react-icons/io";
-import { useParams } from "react-router-dom";
-import { SongAPI } from "../api";
 
-const SearchSongList = () => {
-  const [songs, setSongs] = useState([]);
+const SearchSongList = ({songs}) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [playingIndex, setPlayingIndex] = useState(null);
   const [isHoveredHeartIcon, setIsHoveredHeartIcon] = useState(null);
   const [likedSong, setLikedSong] = useState(null);
-  let params = useParams();
 
-  useEffect(() => {
-    const searchSong = async () => {
-      try {
-        const searchingSong = await SongAPI.searchSong(params.name);
-        setSongs(searchingSong.data.metadata.songs);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    searchSong();
-  }, [params.name]);
   const msToMinutesAndSeconds = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = ((ms % 60000) / 1000).toFixed(0);
@@ -37,12 +22,12 @@ const SearchSongList = () => {
   };
 
   return (
-    <div className=" flex flex-col pb-10 w-full">
+    <div className=" flex flex-col pb-[10px] w-full">
       <h2 className="text-[white] text-[24px] my-[16px] font-bold">Songs</h2>
       {songs.map((song, index) => {
         return (
           <div
-            className={`py-2 px-4 grid grid-cols-[0.2fr_2.5fr_2fr_1.5fr_1fr] ${
+            className={`py-[6px] pe-3 grid grid-cols-[0.1fr_2.5fr_2fr_1.5fr_1fr] ${
               selectedRow === index ? "" : "hover:bg-[#2a2929]"
             } rounded-[5px] ${selectedRow === index ? "bg-[#5a5959]" : ""}`}
             onClick={() => handleClickOnRow(index)}
@@ -50,16 +35,18 @@ const SearchSongList = () => {
             onMouseLeave={() => setHoveredIndex(null)}
             key={index}
           >
-            <div className="flex items-center text-[#dddcdc]">
+            <div className="relative flex items-center text-[#dddcdc]">
               {hoveredIndex === index ? (
-                <span>
+                <span className="absolute">
                   {playingIndex === index ? (
                     <FontAwesomeIcon
+                      className="ms-6"
                       icon={faPause}
                       onClick={() => setPlayingIndex(null)}
                     />
                   ) : (
                     <FontAwesomeIcon
+                      className="ms-6"
                       icon={faPlay}
                       onClick={() => setPlayingIndex(index)}
                     />
@@ -70,6 +57,7 @@ const SearchSongList = () => {
                   {playingIndex === index ? (
                     <FontAwesomeIcon
                       icon={faPause}
+                      className="ms-6"
                       onClick={() => setPlayingIndex(null)}
                       color="#1dd74c"
                     />
@@ -81,7 +69,7 @@ const SearchSongList = () => {
             </div>
 
             <div
-              className={`flex items-center  gap-2 overflow-hidden ${
+              className={`flex items-center gap-2 overflow-hidden ${
                 playingIndex === index ? "text-[#1dd74c]" : "text-[#dddcdc]"
               }`}
             >
@@ -89,11 +77,11 @@ const SearchSongList = () => {
                 <img src={song?.imageURL} alt="track" className="" />
               </div>
               <div className="flex flex-col w-[80%]">
-                <span className="whitespace-nowrap overflow-hidden text-ellipsis">
+                <span className="whitespace-nowrap overflow-hidden text-ellipsis text-[15px] font-semibold">
                   {song?.name}
                 </span>
-                <span className="whitespace-nowrap overflow-hidden text-ellipsis">
-                  {song?.singers?.map((item) => item.name + " ")}
+                <span className="whitespace-nowrap overflow-hidden text-ellipsis text-[15px] font-semibold">
+                  {song?.singers?.map((item) => item.name).join(", ")}
                 </span>
               </div>
             </div>
@@ -136,7 +124,7 @@ const SearchSongList = () => {
                     </div>
                   )}
 
-                  <div>{msToMinutesAndSeconds(10000)}</div>
+                  <div>{song.duration}</div>
                   <div>
                     <IoIosMore
                       size={20}
@@ -157,7 +145,7 @@ const SearchSongList = () => {
                         />
                       </div>
 
-                      <div>{msToMinutesAndSeconds(10000)}</div>
+                      <div>{song.duration}</div>
                       <div>
                         <IoIosMore size={20} color="white" />
                       </div>
@@ -171,7 +159,7 @@ const SearchSongList = () => {
                           color="gray"
                         />
                       </div>
-                      <div>{msToMinutesAndSeconds(10000)}</div>
+                      <div>{song.duration}</div>
                       <div>
                         <IoIosMore className="hidden" size={20} color="white" />
                       </div>
