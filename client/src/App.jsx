@@ -30,16 +30,20 @@ import Genre from "./components/Genre";
 import BodyAdmin from "./components/adminRole/BodyAdmin";
 export function App() {
   const dispatch = useDispatch();
-  const [user, setUser] = useState(" ");
+  const [user, setUser] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const getUserFunc = async () => {
       try {
+        setIsLoading(false);
         const res = await getUser();
         console.log(res);
         setUser(res.data.metadata.user);
         dispatch(setUserGlobal(res.data.metadata.user));
+        setIsLoading(true);
       } catch (err) {
         setUser("");
+        setIsLoading(true); 
         console.log(err);
       }
     };
@@ -54,7 +58,7 @@ export function App() {
               <Route
                 path="/home"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     {user.role === "admin" ? (
                       <BodyAdmin />
                     ) : user.role === "artist" ? (
@@ -66,7 +70,7 @@ export function App() {
                 }
               />
               <Route path="/status" element={<PageStatus />} />
-              <Route path="/login" element={<PageLogin />} />
+              <Route path="/login" element={<PageLogin isLoading={isLoading} user={user}/>} />
               <Route path="/signup" element={<PageSignUp />} />
               <Route path="/forgotPassword" element={<PageForgotPassword />} />
               <Route
@@ -76,7 +80,7 @@ export function App() {
               <Route
                 path="/"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     {user.role === "admin" ? (
                       <BodyAdmin />
                     ) : user.role === "artist" ? (
@@ -90,7 +94,7 @@ export function App() {
               <Route
                 path="/playlist/:id"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <TrackList />
                   </PageHome>
                 }
@@ -99,7 +103,7 @@ export function App() {
               <Route
                 path="/album/:id"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <Album />
                   </PageHome>
                 }
@@ -107,7 +111,7 @@ export function App() {
               <Route
                 path="/user/:id"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <Profile />
                   </PageHome>
                 }
@@ -115,7 +119,7 @@ export function App() {
               <Route
                 path="/createAlbum"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <CreateAlbum />
                   </PageHome>
                 }
@@ -123,7 +127,7 @@ export function App() {
               <Route
                 path="/createSong"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <CreateSong />
                   </PageHome>
                 }
@@ -131,7 +135,7 @@ export function App() {
               <Route
                 path="/search"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <SearchPage>
                       <SearchStartPage />
                     </SearchPage>
@@ -141,7 +145,7 @@ export function App() {
               <Route
                 path="/search/:name"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <SearchPage>
                       <SearchComponent />
                     </SearchPage>
@@ -151,7 +155,7 @@ export function App() {
               <Route
                 path="/search/:name/:type"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <SearchPage>
                       <SearchComponent />
                     </SearchPage>
@@ -161,7 +165,7 @@ export function App() {
               <Route
                 path="/artist/:id"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <Artist />
                   </PageHome>
                 }
@@ -169,7 +173,7 @@ export function App() {
               <Route
                 path="/section/:id"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <SectionDetail />
                   </PageHome>
                 }
@@ -177,7 +181,7 @@ export function App() {
               <Route
                 path="/content-feed"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <ContentFeed />
                   </PageHome>
                 }
@@ -185,7 +189,7 @@ export function App() {
               <Route
                 path="/genre/:id"
                 element={
-                  <PageHome>
+                  <PageHome isLoading={isLoading}>
                     <Genre />
                   </PageHome>
                 }

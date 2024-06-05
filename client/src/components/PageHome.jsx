@@ -42,7 +42,7 @@ const Container = styled.div`
     z-index: 5;
   }
 `;
-function PageHome({ children }) {
+function PageHome({ children, isLoading }) {
   const sidebarRef = useRef(null);
   const sidebarRef2 = useRef(null);
   const [isResizing, setIsResizing] = useState(false);
@@ -162,7 +162,7 @@ function PageHome({ children }) {
               <TopMenu />
             </div>
             <div className="library grow">
-              <Library />
+              <Library isLoading={isLoading} />
             </div>
           </div>
 

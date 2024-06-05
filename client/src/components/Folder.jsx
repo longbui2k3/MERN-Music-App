@@ -28,7 +28,7 @@ export default function Folder({
   };
   useEffect(() => {
     getChildOfFolderFunc();
-  }, [childs]);
+  }, []);
 
   useEffect(() => {
     if (

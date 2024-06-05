@@ -71,7 +71,7 @@ function useOutsideComponents(
   }, []);
 }
 
-const Library = () => {
+const Library = ({ isLoading }) => {
   const searchRef = useRef(null);
 
   const [isOpenVNCreateNew, setIsOpenVNCreateNew] = useState(false);
@@ -155,7 +155,7 @@ const Library = () => {
       try {
         const res = await getItemsByUserId({
           type: typeSearch.newType,
-          sort: sortBy.toLowerCase().split(" ").join("")
+          sort: sortBy.toLowerCase().split(" ").join(""),
         });
         if (res.data.status === 200) {
           setItems(res.data.metadata.items);
@@ -187,7 +187,9 @@ const Library = () => {
   }, [typeSearch]);
   const userGlobal = useSelector((state) => state.user.user);
   useEffect(() => {
-    if (userGlobal) setItems(userGlobal.items);
+    if (userGlobal) {
+      setItems(userGlobal.items);
+    }
   }, [userGlobal]);
   useEffect(() => {
     const getItemsByUser = async () => {
@@ -505,10 +507,7 @@ const Library = () => {
           ""
         )}
       </div>
-      {(items?.length === 0 &&
-        resizeStyle !== 1 &&
-        (!inputSearch || !typeSearch)) ||
-      !userGlobal ? (
+      {isLoading && !userGlobal ? (
         <>
           <div className="h-[300px] min-w-[300px] bg-[rgb(40,40,40)] rounded-md ms-1 me-3 text-white pt-5 ps-5 mb-5">
             <p className="font-semibold text-[17px] mb-2">
