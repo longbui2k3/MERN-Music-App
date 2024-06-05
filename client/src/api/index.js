@@ -36,5 +36,11 @@ export {
   addSongToLikedSongs,
   removeSongFromLikedSongs,
 } from "./LikedSongsAPI";
-export { searchLists } from "./SearchAPI";
+export {
+  searchLists,
+  searchSongs,
+  searchSingers,
+  searchAlbums,
+  searchPlaylists,
+} from "./SearchAPI";
 export { getChildOfFolder, createFolder } from "./FolderAPI";

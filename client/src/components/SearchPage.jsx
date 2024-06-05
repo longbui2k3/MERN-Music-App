@@ -25,19 +25,118 @@ const SearchPage = ({ children }) => {
       </div>
       {inputSearch ? (
         <div className="flex my-[15px] ps-[10px]">
-          <div className="rounded-[20px] py-[6px] px-[16px] bg-[rgb(35,35,35)] text-[15px] font-semibold text-white me-[10px]">
+          <div
+            className={`rounded-[20px] py-[6px] px-[16px] text-[15px] font-semibold me-[10px]`}
+            style={{
+              backgroundColor: `${!params.type ? "white" : "rgb(35,35,35)"}`,
+              color: `${!params.type ? "rgb(35,35,35)" : "white"}`,
+            }}
+            onClick={function (e) {
+              navigatePage(`/search/${inputSearch}`);
+            }}
+            onMouseOver={function (e) {
+              if (params.type) e.target.style.backgroundColor = "rgb(50,50,50)";
+            }}
+            onMouseOut={function (e) {
+              e.target.style.backgroundColor = `${
+                !params.type ? "white" : "rgb(35,35,35)"
+              }`;
+            }}
+          >
             All
           </div>
-          <div className="rounded-[20px] py-[6px] px-[16px] bg-[rgb(35,35,35)] text-[15px] font-semibold text-white me-[10px]">
+          <div
+            className="rounded-[20px] py-[6px] px-[16px] text-[15px] font-semibold me-[10px]"
+            style={{
+              background: `${
+                params.type === "songs" ? "white" : "rgb(35, 35, 35)"
+              }`,
+              color: `${params.type === "songs" ? "rgb(35,35,35)" : "white"}`,
+            }}
+            onClick={function (e) {
+              navigatePage(`/search/${inputSearch}/songs`);
+            }}
+            onMouseOver={function (e) {
+              if (params.type !== "songs")
+                e.target.style.backgroundColor = "rgb(50,50,50)";
+            }}
+            onMouseOut={function (e) {
+              e.target.style.backgroundColor = `${
+                params.type === "songs" ? "white" : "rgb(35,35,35)"
+              }`;
+            }}
+          >
             Songs
           </div>
-          <div className="rounded-[20px] py-[6px] px-[16px] bg-[rgb(35,35,35)] text-[15px] font-semibold text-white me-[10px]">
+          <div
+            className="rounded-[20px] py-[6px] px-[16px] text-[15px] font-semibold me-[10px]"
+            style={{
+              background: `${
+                params.type === "artists" ? "white" : "rgb(35, 35, 35)"
+              }`,
+              color: `${params.type === "artists" ? "rgb(35,35,35)" : "white"}`,
+            }}
+            onClick={function (e) {
+              navigatePage(`/search/${inputSearch}/artists`);
+            }}
+            onMouseOver={function (e) {
+              if (params.type !== "artists")
+                e.target.style.backgroundColor = "rgb(50,50,50)";
+            }}
+            onMouseOut={function (e) {
+              e.target.style.backgroundColor = `${
+                params.type === "artists" ? "white" : "rgb(35,35,35)"
+              }`;
+            }}
+          >
             Artists
           </div>
-          <div className="rounded-[20px] py-[6px] px-[16px] bg-[rgb(35,35,35)] text-[15px] font-semibold text-white me-[10px]">
+          <div
+            className="rounded-[20px] py-[6px] px-[16px] text-[15px] font-semibold me-[10px]"
+            style={{
+              background: `${
+                params.type === "albums" ? "white" : "rgb(35, 35, 35)"
+              }`,
+              color: `${params.type === "albums" ? "rgb(35,35,35)" : "white"}`,
+            }}
+            onClick={function (e) {
+              navigatePage(`/search/${inputSearch}/albums`);
+            }}
+            onMouseOver={function (e) {
+              if (params.type !== "albums")
+                e.target.style.backgroundColor = "rgb(50,50,50)";
+            }}
+            onMouseOut={function (e) {
+              e.target.style.backgroundColor = `${
+                params.type === "albums" ? "white" : "rgb(35,35,35)"
+              }`;
+            }}
+          >
             Albums
           </div>
-          <div className="rounded-[20px] py-[6px] px-[16px] bg-[rgb(35,35,35)] text-[15px] font-semibold text-white me-[10px]">
+          <div
+            className="rounded-[20px] py-[6px] px-[16px] text-[15px] font-semibold me-[10px]"
+            style={{
+              background: `${
+                params.type === "playlists" ? "white" : "rgb(35, 35, 35)"
+              }`,
+              color: `${
+                params.type === "playlists" ? "rgb(35,35,35)" : "white"
+              }`,
+            }}
+            onClick={function (e) {
+              navigatePage(`/search/${inputSearch}/playlists`);
+            }}
+            onMouseOver={function (e) {
+              if (params.type !== "playlists")
+                e.target.style.backgroundColor = "rgb(50,50,50)";
+            }}
+            onMouseOut={function (e) {
+              e.target.style.backgroundColor = `${
+                params.type === "playlists" ? "white" : "rgb(35,35,35)"
+              }`;
+            }}
+          >
             Playlists
           </div>
         </div>

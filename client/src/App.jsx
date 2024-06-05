@@ -149,6 +149,16 @@ export function App() {
                 }
               />
               <Route
+                path="/search/:name/:type"
+                element={
+                  <PageHome>
+                    <SearchPage>
+                      <SearchComponent />
+                    </SearchPage>
+                  </PageHome>
+                }
+              />
+              <Route
                 path="/artist/:id"
                 element={
                   <PageHome>

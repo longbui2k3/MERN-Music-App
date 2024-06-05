@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { AiOutlineHeart } from "react-icons/ai";
 import { IoIosMore } from "react-icons/io";
 
-const SearchSongList = ({songs}) => {
+const SearchSongList = ({ songs, removeTitle }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
   const [playingIndex, setPlayingIndex] = useState(null);
@@ -23,7 +23,11 @@ const SearchSongList = ({songs}) => {
 
   return (
     <div className=" flex flex-col pb-[10px] w-full">
-      <h2 className="text-[white] text-[24px] my-[16px] font-bold">Songs</h2>
+      {removeTitle ? (
+        ""
+      ) : (
+        <h2 className="text-[white] text-[24px] my-[16px] font-bold">Songs</h2>
+      )}
       {songs.map((song, index) => {
         return (
           <div

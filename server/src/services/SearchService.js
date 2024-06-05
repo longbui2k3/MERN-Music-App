@@ -40,9 +40,21 @@ class SearchService {
       })
     );
     resultMusiclists = resultMusiclists.filter((musiclist) => {
-      return musiclist.type === "Album" || musiclist.musiclist_attributes?.user?.role === "admin";
+      return (
+        musiclist.type === "Album" ||
+        musiclist.musiclist_attributes?.user?.role === "admin"
+      );
     });
     return resultMusiclists.splice(0, limit);
+  }
+
+  async searchAlbums({ search, limit }) {
+    const musiclists = await this.searchMusiclists({ search, limit });
+    return musiclists.filter((list) => list.type === "Album");
+  }
+  async searchPlaylists({ search, limit }) {
+    const musiclists = await this.searchMusiclists({ search, limit });
+    return musiclists.filter((list) => list.type === "Playlist");
   }
   async searchSingers({ search, limit }) {
     const resSingers = await fetchSearchURL("singers", search);
