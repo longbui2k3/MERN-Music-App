@@ -28,7 +28,7 @@ const SearchSongList = ({ songs, removeTitle }) => {
       ) : (
         <h2 className="text-[white] text-[24px] my-[16px] font-bold">Songs</h2>
       )}
-      {songs.map((song, index) => {
+      {songs?.map((song, index) => {
         return (
           <div
             className={`py-[6px] pe-3 grid grid-cols-[0.1fr_2.5fr_2fr_1.5fr_1fr] ${

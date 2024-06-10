@@ -21,17 +21,19 @@ const SearchComponent = () => {
   const [artists, setArtists] = useState([]);
   const [albums, setAlbums] = useState([]);
   const [playlists, setPlaylists] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const search = async () => {
       try {
+        setIsLoading(false);
         if (params.type === "songs") {
-          const searching = await searchSongs(params.type);
+          const searching = await searchSongs(params.name);
           setSongs(searching.data.metadata.songs);
         } else if (params.type === "playlists") {
-          const searching = await searchPlaylists(params.type);
+          const searching = await searchPlaylists(params.name);
           setPlaylists(searching.data.metadata.playlists);
         } else if (params.type === "albums") {
-          const searching = await searchAlbums(params.type);
+          const searching = await searchAlbums(params.name);
           setAlbums(searching.data.metadata.albums);
         } else if (params.type === "artists") {
           const searching = await searchSingers(params.name);
@@ -44,15 +46,18 @@ const SearchComponent = () => {
           setAlbums(searching.data.metadata.lists.albums);
           setPlaylists(searching.data.metadata.lists.playlists);
         }
+        setIsLoading(true);
       } catch (error) {
         console.log(error);
       }
     };
     search();
-  }, [params.name]);
+  }, [params.name, params.type]);
   return (
     <>
-      {params.type === "artists" ? (
+      {!isLoading ? (
+        ""
+      ) : params.type === "artists" ? (
         <div
           style={{
             lineHeight: "64px",

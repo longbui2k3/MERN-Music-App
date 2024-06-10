@@ -5,14 +5,16 @@ const { fetchSearchURL } = require("../utils/elasticsearch");
 class SearchService {
   async searchLists({ search }) {
     const [musiclists, singers, songs] = await Promise.all([
-      this.searchMusiclists({ search, limit: 5 }),
+      this.searchMusiclists({ search }),
       this.searchSingers({ search, limit: 5 }),
       this.searchSongs({ search, limit: 4 }),
     ]);
 
     return {
-      albums: musiclists.filter((list) => list.type === "Album"),
-      playlists: musiclists.filter((list) => list.type === "Playlist"),
+      albums: musiclists.filter((list) => list.type === "Album").slice(0, 5),
+      playlists: musiclists
+        .filter((list) => list.type === "Playlist")
+        .slice(0, 5),
       singers,
       songs,
     };
@@ -45,7 +47,8 @@ class SearchService {
         musiclist.musiclist_attributes?.user?.role === "admin"
       );
     });
-    return resultMusiclists.splice(0, limit);
+    if (limit) return resultMusiclists.slice(0, limit);
+    return resultMusiclists;
   }
 
   async searchAlbums({ search, limit }) {
@@ -65,7 +68,8 @@ class SearchService {
         return value;
       })
     );
-    return resultSingers.splice(0, limit);
+    if (limit) return resultSingers.slice(0, limit);
+    return resultSingers;
   }
 
   async searchSongs({ search, limit }) {
@@ -82,7 +86,8 @@ class SearchService {
         return value;
       })
     );
-    return resultSongs.splice(0, limit);
+    if (limit) return resultSongs.slice(0, limit);
+    return resultSongs;
   }
 }
 
