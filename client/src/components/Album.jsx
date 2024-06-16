@@ -6,15 +6,26 @@ import { getAlbumById, getAllAlbums } from "../api";
 import { useParams } from "react-router-dom";
 import SongItem from "./SongItem";
 import SongListItem from "./SongListItem";
+import { useSelector } from "react-redux";
+import { NavigateAuth } from "../context/NavigateContext";
 
 export default function Album() {
   let params = useParams();
+  const { navigatePage } = NavigateAuth();
   const [album, setAlbum] = useState({});
   const [songs, setSongs] = useState([]);
   const [selectedRow, setSelectedRow] = useState(null);
   const [likedSongs, setLikedSongs] = useState(null);
   const [moreAlbums, setMoreAlbums] = useState([]);
 
+  const [columnCount, setColumnCount] = useState(6);
+  const sidebarSize = useSelector((state) => state.resize.sidebarSize);
+  const appContainerSize = useSelector(
+    (state) => state.resize.appContainerSize
+  );
+  useEffect(() => {
+    setColumnCount(Math.floor((appContainerSize - sidebarSize) / 230));
+  }, [sidebarSize]);
   useEffect(() => {
     const getAlbumFunc = async () => {
       try {
@@ -91,11 +102,25 @@ export default function Album() {
           <h2 className="cursor-pointer hover:underline">
             More of {album?.musiclist_attributes?.singers[0]?.name}
           </h2>
-          <div className="text-[#B3B3B3] text-[14px] cursor-pointer hover:underline">
+          <div
+            className="text-[#B3B3B3] text-[14px] cursor-pointer hover:underline"
+            onClick={function (e) {
+              navigatePage(
+                `/artist/${album?.musiclist_attributes?.singers[0]._id}/discography`
+              );
+            }}
+          >
             See discography
           </div>
         </div>
-        <div className="mx-8 mb-3 flex gap-4 flex-wrap overflow-hidden">
+        <div
+          // className="mx-8 mb-3 flex gap-4 flex-wrap overflow-hidden"
+          className="mx-8 mb-3 grid-songs grid gap-4 overflow-hidden"
+          style={{
+            gridTemplateColumns: `repeat(${columnCount},minmax(0,1fr))`,
+            // gridAutoFlow: "row dense",
+          }}
+        >
           {moreAlbums?.map((item, index) =>
             item && item._id !== album._id ? (
               <SongListItem key={index} musicList={item} />

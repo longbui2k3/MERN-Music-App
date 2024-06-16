@@ -1,8 +1,8 @@
 module.exports = {
-  apiKey: "AIzaSyAz_-N20aKrjSmxtJsWJE3ylhC7dA-CX7s",
-  authDomain: "auth-music-app.firebaseapp.com",
-  projectId: "auth-music-app",
-  storageBucket: "auth-music-app.appspot.com",
-  messagingSenderId: "779072786560",
-  appId: "1:779072786560:web:633111d0463bf129c85665",
+  apiKey: process.env.FIREBASE_APIKEY,
+  authDomain: process.env.FIREBASE_AUTHDOMAIN,
+  projectId: process.env.FIREBASE_PROJECTID,
+  storageBucket: process.env.FIREBASE_STORAGEBUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
+  appId: process.env.FIREBASE_APPID,
 };

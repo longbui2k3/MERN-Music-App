@@ -4,8 +4,7 @@ const fetchSearchURL = async (type, search) => {
     {
       method: "POST",
       headers: {
-        Authorization:
-          "ApiKey WWJtVjNZOEJyZzNKcWU0eHhPTU06aEtvRkMzLTFTUGVkdUJUWmhxOTk2UQ==",
+        Authorization: `ApiKey ${process.env.ELASTICSEARCH_APIKEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

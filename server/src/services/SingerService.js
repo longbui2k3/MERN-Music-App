@@ -2,6 +2,7 @@
 const { Types } = require("mongoose");
 const { BadRequestError } = require("../core/errorResponse");
 const Singer = require("../models/singerModel");
+const songModel = require("../models/songModel");
 class SingerService {
   async getAllSingers({ search }) {
     return await Singer.find({ name: { $regex: search || "" } })
@@ -51,6 +52,33 @@ class SingerService {
 
   async deleteSinger({ id }) {
     await Singer.findByIdAndDelete(id);
+  }
+
+  async getAlbumBySinger({ id }) {
+    const singer = await Singer.findById(id)
+      .populate({
+        path: "musicLists",
+        populate: {
+          path: "musiclist_attributes",
+          select: { name_embedding: 0 },
+        },
+        select: { name_embedding: 0, songs: 0 },
+      })
+      .populate()
+      .select({ name_embedding: 0 })
+      .lean();
+    singer.musicLists = singer.musicLists.filter(
+      (musicList) => musicList.type === "Album"
+    );
+    singer.musicLists = await Promise.all(
+      singer.musicLists.map(async (musicList) => {
+        musicList.songs = await songModel
+          .find({ album: musicList._id })
+          .select({ name_embedding: 0 });
+        return musicList;
+      })
+    );
+    return singer.musicLists;
   }
 }
 

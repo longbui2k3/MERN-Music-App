@@ -7,6 +7,7 @@ const router = express.Router();
 
 
 router.route("/").get(asyncHandler(SingerController.getAllSingers));
+router.route("/:id/album").get(asyncHandler(SingerController.getAlbumBySinger));
 router.route("/:id").get(asyncHandler(SingerController.getSinger));
 
 router.use(protect);

@@ -140,6 +140,13 @@ function PageHome({ children, isLoading }) {
       })
     );
   }, [sidebarRef.current?.getBoundingClientRect().width]);
+
+  const [discography, setDiscography] = useState(false);
+  useEffect(() => {
+    if (window.location.href.includes("discography")) {
+      setDiscography(true);
+    } else setDiscography(false);
+  }, [window.location.href]);
   return (
     <Container>
       {editPlaylist ? (
@@ -170,8 +177,13 @@ function PageHome({ children, isLoading }) {
         </div>
         <div className="app-frame">
           <Header />
-          <div className="body h-full">
-            <div className="body_content">{children}</div>
+          <div
+            className="body h-full"
+            style={{
+              marginTop: `-70px`,
+            }}
+          >
+            <div className="body_content pt-[70px]">{children}</div>
             <div>
               <Footer />
             </div>

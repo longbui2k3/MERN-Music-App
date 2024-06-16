@@ -7,6 +7,7 @@ import editFormSlice from "../features/editForm/editFormSlice";
 import updateSlice from "../features/update/updateSlice";
 import queueSlice from "../features/queue/queueSlice";
 import resizeSlice from "../features/resize/resizeSlice";
+import discographySlice from "../features/discography/discographySlice";
 export default configureStore({
   reducer: {
     signUp: signUpReducer,
@@ -17,5 +18,6 @@ export default configureStore({
     update: updateSlice,
     queue: queueSlice,
     resize: resizeSlice,
+    discography: discographySlice,
   },
 });

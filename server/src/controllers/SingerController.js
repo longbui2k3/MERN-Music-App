@@ -68,6 +68,19 @@ class SingerController {
       message: "Delete singer successfully!",
     }).send(res);
   };
+
+  static getAlbumBySinger = async (req, res, next) => {
+    const albums = await SingerService.getAlbumBySinger({
+      id: req.params.id,
+    });
+
+    new OK({
+      message: "Get album by singer successfully!",
+      metadata: {
+        albums,
+      },
+    }).send(res);
+  };
 }
 
 module.exports = SingerController;

@@ -28,6 +28,7 @@ import SectionDetail from "./components/SectionDetail";
 import ContentFeed from "./components/ContentFeed";
 import Genre from "./components/Genre";
 import BodyAdmin from "./components/adminRole/BodyAdmin";
+import { Discography } from "./components/Discography";
 export function App() {
   const dispatch = useDispatch();
   const [user, setUser] = useState("");
@@ -70,7 +71,10 @@ export function App() {
                 }
               />
               <Route path="/status" element={<PageStatus />} />
-              <Route path="/login" element={<PageLogin isLoading={isLoading} user={user}/>} />
+              <Route
+                path="/login"
+                element={<PageLogin isLoading={isLoading} user={user} />}
+              />
               <Route path="/signup" element={<PageSignUp />} />
               <Route path="/forgotPassword" element={<PageForgotPassword />} />
               <Route
@@ -163,6 +167,14 @@ export function App() {
                 }
               />
               <Route
+                path="/artist/:id/discography"
+                element={
+                  <PageHome isLoading={isLoading}>
+                    <Discography />
+                  </PageHome>
+                }
+              />
+              <Route
                 path="/artist/:id"
                 element={
                   <PageHome isLoading={isLoading}>
@@ -170,6 +182,7 @@ export function App() {
                   </PageHome>
                 }
               />
+
               <Route
                 path="/section/:id"
                 element={

@@ -4,7 +4,6 @@ import {
   addSongToPlaylist,
   addSongsToPlaylist,
   createPlaylist,
-  getMusicListsByUserId,
   getUser,
 } from "../api";
 import { useDispatch, useSelector } from "react-redux";
