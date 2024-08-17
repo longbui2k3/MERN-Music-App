@@ -1,6 +1,6 @@
 "use strict";
 const jwt = require("jsonwebtoken");
-
+const crypto = require("crypto");
 const DOCUMENT_NAME = {
   GENRE: "Genre",
   MUSICLIST: "MusicList",
@@ -14,6 +14,7 @@ const DOCUMENT_NAME = {
   PLAYLISTSONG: "PlaylistSong",
   FOLDER: "Folder",
   FOLDERMUSICLIST: "FolderMusiclist",
+  KEYTOKEN: "KeyToken",
 };
 
 const COLLECTION_NAME = {
@@ -28,15 +29,20 @@ const COLLECTION_NAME = {
   LIKEDSONGS: "likedsongs",
   PLAYLISTSONG: "playlistsongs",
   FOLDER: "folders",
-  FOLDERMUSICLIST: "foldermusiclists"
+  FOLDERMUSICLIST: "foldermusiclists",
+  KEYTOKEN: "keytokens",
 };
 
 const LIKEDSONGS_IMAGE_URL =
   "https://firebasestorage.googleapis.com/v0/b/auth-music-app.appspot.com/o/likedsongs%2Fliked-songs-640.png?alt=media&token=ee40dd54-6533-4df6-93b5-61e4d6b75f82";
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "30d",
+const generateKey = () => {
+  return crypto.randomBytes(64).toString("hex");
+};
+
+const generateToken = async (payload, key, expiresIn) => {
+  return await jwt.sign(payload, key, {
+    expiresIn: expiresIn,
   });
 };
 
@@ -45,4 +51,5 @@ module.exports = {
   COLLECTION_NAME,
   LIKEDSONGS_IMAGE_URL,
   generateToken,
+  generateKey,
 };

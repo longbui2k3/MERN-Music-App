@@ -43,7 +43,7 @@ class UserService {
       );
     }
     const checkExistsFavoriteMusicList = await User.findOne({
-      _id: user._id,
+      _id: user.userId,
       musicLists: { $elemMatch: { musicList: musicListId } },
     });
     if (checkExistsFavoriteMusicList) {
@@ -51,7 +51,7 @@ class UserService {
     }
 
     const updatedUser = await User.findByIdAndUpdate(
-      user._id,
+      user.userId,
       {
         $push: {
           musicLists: {
@@ -77,14 +77,14 @@ class UserService {
     }
 
     const checkExistsFavoriteMusicList = await User.findOne({
-      _id: user._id,
+      _id: user.userId,
       musicLists: { $elemMatch: { musicList: musicListId } },
     });
     if (!checkExistsFavoriteMusicList) {
       throw new BadRequestError("Musiclist is not in your favorite list!");
     }
     const updatedUser = await User.findByIdAndUpdate(
-      user._id,
+      user.userId,
       {
         $pull: { musicLists: { musicList: musicListId } },
       },
@@ -513,7 +513,7 @@ class UserService {
       );
     }
     const checkExistsFollowSinger = await User.findOne({
-      _id: user._id,
+      _id: user.userId,
       singers: { $elemMatch: { singer: singerId } },
     });
     if (checkExistsFollowSinger) {
@@ -521,7 +521,7 @@ class UserService {
     }
 
     const updatedUser = await User.findByIdAndUpdate(
-      user._id,
+      user.userId,
       {
         $push: {
           singers: {
@@ -548,14 +548,14 @@ class UserService {
     }
 
     const checkExistsFollowSinger = await User.findOne({
-      _id: user._id,
+      _id: user.userId,
       singers: { $elemMatch: { singer: singerId } },
     });
     if (!checkExistsFollowSinger) {
       throw new BadRequestError("Singer hasn't been followed!");
     }
     const updatedUser = await User.findByIdAndUpdate(
-      user._id,
+      user.userId,
       {
         $pull: { singers: { singer: singerId } },
       },

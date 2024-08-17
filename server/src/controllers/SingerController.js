@@ -26,7 +26,7 @@ class SingerController {
     }).send(res);
   };
   static getSingerByUser = async (req, res, next) => {
-    const singer = await SingerService.getSingerByUser({ _id: req.user._id });
+    const singer = await SingerService.getSingerByUser({ _id: req.user.userId });
 
     new OK({
       message: "Get singer by user successfully!",

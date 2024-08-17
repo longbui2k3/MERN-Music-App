@@ -1,0 +1,1915 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Spotifree",
+    "description": "API endpoints for music app",
+    "contact": {
+      "name": "Long Bui",
+      "email": "buiduclongit@gmail.com",
+      "url": "https://github.com/longbui2k3/MERN-Music-App"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000/api/v1",
+      "description": "Local server"
+    }
+  ],
+  "paths": {
+    "/docs.json": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/user/musiclists": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get musiclists by user id",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/user/items": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get items by user id",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/user/me": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get user by user id",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/user/newInfo": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get new info from followed singers",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/user/favorite": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Add favorite musiclist",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/user/favorite/{musicList}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Remove favorite musiclist",
+        "description": "",
+        "parameters": [
+          {
+            "name": "musicList",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/user/follow": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Follow singer",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/user/follow/{singer}": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Unfollow singer",
+        "description": "",
+        "parameters": [
+          {
+            "name": "singer",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/singer/": {
+      "get": {
+        "tags": [
+          "Singer"
+        ],
+        "summary": "Get all singers",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Singer"
+        ],
+        "summary": "Create singer",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/singer/{id}/album": {
+      "get": {
+        "tags": [
+          "Singer"
+        ],
+        "summary": "Get album by singer",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/singer/{id}": {
+      "get": {
+        "tags": [
+          "Singer"
+        ],
+        "summary": "Get singer",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Singer"
+        ],
+        "summary": "Delete singer",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Singer"
+        ],
+        "summary": "Update singer",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/singer/songs/all": {
+      "get": {
+        "tags": [
+          "Singer"
+        ],
+        "summary": "Get singer by user",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/genre/": {
+      "get": {
+        "tags": [
+          "Genre"
+        ],
+        "summary": "Get genres",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Genre"
+        ],
+        "summary": "Create genre",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/genre/{id}": {
+      "get": {
+        "tags": [
+          "Genre"
+        ],
+        "summary": "Get genre by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Genre"
+        ],
+        "summary": "Update genre",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Genre"
+        ],
+        "summary": "Delete genre",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/album/{albumId}": {
+      "get": {
+        "tags": [
+          "Album"
+        ],
+        "summary": "Get album by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "albumId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/album/": {
+      "get": {
+        "tags": [
+          "Album"
+        ],
+        "summary": "Get all albums",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Album"
+        ],
+        "summary": "Create album",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/section/": {
+      "get": {
+        "tags": [
+          "Section"
+        ],
+        "summary": "Get all sections",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Section"
+        ],
+        "summary": "Create section",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/section/{sectionId}": {
+      "get": {
+        "tags": [
+          "Section"
+        ],
+        "summary": "Get section by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "sectionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Section"
+        ],
+        "summary": "Delete section",
+        "description": "",
+        "parameters": [
+          {
+            "name": "sectionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Section"
+        ],
+        "summary": "Update section",
+        "description": "",
+        "parameters": [
+          {
+            "name": "sectionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/section/musiclist": {
+      "post": {
+        "tags": [
+          "Section"
+        ],
+        "summary": "Add musiclist to lists",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/section/singer": {
+      "post": {
+        "tags": [
+          "Section"
+        ],
+        "summary": "Add singer to lists",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/song/": {
+      "get": {
+        "tags": [
+          "Song"
+        ],
+        "summary": "Get all songs",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Song"
+        ],
+        "summary": "Create song",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/song/{id}": {
+      "get": {
+        "tags": [
+          "Song"
+        ],
+        "summary": "Get song",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/playlist/{playlistId}": {
+      "get": {
+        "tags": [
+          "Playlist"
+        ],
+        "summary": "Get playlist by id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "playlistId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/playlist/songs/multiple": {
+      "post": {
+        "tags": [
+          "Playlist"
+        ],
+        "summary": "Add songs to playlist",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/playlist/songs": {
+      "post": {
+        "tags": [
+          "Playlist"
+        ],
+        "summary": "Add song to playlist",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/playlist/": {
+      "post": {
+        "tags": [
+          "Playlist"
+        ],
+        "summary": "Create playlist",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Playlist"
+        ],
+        "summary": "Update playlist",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/likedsongs/songs": {
+      "post": {
+        "tags": [
+          "Liked Songs"
+        ],
+        "summary": "Add song to liked songs",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/likedsongs/songs/{songId}": {
+      "delete": {
+        "tags": [
+          "Liked Songs"
+        ],
+        "summary": "Remove song from liked songs",
+        "description": "",
+        "parameters": [
+          {
+            "name": "songId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/likedsongs/user": {
+      "get": {
+        "tags": [
+          "Liked Songs"
+        ],
+        "summary": "Get liked songs by user",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/search/songs": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search songs",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/search/albums": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search albums",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/search/playlists": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search playlists",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/search/singers": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search artists",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/search/": {
+      "get": {
+        "tags": [
+          "Search"
+        ],
+        "summary": "Search lists",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/folder/": {
+      "post": {
+        "tags": [
+          "Folder"
+        ],
+        "summary": "Create folder",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/folder/childs": {
+      "get": {
+        "tags": [
+          "Folder"
+        ],
+        "summary": "Get childs of folder",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    },
+    "/signup": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Sign Up",
+        "description": "",
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signUpResponse201Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signUpResponse400Schema"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/signUpBodySchema"
+              },
+              "examples": {
+                "Normal": {
+                  "$ref": "#/components/examples/signUpNormalExample"
+                },
+                "Facebook": {
+                  "$ref": "#/components/examples/signUpFacebookExample"
+                },
+                "Google": {
+                  "$ref": "#/components/examples/signUpGoogleExample"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/forgotPassword": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Forgot Password",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forgotPasswordResponse200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forgotPasswordResponse400Schema"
+                }
+              }
+            }
+          },
+          "424": {
+            "description": "Failed Dependency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/forgotPasswordResponse424Schema"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/forgotPasswordBodySchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resetPassword/{token}": {
+      "patch": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Reset Password",
+        "description": "",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Reset Password Token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/resetPasswordResponse200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/resetPasswordResponse400Schema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Auth Failure",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/resetPasswordResponse401Schema"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/resetPasswordBodySchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/checkExistEmail": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Check exist email",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/checkEmailExistsResponse200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/checkEmailExistsResponse400Schema"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/checkEmailExistsBodySchema"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Login",
+        "description": "",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of account",
+            "schema": {
+              "$ref": "#/components/schemas/logInType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/logInResponse200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/signUpResponse400Schema"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/logInBodySchema"
+              },
+              "examples": {
+                "Normal": {
+                  "$ref": "#/components/examples/logInNormalExample"
+                },
+                "Facebook": {
+                  "$ref": "#/components/examples/logInFacebookExample"
+                },
+                "Google": {
+                  "$ref": "#/components/examples/logInGoogleExample"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Log out",
+        "description": "",
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": [],
+            "clientId": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "signUpBodySchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Your Name"
+          },
+          "email": {
+            "type": "string",
+            "example": "youremail@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": ""
+          },
+          "gender": {
+            "type": "string",
+            "default": "Prefer not to say",
+            "enum": [
+              "Man",
+              "Woman",
+              "Non-binary",
+              "Something else",
+              "Prefer not to say"
+            ]
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "example": ""
+          },
+          "typeOfAccount": {
+            "type": "string",
+            "default": "normal",
+            "enum": [
+              "normal",
+              "google",
+              "facebook"
+            ]
+          },
+          "uid": {
+            "type": "string",
+            "example": ""
+          },
+          "avatar": {
+            "type": "string",
+            "example": ""
+          },
+          "federatedId": {
+            "type": "string",
+            "example": ""
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "gender",
+          "dateOfBirth",
+          "typeOfAccount"
+        ]
+      },
+      "signUpResponse201Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 201
+          },
+          "message": {
+            "type": "string",
+            "example": "Sign up successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "tokens": {
+                "type": "object",
+                "properties": {
+                  "accessToken": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "accessToken",
+                  "refreshToken"
+                ]
+              },
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "typeOfAccount": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "name",
+                  "email",
+                  "role",
+                  "typeOfAccount",
+                  "dateOfBirth",
+                  "gender"
+                ]
+              }
+            },
+            "required": [
+              "tokens",
+              "user"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "signUpResponse400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "string"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "logInBodySchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "youremail@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": ""
+          },
+          "authentication": {
+            "type": "string",
+            "example": ""
+          },
+          "federatedId": {
+            "type": "string",
+            "example": ""
+          }
+        }
+      },
+      "logInType": {
+        "type": "string",
+        "default": "normal",
+        "enum": [
+          "google",
+          "facebook",
+          "normal"
+        ]
+      },
+      "logInResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Log in successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "tokens": {
+                "type": "object",
+                "properties": {
+                  "accessToken": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "accessToken",
+                  "refreshToken"
+                ]
+              },
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "typeOfAccount": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "name",
+                  "email",
+                  "role",
+                  "typeOfAccount"
+                ]
+              }
+            },
+            "required": [
+              "tokens",
+              "user"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "forgotPasswordBodySchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "youremail@gmail.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "forgotPasswordResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Password reset email sent"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "forgotPasswordResponse400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "No account with the supplied email exists!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "forgotPasswordResponse424Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 424
+          },
+          "message": {
+            "type": "string",
+            "example": "Password reset email failed!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "resetPasswordBodySchema": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "string"
+          },
+          "passwordConfirm": {
+            "type": "string",
+            "example": "string"
+          }
+        },
+        "required": [
+          "password",
+          "passwordConfirm"
+        ]
+      },
+      "resetPasswordResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Reset password successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "tokens": {
+                "type": "object",
+                "properties": {
+                  "accessToken": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "accessToken",
+                  "refreshToken"
+                ]
+              },
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "typeOfAccount": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "name",
+                  "email",
+                  "role",
+                  "typeOfAccount",
+                  "dateOfBirth",
+                  "gender"
+                ]
+              }
+            },
+            "required": [
+              "tokens",
+              "user"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "resetPasswordResponse400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "string"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "resetPasswordResponse401Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "string"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "checkEmailExistsBodySchema": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "youremail@gmail.com"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "checkEmailExistsResponse400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Email has already existed!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "checkEmailExistsResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "OK"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {}
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      }
+    },
+    "examples": {
+      "signUpNormalExample": {
+        "summary": "Normal",
+        "value": {
+          "name": "Long",
+          "email": "mernmusicapp@gmail.com",
+          "typeOfAccount": "normal",
+          "password": "12345678",
+          "dateOfBirth": "2003-09-04",
+          "gender": "Man"
+        }
+      },
+      "signUpGoogleExample": {
+        "summary": "Google",
+        "value": {
+          "name": "App Music",
+          "email": "mernmusicapp@gmail.com",
+          "typeOfAccount": "google",
+          "avatar": "https://lh3.googleusercontent.com/a/ACg8ocJ0-h2Qn4tn1pd-FwX3Id-3WuhLmPudV8uiOKnbEq_WfEOKww=s100-c",
+          "dateOfBirth": "2003-04-12",
+          "gender": "Man",
+          "uid": "FFpqbYnYhHX8DwcjxtafMI9GSnN2"
+        }
+      },
+      "signUpFacebookExample": {
+        "summary": "Facebook",
+        "value": {
+          "name": "Bui Duc Long",
+          "email": "mernmusicapp@gmail.com",
+          "typeOfAccount": "facebook",
+          "avatar": "https://graph.facebook.com/1412679882990798/picture?width=100&height=100",
+          "dateOfBirth": "2003-09-12",
+          "gender": "Man",
+          "federatedId": "1412679882990798",
+          "uid": "VxCjRonU3ONqGLc08DNIzqrACol2"
+        }
+      },
+      "logInNormalExample": {
+        "summary": "Normal",
+        "value": {
+          "email": "tranvanc@gmail.com",
+          "password": "123"
+        }
+      },
+      "logInGoogleExample": {
+        "summary": "Google",
+        "value": {
+          "email": "buiduclong911@gmail.com",
+          "authentication": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNlMzcxNzMwZWY4NmViYT…1e8yVMcBKXuAwIE0mezpVN2KrO3nBdDT3PHLoybbzwXXM3S_A"
+        }
+      },
+      "logInFacebookExample": {
+        "summary": "Facebook",
+        "value": {
+          "authentication": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImNlMzcxNzMwZWY4NmViYT…Fvyp-dCTGjzbllDc5AP0neWsJZLvaeA4sSyee5XujxddimIfg",
+          "federatedId": "1412679882990798"
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "authorization",
+        "description": "API Key"
+      },
+      "clientId": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-client-id",
+        "description": "Client ID (User ID)"
+      }
+    }
+  }
+}

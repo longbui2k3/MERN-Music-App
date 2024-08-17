@@ -17,7 +17,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 require("./database/initMongodb");
-
 app.use("/api/v1", require("./routers"));
 
 // Page Not found
@@ -32,8 +31,7 @@ app.use((error, req, res, next) => {
   // console.log("Err", error.stack);
   const statusCode = error.status || 500;
   return res.status(statusCode).json({
-    status: "error",
-    code: statusCode,
+    status: statusCode,
     stack: error.stack,
     message: error.message || "Internal Server Error",
   });

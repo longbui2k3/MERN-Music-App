@@ -1,10 +1,10 @@
-const { generateToken } = require("../configs");
+const { generateKey } = require("../configs");
 const transporter = require("../configs/transporter");
 const { FailedDependencyError } = require("../core/errorResponse");
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const sendResetEmail = async (user) => {
-  const resetString = generateToken(user._id);
+  const resetString = generateKey();
 
   user.resetToken = null;
   const mailOptions = {

@@ -11,7 +11,7 @@ class LikedSongsController {
     const updatedLikedSongs = await MusicListFactory.addSongToMusicList({
       type: "LikedSongs",
       song: req.body.song,
-      userId: req.user.id,
+      userId: req.user.userId,
     });
     new CREATED({
       message: "Add to liked songs successfully!",
@@ -25,7 +25,7 @@ class LikedSongsController {
     const updatedLikedSongs = await MusicListFactory.removeSongFromMusicList({
       type: "LikedSongs",
       song: req.params.songId,
-      userId: req.user.id,
+      userId: req.user.userId,
     });
 
     new OK({
@@ -37,7 +37,7 @@ class LikedSongsController {
   static getPlaylistByUser = async (req, res, next) => {
     const likedSongs = await PlaylistFactory.getPlaylistByUser({
       type: "LikedSongs",
-      user: req.user.id,
+      user: req.user.userId,
     });
 
     new OK({

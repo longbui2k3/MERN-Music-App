@@ -1,37 +1,59 @@
 "use strict";
 const jwt = require("jsonwebtoken");
-const User = require("../models/userModel");
-const { AuthFailureError, ForbiddenError } = require("../core/errorResponse");
+const { AuthFailureError, ForbiddenError, NotFoundError } = require("../core/errorResponse");
 const asyncHandler = require("../helpers/asyncHandler");
+const { generateToken } = require("../configs");
+const KeytokenService = require("../services/KeytokenService");
+const HEADER = {
+  API_KEY: "x-api-key",
+  CLIENT_ID: "x-client-id",
+  AUTHORIZATION: "authorization",
+  REFRESHTOKEN: "x-rtoken-id",
+};
 const protect = asyncHandler(async (req, res, next) => {
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
+  const userId = req.headers[HEADER.CLIENT_ID];
+  if (!userId) {
+    throw new AuthFailureError("Invalid Request!");
   }
-  if (!token) {
-    throw new AuthFailureError(
-      "You are not logged in! Please log in to get access."
-    );
+  const keyStore = await KeytokenService.findByUserId(userId);
+  if (!keyStore) {
+    throw new NotFoundError("Not Found KeyStore!");
   }
-  try {
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findOne({ _id: decoded.id });
-
-    if (!user) {
-      throw new AuthFailureError(
-        "The user belonging to this token does no longer exist."
-      );
+  if (req.headers[HEADER.REFRESHTOKEN]) {
+    const refreshToken = req.headers[HEADER.REFRESHTOKEN];
+    if (!refreshToken) {
+      throw new AuthFailureError("Invalid Request!");
     }
-    req.user = user;
-    next();
-  } catch (err) {
-    throw new AuthFailureError("Invalid token!");
+    try {
+      const decodeUser = jwt.verify(refreshToken, keyStore.privateKey);
+      if (userId !== decodeUser.userId) {
+        throw new AuthFailureError("Invalid UserId");
+      }
+      req.keyStore = keyStore;
+      req.user = decodeUser;
+      req.refreshToken = refreshToken;
+      return next();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  const accessToken = req.headers[HEADER.AUTHORIZATION];
+  if (!accessToken) {
+    throw new AuthFailureError("Invalid Request!");
+  }
+
+  try {
+    const decodeUser = jwt.verify(accessToken, keyStore.publicKey);
+    if (userId !== decodeUser.userId) {
+      throw new AuthFailureError("Invalid UserId");
+    }
+    req.keyStore = keyStore;
+    req.user = decodeUser;
+    return next();
+  } catch (error) {
+    throw error;
   }
 });
 
@@ -56,4 +78,15 @@ const getMe = (req, res, next) => {
   }
 };
 
-module.exports = { protect, restrictTo, getMe };
+const createTokenPair = async (payload, publicKey, privateKey) => {
+  try {
+    const accessToken = await generateToken(payload, publicKey, "2 days");
+    const refreshToken = await generateToken(payload, privateKey, "7 days");
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    throw new AuthFailureError("Something went wrong!");
+  }
+};
+
+module.exports = { protect, restrictTo, getMe, createTokenPair };

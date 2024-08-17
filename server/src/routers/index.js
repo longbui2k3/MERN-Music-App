@@ -10,8 +10,15 @@ const playlistRouter = require("./playlistRouter");
 const likedSongsRouter = require("./likedSongsRouter");
 const searchRouter = require("./searchRouter");
 const folderRouter = require("./folderRouter");
+const swaggerUi = require("swagger-ui-express");
 const router = express.Router();
-
+const swagger = require("../../swagger-output.json");
+router.use("/docs", swaggerUi.serve, swaggerUi.setup(swagger));
+// Documentation in JSON format
+router.get("/docs.json", (req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swagger);
+});
 router.use("/user", userRouter);
 router.use("/singer", singerRouter);
 router.use("/genre", genreRouter);

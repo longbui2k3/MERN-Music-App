@@ -9,7 +9,7 @@ class PlaylistController {
       type: "Playlist",
       payload: req.body,
       file: req.file,
-      userId: req.user.id,
+      userId: req.user.userId,
       parentId: req.body.parentId
     });
 

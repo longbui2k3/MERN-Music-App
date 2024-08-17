@@ -5,7 +5,7 @@ const UserService = require("../services/UserService");
 
 class UserController {
   static getUserById = async (req, res, next) => {
-    const user = await UserService.getUserById({ id: req.params.id });
+    const user = await UserService.getUserById({ id: req.user.userId });
     new OK({
       message: "Get user by ID successfully!",
       metadata: {
@@ -40,7 +40,7 @@ class UserController {
 
   static getMusicListsByUserId = async (req, res, next) => {
     const musicLists = await UserService.getMusicListsByUserId({
-      userId: req.user.id,
+      userId: req.user.userId,
       musiclist_type: req.query.musiclist_type,
       search: req.query.search,
     });
@@ -55,7 +55,7 @@ class UserController {
   };
   static getItemsByUserId = async (req, res, next) => {
     const result = await UserService.getItemsByUserId({
-      userId: req.user.id,
+      userId: req.user.userId,
       type: req.query.type,
       sort: req.query.sort
     });
@@ -93,7 +93,7 @@ class UserController {
   };
   static getNewInfoFromFollowedSingers = async (req, res, next) => {
     const newInfo = await UserService.getNewInfoFromFollowSinger({
-      userId: req.user.id,
+      userId: req.user.userId,
     });
 
     new OK({

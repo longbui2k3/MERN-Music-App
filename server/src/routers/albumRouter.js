@@ -6,12 +6,28 @@ const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
 
-router.route("/:albumId").get(asyncHandler(AlbumController.getAlbumById));
-router.route("/").get(asyncHandler(AlbumController.findAllAlbums));
+router.route("/:albumId").get(
+  // #swagger.tags = ['Album']
+  // #swagger.summary = 'Get album by id'
+  asyncHandler(AlbumController.getAlbumById)
+);
+router.route("/").get(
+  // #swagger.tags = ['Album']
+  // #swagger.summary = 'Get all albums'
+  asyncHandler(AlbumController.findAllAlbums)
+);
 router.use(protect);
 
-router
-  .route("/")
-  .post(upload.single("image"), asyncHandler(AlbumController.createAlbum));
+router.route("/").post(
+  upload.single("image"),
+  // #swagger.tags = ['Album']
+  // #swagger.summary = 'Create album'
+  /* #swagger.security = [{
+      "apiKeyAuth": [],
+      "clientId": []
+    }] 
+  */
+  asyncHandler(AlbumController.createAlbum)
+);
 
 module.exports = router;

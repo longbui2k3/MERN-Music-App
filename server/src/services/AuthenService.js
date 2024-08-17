@@ -1,25 +1,56 @@
 "use strict";
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const nodemailer = require("nodemailer");
 require("dotenv").config();
-const { generateToken } = require("../configs");
-const jwt = require("jsonwebtoken");
-const asyncHandler = require("express-async-handler");
+const { generateKey } = require("../configs");
 const admin = require("firebase-admin");
 const firebaseConfig = require("../configs/firebase");
 const { BadRequestError, AuthFailureError } = require("../core/errorResponse");
 const { findByEmail } = require("../models/repo/user.repo");
 const sendResetEmail = require("../helpers/sendResetEmail");
-const MusicListFactory = require("./MusicListService");
+const { MusicListFactory } = require("./MusicListService");
 const { startSession } = require("mongoose");
+const { getInfoData } = require("../utils");
+const { createTokenPair } = require("../auth/authUtils");
+const KeytokenService = require("./KeytokenService");
 admin.initializeApp(firebaseConfig);
 
 class AuthenService {
-  createSendToken(type, user) {
-    const token = generateToken(user._id);
+  async createSendToken(type, user) {
+    const privateKey = generateKey();
+    const publicKey = generateKey();
+
+    const tokens = await createTokenPair(
+      {
+        userId: user._id,
+        email: user.email,
+        role: user.role,
+      },
+      publicKey,
+      privateKey
+    );
+
+    await KeytokenService.createKeyToken({
+      userId: user._id,
+      publicKey,
+      privateKey,
+      refreshToken: tokens.refreshToken,
+    });
+
     user.password = undefined;
-    return { type, token, user };
+    user = getInfoData({
+      object: user,
+      fields: [
+        "_id",
+        "name",
+        "email",
+        "role",
+        "typeOfAccount",
+        "dateOfBirth",
+        "gender",
+      ],
+    });
+    return { type, tokens, user };
   }
   async signUpNormal({
     name,
@@ -75,7 +106,7 @@ class AuthenService {
     await session.commitTransaction();
     session.endSession();
 
-    return this.createSendToken("Sign up", user);
+    return await this.createSendToken("Sign up", user);
   }
   async signUpAuth({
     name,
@@ -96,7 +127,7 @@ class AuthenService {
       !typeOfAccount ||
       (!federatedId && typeOfAccount === "facebook")
     ) {
-      throw new BadRequestError("Please Enter all the Feilds");
+      throw new BadRequestError("Please Enter all the Fields");
     }
 
     const session = await startSession();
@@ -262,6 +293,10 @@ class AuthenService {
     if (userExists) {
       throw new BadRequestError("Email has already existed!");
     }
+  }
+
+  async logOut(keyStore) {
+    await KeytokenService.removeKeyById(keyStore._id);
   }
 }
 

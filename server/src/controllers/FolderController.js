@@ -4,7 +4,7 @@ const FolderService = require("../services/FolderService");
 class FolderController {
   static createFolder = async (req, res, next) => {
     const folder = await FolderService.createFolder({
-      userId: req.user.id,
+      userId: req.user.userId,
       parentId: req.body.parentId,
     });
     return new CREATED({
@@ -16,7 +16,7 @@ class FolderController {
   };
   static getChildOfFolder = async (req, res, next) => {
     const childs = await FolderService.getChildOfFolder({
-      userId: req.user.id,
+      userId: req.user.userId,
       folderId: req.query.parentId,
     });
 
