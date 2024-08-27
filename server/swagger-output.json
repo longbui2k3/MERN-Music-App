@@ -34,9 +34,44 @@
         ],
         "summary": "Get musiclists by user id",
         "description": "",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "musiclist_type",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Music list type"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getMusicListByUserId200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getMusicListByUserId400Schema"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -54,9 +89,44 @@
         ],
         "summary": "Get items by user id",
         "description": "",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Item type"
+          },
+          {
+            "in": "query",
+            "name": "sort",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sort by"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getItemsByUserId200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getItemsByUserId400Schema"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -95,8 +165,25 @@
         "summary": "Get new info from followed singers",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getNewInfoFromFollowSinger200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getNewInfoFromFollowSinger400Schema"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -115,8 +202,55 @@
         "summary": "Add favorite musiclist",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/addFavoriteMusicListResponse201Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/addFavoriteMusicListResponse400Schema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/addFavoriteMusicListResponse401Schema"
+                }
+              }
+            }
+          },
+          "424": {
+            "description": "Failed Dependency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/addFavoriteMusicListResponse424Schema"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/favoriteMusicListSchema"
+              }
+            }
           }
         },
         "security": [
@@ -132,7 +266,7 @@
         "tags": [
           "User"
         ],
-        "summary": "Remove favorite musiclist",
+        "summary": "Remove favorite music list",
         "description": "",
         "parameters": [
           {
@@ -145,8 +279,45 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/removeFavoriteMusicListResponse200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/removeFavoriteMusicListResponse400Schema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/removeFavoriteMusicListResponse401Schema"
+                }
+              }
+            }
+          },
+          "424": {
+            "description": "Failed Dependency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/removeFavoriteMusicListResponse424Schema"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -165,8 +336,55 @@
         "summary": "Follow singer",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/followSingerResponse201Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/followSingerResponse400Schema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/followSingerResponse401Schema"
+                }
+              }
+            }
+          },
+          "424": {
+            "description": "Failed Dependency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/followSingerResponse424Schema"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/followSingerSchema"
+              }
+            }
           }
         },
         "security": [
@@ -195,8 +413,45 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unfollowSingerResponse200Schema"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unfollowSingerResponse400Schema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "UnAuthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unfollowSingerResponse401Schema"
+                }
+              }
+            }
+          },
+          "424": {
+            "description": "Failed Dependency",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/unfollowSingerResponse424Schema"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -1312,6 +1567,654 @@
   },
   "components": {
     "schemas": {
+      "favoriteMusicListSchema": {
+        "type": "object",
+        "required": [
+          "musicList"
+        ],
+        "properties": {
+          "musicList": {
+            "type": "string",
+            "example": "65cc9924a19c854182e12d2f"
+          }
+        }
+      },
+      "addFavoriteMusicListResponse201Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 201
+          },
+          "message": {
+            "type": "string",
+            "example": "Add to favorite successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "typeOfAccount": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "name",
+                  "email",
+                  "role",
+                  "typeOfAccount",
+                  "dateOfBirth",
+                  "gender"
+                ]
+              }
+            },
+            "required": [
+              "user"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "addFavoriteMusicListResponse400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Added to favorite list already!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "addFavoriteMusicListResponse401Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "Can not add your favorite list because you are not logged in!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "addFavoriteMusicListResponse424Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 424
+          },
+          "message": {
+            "type": "string",
+            "example": "Something went wrong!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "removeFavoriteMusicListResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Remove to favorite successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "typeOfAccount": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "name",
+                  "email",
+                  "role",
+                  "typeOfAccount"
+                ]
+              }
+            },
+            "required": [
+              "user"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "removeFavoriteMusicListResponse400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Music List is not in your favorite list!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "removeFavoriteMusicListResponse401Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "Can not add your favorite list because you are not logged in!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "removeFavoriteMusicListResponse424Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 424
+          },
+          "message": {
+            "type": "string",
+            "example": "Something went wrong!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "getMusicListByUserId200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Get music lists successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "musicLists": {
+                "type": "object",
+                "properties": {
+                  "musicList": {
+                    "type": "object",
+                    "example": {}
+                  }
+                },
+                "example": []
+              }
+            },
+            "required": [
+              "musicLists"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "getMusicListByUserId400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "User with id: ${userId} not found"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "getItemsByUserId200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Get items successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "object",
+                "properties": {
+                  "musicList": {
+                    "type": "object",
+                    "example": {}
+                  }
+                },
+                "example": []
+              },
+              "lengthOfPlaylists": {
+                "type": "number",
+                "example": 0
+              }
+            },
+            "required": [
+              "items",
+              "lengthOfPlaylists"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "getItemsByUserId400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "User with id: ${userId} not found"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "followSingerSchema": {
+        "type": "object",
+        "required": [
+          "singer"
+        ],
+        "properties": {
+          "singer": {
+            "type": "string",
+            "example": "656305e6974a729e7674bc0b"
+          }
+        }
+      },
+      "followSingerResponse201Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 201
+          },
+          "message": {
+            "type": "string",
+            "example": "Follow to singer successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "typeOfAccount": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "name",
+                  "email",
+                  "role",
+                  "typeOfAccount",
+                  "dateOfBirth",
+                  "gender"
+                ]
+              }
+            },
+            "required": [
+              "user"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "followSingerResponse400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Followed to singer already!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "followSingerResponse401Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "Can not add your favorite list because you are not logged in!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "followSingerResponse424Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 424
+          },
+          "message": {
+            "type": "string",
+            "example": "Something went wrong!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "unfollowSingerResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Unfollow to singer successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "type": "object",
+                "properties": {
+                  "_id": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "name": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "role": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "typeOfAccount": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "example": "string"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "example": "string"
+                  }
+                },
+                "required": [
+                  "_id",
+                  "name",
+                  "email",
+                  "role",
+                  "typeOfAccount",
+                  "dateOfBirth",
+                  "gender"
+                ]
+              }
+            },
+            "required": [
+              "user"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "unfollowSingerResponse400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "Singer hasn't been followed!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "unfollowSingerResponse401Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "Can not add your favorite list because you are not logged in!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "unfollowSingerResponse424Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 424
+          },
+          "message": {
+            "type": "string",
+            "example": "Something went wrong!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "getNewInfoFromFollowSinger200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Get new info of followed singers successfully"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "newInfo": {
+                "type": "object",
+                "example": []
+              }
+            },
+            "required": [
+              "newInfo"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "getNewInfoFromFollowSinger400Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "example": "User is not found or does not follow any singers"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
       "signUpBodySchema": {
         "type": "object",
         "properties": {

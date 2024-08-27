@@ -52,7 +52,7 @@ router.route("/newInfo").get(
 //   .post(asyncHandler(UserController.addSongToLikedSongs));
 router.route("/favorite").post(
   // #swagger.tags = ['User']
-  // #swagger.summary = 'Add favorite musiclist'
+  // #swagger.summary = 'Add favorite music list'
   /* #swagger.security = [{
           "apiKeyAuth": [],
           "clientId": []
@@ -62,7 +62,7 @@ router.route("/favorite").post(
 );
 router.route("/favorite/:musicList").delete(
   // #swagger.tags = ['User']
-  // #swagger.summary = 'Remove favorite musiclist'
+  // #swagger.summary = 'Remove favorite music list'
   /* #swagger.security = [{
           "apiKeyAuth": [],
           "clientId": []

@@ -1,6 +1,10 @@
 "use strict";
 const jwt = require("jsonwebtoken");
-const { AuthFailureError, ForbiddenError, NotFoundError } = require("../core/errorResponse");
+const {
+  AuthFailureError,
+  ForbiddenError,
+  NotFoundError,
+} = require("../core/errorResponse");
 const asyncHandler = require("../helpers/asyncHandler");
 const { generateToken } = require("../configs");
 const KeytokenService = require("../services/KeytokenService");
@@ -13,9 +17,10 @@ const HEADER = {
 const protect = asyncHandler(async (req, res, next) => {
   const userId = req.headers[HEADER.CLIENT_ID];
   if (!userId) {
-    throw new AuthFailureError("Invalid Request!");
+    throw new AuthFailureError("Invalid Request! 1");
   }
   const keyStore = await KeytokenService.findByUserId(userId);
+
   if (!keyStore) {
     throw new NotFoundError("Not Found KeyStore!");
   }
@@ -23,7 +28,7 @@ const protect = asyncHandler(async (req, res, next) => {
   if (req.headers[HEADER.REFRESHTOKEN]) {
     const refreshToken = req.headers[HEADER.REFRESHTOKEN];
     if (!refreshToken) {
-      throw new AuthFailureError("Invalid Request!");
+      throw new AuthFailureError("Invalid Request! 2");
     }
     try {
       const decodeUser = jwt.verify(refreshToken, keyStore.privateKey);
@@ -41,13 +46,13 @@ const protect = asyncHandler(async (req, res, next) => {
 
   const accessToken = req.headers[HEADER.AUTHORIZATION];
   if (!accessToken) {
-    throw new AuthFailureError("Invalid Request!");
+    throw new AuthFailureError("Invalid Request! 3");
   }
 
   try {
     const decodeUser = jwt.verify(accessToken, keyStore.publicKey);
     if (userId !== decodeUser.userId) {
-      throw new AuthFailureError("Invalid UserId");
+      throw new AuthFailureError("Invalid UserId 1");
     }
     req.keyStore = keyStore;
     req.user = decodeUser;

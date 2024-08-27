@@ -39,7 +39,7 @@ class UserController {
   };
 
   static getMusicListsByUserId = async (req, res, next) => {
-    const musicLists = await UserService.getMusicListsByUserId({
+    const musicLists = await UserService.getMusicListsOfUser({
       userId: req.user.userId,
       musiclist_type: req.query.musiclist_type,
       search: req.query.search,
@@ -53,11 +53,12 @@ class UserController {
       },
     }).send(res);
   };
+
   static getItemsByUserId = async (req, res, next) => {
-    const result = await UserService.getItemsByUserId({
+    const result = await UserService.getItemsOfUser({
       userId: req.user.userId,
       type: req.query.type,
-      sort: req.query.sort
+      sort: req.query.sort,
     });
     new OK({
       message: `Get items successfully!`,
@@ -67,6 +68,7 @@ class UserController {
       },
     }).send(res);
   };
+
   static followSinger = async (req, res, next) => {
     const user = await UserService.followSinger({
       user: req.user,
@@ -79,6 +81,7 @@ class UserController {
       },
     }).send(res);
   };
+
   static unfollowSinger = async (req, res, next) => {
     const user = await UserService.unfollowSinger({
       user: req.user,
@@ -91,6 +94,7 @@ class UserController {
       },
     }).send(res);
   };
+
   static getNewInfoFromFollowedSingers = async (req, res, next) => {
     const newInfo = await UserService.getNewInfoFromFollowSinger({
       userId: req.user.userId,
