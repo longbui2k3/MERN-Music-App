@@ -469,9 +469,26 @@
         ],
         "summary": "Get all singers",
         "description": "",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Search string"
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getSingersResponse200Schema"
+                }
+              }
+            }
           }
         }
       },
@@ -512,8 +529,15 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getAlbumByUserResponse200Schema"
+                }
+              }
+            }
           }
         }
       }
@@ -536,8 +560,15 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getSingerResponse200Schema"
+                }
+              }
+            }
           }
         }
       },
@@ -558,8 +589,15 @@
           }
         ],
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/deleteSingerResponse200Schema"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -606,8 +644,15 @@
         "summary": "Get singer by user",
         "description": "",
         "responses": {
-          "default": {
-            "description": ""
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getSingerByUserResponse200Schema"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -2214,6 +2259,146 @@
           "status",
           "message"
         ]
+      },
+      "getSingersResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Get singers successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "singers": {
+                "type": "object",
+                "example": []
+              }
+            },
+            "required": [
+              "musicLists"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "getSingerResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Get singers successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "singers": {
+                "type": "object",
+                "example": []
+              }
+            },
+            "required": [
+              "singers"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "getAlbumByUserResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Get album by singer successfully!"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "deleteSingerResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Delete singer successfully!"
+          }
+        },
+        "required": [
+          "status",
+          "message"
+        ]
+      },
+      "getSingerByUserResponse200Schema": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "number",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Get singer by user successfully!"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "singers": {
+                "type": "object",
+                "example": []
+              }
+            },
+            "required": [
+              "musicLists"
+            ]
+          }
+        },
+        "required": [
+          "status",
+          "message",
+          "metadata"
+        ]
+      },
+      "createSingerBodySchema": {
+        "type": "object",
+        "required": [
+          "musicList"
+        ],
+        "properties": {
+          "musicList": {
+            "type": "string",
+            "example": "65cc9924a19c854182e12d2f"
+          }
+        }
       },
       "signUpBodySchema": {
         "type": "object",

@@ -1,84 +1,40 @@
 "use strict";
-const { Types } = require("mongoose");
-const { BadRequestError } = require("../core/errorResponse");
-const Singer = require("../models/singerModel");
-const songModel = require("../models/songModel");
+const {
+  getAll,
+  getById,
+  getSingerByUser,
+  create,
+  update,
+  deleteSinger,
+  getAlbumByUser,
+} = require("../models/repo/singer.repo");
 class SingerService {
   async getAllSingers({ search }) {
-    return await Singer.find({ name: { $regex: search || "" } })
-      .populate("songs")
-      .populate("musicLists");
+    return await getAll({ search });
   }
 
   async getSinger({ id }) {
-    const singer = await Singer.findById(id)
-      .populate("musicLists")
-      .populate({ path: "songs", populate: "singers", strictPopulate: false })
-      .exec();
-    if (!singer) {
-      throw new BadRequestError("Singer with this id is not found!");
-    }
-    return singer;
+    return await getById({ id });
   }
 
   async getSingerByUser({ _id }) {
-    const singer = await Singer.findOne({ user: new Types.ObjectId(_id) })
-      .populate({ path: "songs", populate: "singers" })
-      .populate({ path: "musicLists", populate: "musiclist_attributes" });
-    if (!singer) {
-      throw new BadRequestError("Singer with this user is not found!");
-    }
-    return singer;
+    return await getSingerByUser({ userId: _id });
   }
 
   async createSinger({ body }) {
-    const newSinger = await Singer.create(body);
-    if (!newSinger) {
-      throw new BadRequestError("Create singer unsuccessfully!");
-    }
-    return newSinger;
+    return await create({ data: body });
   }
-  async updateSinger({ id, body }) {
-    const updatedSinger = await Singer.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!updatedSinger) {
-      throw new BadRequestError("Update singer unsuccessfully!");
-    }
 
-    return updatedSinger;
+  async updateSinger({ id, body }) {
+    return await update({ id: id, data: body });
   }
 
   async deleteSinger({ id }) {
-    await Singer.findByIdAndDelete(id);
+    await deleteSinger({ id });
   }
 
   async getAlbumBySinger({ id }) {
-    const singer = await Singer.findById(id)
-      .populate({
-        path: "musicLists",
-        populate: {
-          path: "musiclist_attributes",
-          select: { name_embedding: 0 },
-        },
-        select: { name_embedding: 0, songs: 0 },
-      })
-      .populate()
-      .select({ name_embedding: 0 })
-      .lean();
-    singer.musicLists = singer.musicLists.filter(
-      (musicList) => musicList.type === "Album"
-    );
-    singer.musicLists = await Promise.all(
-      singer.musicLists.map(async (musicList) => {
-        musicList.songs = await songModel
-          .find({ album: musicList._id })
-          .select({ name_embedding: 0 });
-        return musicList;
-      })
-    );
-    return singer.musicLists;
+    return await getAlbumByUser({ id });
   }
 }
 
